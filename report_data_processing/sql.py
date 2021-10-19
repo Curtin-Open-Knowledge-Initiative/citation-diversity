@@ -25,10 +25,10 @@ from typing import Union, Optional
 
 SQL_DIRECTORY = Path("report_data_processing/sql")
 
-def load_sql_to_string(filepath: Union[str, Path],
-                       parameters: Optional[dict]=None,
-                       directory: Optional[Union[str, Path]]=None):
 
+def load_sql_to_string(filepath: Union[str, Path],
+                       parameters: Optional[dict] = None,
+                       directory: Optional[Union[str, Path]] = None):
     filepath = Path(filepath)
     if directory:
         filepath = Path(directory) / filepath
@@ -49,7 +49,6 @@ def load_sql_to_string(filepath: Union[str, Path],
 # Example
 # Metadata Elements and MAG Added Value to Crossref
 # doi_table_categories_query = load_sql_to_string("doi_table_categories_query.sql",
-                                                # directory=SQL_DIRECTORY)
-hello_world = load_sql_to_string('hello_world.sql',
-                                   directory=SQL_DIRECTORY)
-
+# directory=SQL_DIRECTORY)
+global_citation_query = load_sql_to_string('global_citation_query.sql',
+                                           directory=SQL_DIRECTORY)

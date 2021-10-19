@@ -24,11 +24,12 @@ import numpy as np
 import plotly.graph_objects as go
 from typing import Optional, Callable, Union
 
+from google.cloud import bigquery
+
 from observatory.reports import report_utils
 from precipy.analytics_function import AnalyticsFunction
-from report_data_processing.sql import (
-    hello_world
-)
+from report_data_processing.sql import *
+
 # Insert applicable graphs once created
 # from report_graphs import (
 #     Alluvial, OverallCoverage, BarLine, ValueAddBar, ValueAddByCrossrefType, ValueAddByCrossrefTypeHorizontal,
@@ -36,13 +37,34 @@ from report_data_processing.sql import (
 # )
 
 # Replace with applicable project name
-PROJECT_ID = 'coki-curtin-research-qualities'
+PROJECT_ID = 'coki-scratch-space'
+TEMPDIR = Path('tempdir')
+
 
 def get_data(af: AnalyticsFunction):
-    hello_world_query = pd.read_gbq(query=hello_world,
-                                 project_id=PROJECT_ID)
+    """
+    Create main citation diversity table and save as new table in BigQuery
+    """
 
-    hello_world_query.to_csv('hello_world.csv')
-    af.add_existing_file('hello_world.csv')
-    # issue with af not removing files in current working directory
-    os.remove('hello_world.csv')
+    print("Generating the Citation Diversity Table")
+    with bigquery.Client() as client:
+        job_config = bigquery.QueryJobConfig(destination="coki-scratch-space.karl.citation_diversity",
+                                             create_disposition="CREATE_IF_NEEDED",
+                                             write_disposition="WRITE_TRUNCATE")
+
+        # Start the query, passing in the extra configuration.
+        query_job = client.query(global_citation_query, job_config=job_config)  # Make an API request.
+        query_job.result()  # Wait for the job to complete.
+
+    print("...completed")
+
+def pull_data(af:AnalyticsFunction):
+    """
+    Pull data down for analysis
+    """
+
+    print("Pulling data from Bigquery")
+    data = pd.read_gbq(query=global_citation_query)
+    data.to_csv(TEMPDIR / 'file.csv')
+    af.add_existing_file(TEMPDIR / 'file.csv')
+    print('...completed')
