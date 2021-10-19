@@ -1,0 +1,7 @@
+pandas
+precipy
+pandas-gbq
+plotly==5.1.0
+num2words
+#seaborn
+xhtml2pdf
