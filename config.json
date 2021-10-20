@@ -11,7 +11,7 @@
   },
   "analytics": [
     [
-      "get_data",
+      "pull_data",
       {
       }
     ]
