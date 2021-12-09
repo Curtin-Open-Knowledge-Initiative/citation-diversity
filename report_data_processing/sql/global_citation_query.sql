@@ -1,3 +1,4 @@
+#function for creating frequency table from a list of names
 CREATE TEMP FUNCTION GetNamesAndCounts(elements ARRAY<STRING>) AS (
   ARRAY(
     SELECT AS STRUCT elem AS name, COUNT(*) AS count
@@ -7,7 +8,7 @@ CREATE TEMP FUNCTION GetNamesAndCounts(elements ARRAY<STRING>) AS (
   )
 );
 
-WITH
+WITH 
     #collect all article id for global outputs
     cited_id AS (
         SELECT
@@ -19,14 +20,14 @@ WITH
         SELECT
             pr.PaperId AS PaperId,
             ARRAY_AGG(cited_id.PaperId) AS CitedId
-        FROM `academic-observatory.mag.PaperReferences20210329` AS pr
-            JOIN cited_id on pr.PaperReferenceId = cited_id.PaperId
-        GROUP BY
+        FROM `academic-observatory.mag.PaperReferences20210329` AS pr 
+            JOIN cited_id on pr.PaperReferenceId = cited_id.PaperId 
+        GROUP BY 
             pr.PaperId
     ),
     #create a list of citing articles with relevant metadata
     citing_articles AS (
-        SELECT
+        SELECT 
             doi,
             crossref.title,
             crossref.published_year,
@@ -51,6 +52,13 @@ WITH
             CitedId
         FROM citing_id
             LEFT JOIN `academic-observatory.observatory.doi20210807` ON PaperId = mag.PaperId
+    ),
+    #group citing institutions to cited articles
+    CitingInstitutions AS (
+        SELECT Cited AS PaperId, ARRAY_AGG(institution.name IGNORE NULLS) AS CitingInstitutions_name, COUNT(DISTINCT(institution.name)) AS CitingInstitutions_count_uniq,
+               COUNT(institution.name) AS CitingInstitutions_count_all
+        FROM citing_articles AS X, UNNEST(CitedId) AS Cited, UNNEST(institutions) AS institution
+        GROUP BY Cited
     ),
     #group citing countries to cited articles
     CitingCountries AS (
@@ -82,41 +90,63 @@ WITH
     ),
     #create list of cited articles with citing entities info
     cited_articles AS (
-        SELECT
+        SELECT 
             doi,
             crossref.published_year as year,
+            crossref.type as doctype,
             unpaywall.is_oa as is_oa,
             unpaywall.gold as gold,
             unpaywall.green as green,
             unpaywall.green_only as green_only,
+            unpaywall.hybrid as hybrid,
+            unpaywall.bronze as bronze,
             mag.PaperId AS PaperId,
             mag.CitationCount as CitationCount,
-            C1.CitingCountries_count_all AS CitingCountries_count_all,
-            C1.CitingCountries_count_uniq AS CitingCountries_count_uniq,
-            C1.CitingCountries_name AS CitingCountries_name,
-            GetNamesAndCounts(C1.CitingCountries_name) AS CitingCountries_table,
-            C2.CitingSubregions_count_all AS CitingSubregions_count_all,
-            C2.CitingSubregions_count_uniq AS CitingSubregions_count_uniq,
-            C2.CitingSubregions_name AS CitingSubregions_name,
-            GetNamesAndCounts(C2.CitingSubregions_name) AS CitingSubregions_table,
-            C3.CitingRegions_count_all AS CitingRegions_count_all,
-            C3.CitingRegions_count_uniq AS CitingRegions_count_uniq,
-            C3.CitingRegions_name AS CitingRegions_name,
-            GetNamesAndCounts(C3.CitingRegions_name) AS CitingRegions_table,
-            C4.CitingFields_count_all AS CitingFields_count_all,
-            C4.CitingFields_count_uniq AS CitingFields_count_uniq,
-            C4.CitingFields_name AS CitingFields_name,
-            GetNamesAndCounts(C4.CitingFields_name) AS CitingFields_table,
+            C1.CitingInstitutions_count_all AS CitingInstitutions_count_all,
+            C1.CitingInstitutions_count_uniq AS CitingInstitutions_count_uniq,
+            C1.CitingInstitutions_name AS CitingInstitutions_name,
+            GetNamesAndCounts(C1.CitingInstitutions_name) AS CitingInstitutions_table,
+            C2.CitingCountries_count_all AS CitingCountries_count_all,
+            C2.CitingCountries_count_uniq AS CitingCountries_count_uniq,
+            C2.CitingCountries_name AS CitingCountries_name,
+            GetNamesAndCounts(C2.CitingCountries_name) AS CitingCountries_table,
+            C3.CitingSubregions_count_all AS CitingSubregions_count_all,
+            C3.CitingSubregions_count_uniq AS CitingSubregions_count_uniq,
+            C3.CitingSubregions_name AS CitingSubregions_name,
+            GetNamesAndCounts(C3.CitingSubregions_name) AS CitingSubregions_table,
+            C4.CitingRegions_count_all AS CitingRegions_count_all,
+            C4.CitingRegions_count_uniq AS CitingRegions_count_uniq,
+            C4.CitingRegions_name AS CitingRegions_name,
+            GetNamesAndCounts(C4.CitingRegions_name) AS CitingRegions_table,
+            C5.CitingFields_count_all AS CitingFields_count_all,
+            C5.CitingFields_count_uniq AS CitingFields_count_uniq,
+            C5.CitingFields_name AS CitingFields_name,
+            GetNamesAndCounts(C5.CitingFields_name) AS CitingFields_table,
+            affiliations.institutions,
+            affiliations.countries,
+            affiliations.subregions,
+            affiliations.regions,
         FROM `academic-observatory.observatory.doi20211002` AS outputs
-            LEFT JOIN CitingCountries AS C1 ON outputs.mag.PaperId = C1.PaperId
-            LEFT JOIN CitingSubregions AS C2 ON outputs.mag.PaperId = C2.PaperId
-            LEFT JOIN CitingRegions AS C3 ON outputs.mag.PaperId = C3.PaperId
-            LEFT JOIN CitingFields AS C4 ON outputs.mag.PaperId = C4.PaperId
+            LEFT JOIN CitingInstitutions AS C1 ON outputs.mag.PaperId = C1.PaperId  
+            LEFT JOIN CitingCountries AS C2 ON outputs.mag.PaperId = C2.PaperId  
+            LEFT JOIN CitingSubregions AS C3 ON outputs.mag.PaperId = C3.PaperId 
+            LEFT JOIN CitingRegions AS C4 ON outputs.mag.PaperId = C4.PaperId 
+            LEFT JOIN CitingFields AS C5 ON outputs.mag.PaperId = C5.PaperId 
     )
 SELECT
   *,
-  (SELECT 1 - SUM(POW(X.count/CitingCountries_count_all,2)) FROM UNNEST(CitingCountries_table) AS X) as CitingCountries_unalike,
-  (SELECT 1 - SUM(POW(X.count/CitingSubregions_count_all,2)) FROM UNNEST(CitingSubregions_table) AS X) as CitingSubregions_unalike,
-  (SELECT 1 - SUM(POW(X.count/CitingRegions_count_all,2)) FROM UNNEST(CitingRegions_table) AS X) as CitingRegions_unalike,
-  (SELECT 1 - SUM(POW(X.count/CitingFields_count_all,2)) FROM UNNEST(CitingFields_table) AS X) as CitingFields_unalike
+  #calculate the Gini-Simpson index for various different groupings
+  (SELECT 1 - SUM(POW(X.count/CitingInstitutions_count_all,2)) FROM UNNEST(CitingInstitutions_table) AS X) as CitingInstitutions_GiniSim,
+  (SELECT 1 - SUM(POW(X.count/CitingCountries_count_all,2)) FROM UNNEST(CitingCountries_table) AS X) as CitingCountries_GiniSim,
+  (SELECT 1 - SUM(POW(X.count/CitingSubregions_count_all,2)) FROM UNNEST(CitingSubregions_table) AS X) as CitingSubregions_GiniSim,
+  (SELECT 1 - SUM(POW(X.count/CitingRegions_count_all,2)) FROM UNNEST(CitingRegions_table) AS X) as CitingRegions_GiniSim,
+  (SELECT 1 - SUM(POW(X.count/CitingFields_count_all,2)) FROM UNNEST(CitingFields_table) AS X) as CitingFields_GiniSim,
+  #calculate the Shannon (entropy) index for various different groupings
+  (SELECT -SUM((X.count/CitingInstitutions_count_all)*LN(X.count/CitingInstitutions_count_all)) FROM UNNEST(CitingInstitutions_table) AS X) as CitingInstitutions_Shannon,
+  (SELECT -SUM((X.count/CitingCountries_count_all)*LN(X.count/CitingCountries_count_all)) FROM UNNEST(CitingCountries_table) AS X) as CitingCountries_Shannon,
+  (SELECT -SUM((X.count/CitingSubregions_count_all)*LN(X.count/CitingSubregions_count_all)) FROM UNNEST(CitingSubregions_table) AS X) as CitingSubregions_Shannon,
+  (SELECT -SUM((X.count/CitingRegions_count_all)*LN(X.count/CitingRegions_count_all)) FROM UNNEST(CitingRegions_table) AS X) as CitingRegions_Shannon,
+  (SELECT -SUM((X.count/CitingFields_count_all)*LN(X.count/CitingFields_count_all)) FROM UNNEST(CitingFields_table) AS X) as CitingFields_Shannon
 FROM cited_articles
+WHERE 
+  (PaperId IS NOT NULL) AND (year > 2000) AND (year < 2022)
