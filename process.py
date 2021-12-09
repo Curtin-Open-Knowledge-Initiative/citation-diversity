@@ -47,6 +47,11 @@ def get_data(af: AnalyticsFunction):
     """
 
     print("Generating the Citation Diversity Table")
+
+    for year in YEAR_RANGE:
+        query = load_sql_to_string('cit_div_vs_cit_count.sql',
+                           parameters=dict(year=year),
+                           directory='report_data_processing/sql')
     with bigquery.Client() as client:
         job_config = bigquery.QueryJobConfig(destination="coki-scratch-space.karl.citation_diversity",
                                              create_disposition="CREATE_IF_NEEDED",
