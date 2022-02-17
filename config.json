@@ -4,20 +4,61 @@
   "logfile": "logs/precipy.log",
   "loglevel": "DEBUG",
   "constants": {
-    "PROJECT_ID": "utrecht-university",
-    "YEAR_RANGE": [1980,2026]
+    "PROJECT_ID": "citation_diversity"
   },
   "ranges": {
   },
   "analytics": [
     [
-      "pull_data",
+      "create_boxplot_div_by_cit_group",
       {
       }
+    ],
+    [
+      "create_boxplot_div_by_oa_group",
+      {
+      }
+    ],
+    [
+      "create_boxplot_uniq_cit_by_cit_group",
+      {
+      }
+    ],
+    [
+      "create_boxplot_uniq_cit_by_oa_group",
+      {
+      }
+    ],
+    [
+      "create_line_div_vs_cit_count",
+      {
+      }
+    ],
+    [
+      "create_bar_div_vs_year",
+      {
+      }
+    ],
+    [
+      "create_bar_doi_count_combined",
+      {
+      }
+    ],
+    [
+      "create_bar_doi_count_by_oa",
+      {}
+    ],
+    [
+      "create_bar_cit_count_by_oa",
+      {}
+    ],
+    [
+      "create_bar_uniq_cit_count",
+      {}
     ]
   ],
   "templates": [
-    "report_template.md"
+    "report_template.md", "supplementary.md"
   ],
   "filters": [
     ["markdown", "html"],
