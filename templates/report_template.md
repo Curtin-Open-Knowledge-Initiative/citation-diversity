@@ -15,21 +15,6 @@
 
 # Summary and Abstract
 
-The open access movement aims to remove access barriers to research outputs. It is hypothesised that this helps maximise
-an article’s research impact as a result of lowering access restrictions caused by social inequality that favours
-wealthier populations. Citations are often interpreted as a measure of impact. Openly accessible articles are said to
-have increased citation counts as compared to their closed counterparts. Yet, quantitative studies have shown varied
-results across research cohorts. The current literature lacks simple yet strong evidence to support the positive impact
-of open access on citations. Here we show that open access outputs garner more diverse citationships across geographies
-and disciplines. We perform a large-scale study of citing patterns across paired-samples of open access outputs versus
-non-open access outputs using data integrated from multiple sources. We found that the open access groups are cited more
-widely across different countries, sub-regions, regions and fields of study. Importantly, there are increased citations
-from populations that traditionally have restricted access to closed publications. The results demonstrate a new
-perspective to understanding the citation impact of open access practices. It provides a remarkably simple argument in
-support of open access publishing, i.e., it gets cited by more authors from more places.
-
---
-
 The goal of open access is to allow more people to read and use research outputs. An observed association of more highly
 cited articles with open access has been claimed as evidence of increased usage but this remains controversial. In
 addition, analysis of citation counts is evidence of increased usage, not a wider diversity of usage. We address this
@@ -93,26 +78,32 @@ To evaluate confidence intervals we apply a subsampling procedure. We also analy
 robust across the range of citation counts, with some limitations on the ability to analyse very low counts. ###CAN WE
 SAY ANYTHING ABOUT WHAT THE EFFECT SIZE CORRESPONDS TO IN THE REAL WORLD###.
 
-There are two interesting exceptions to the consistent behaviour of the effect. The first is that of the diversity of
-citing fields by publication year, where the increased diversity for open access outputs only occurs after ##2010##. The
-second is a similar pattern specifically for open access on publisher websites (sometimes referred to as “gold” and/or
-“hybrid”). Whereas open access through repositories (“green”, which includes preprints in this analysis) is associated
-with greater diversity of citations throughout the whole timeframe of analysis and with a larger overall effect of open
-access, the “open access advantage” appears from 2015?? Onwards for open access provided via publisher websites.
+Comparing mechanisms of open access we see a larger effect in diversity of citing regions, countries, institutions and 
+??disciplines?? across all years and disciplines for access provided through repositories ("green") than for open
+access provided via publisher websites. This effect shows interesting discipline and author-country effects which
+merit further investigation.
 
 As an observational cohort study, our analysis is not able to define a causal link between open access and enhanced
 diversity of citation sources. However, as a global analysis we can definitively say that within the full cohort in our
-dataset of over 100 million outputs that open access outputs have a greater diversity of citation. To address the issue
-of potentially confounding effects, particular that wealthier or more prestigious authors, institutions or countries
-have greater ability to choose open access we note that citation diversity overall ###is frequently lower for wealthier
-countries##SHOULD WE GRAPH THIS##? And institutions. The lack of overall correlation between citation counts and
+dataset of over 100 million outputs that open access outputs have a greater diversity of citation. The lack of overall correlation between citation counts and
 citation diversity provides evidence that these differing measures track different aspects of usage and that there is
 limited common confounding at the global scale.
+
+The debate over the citation count advantage is dominated by questions of confounding effects, specifically whether
+open access is more accessible to wealthier and more prestigous researchers and/or whether researchers selectively
+make their best work open access. To address this we show that the citation diversity advantage is present independent
+of citation counts. 
+
+We also examine the geographical distribution of the citation diversity advantage. Analysing the countries from which
+citations come, we see an increase in citations for open access from traditionally under-represented and less prestigious 
+countries consistent with greater access being linked to more use from these regions, at least as measured by citations.
+The diversity advantage accrues preferentially to traditionally prestigious centres of research. For Latin America and
+Sub-Saharan Africa the advantage effect increases from low or negative levels over time. 
 
 The Budapest Open Access Initiative, now 20 years old, notes that open access makes possible “...the world-wide 
 electronic
 distribution of the peer-reviewed journal literature and completely free and unrestricted access to it by all
-scientists, scholars, teachers, students, and other curious minds” providing a public good which will remove “accelerate
+scientists, scholars, teachers, students, and other curious minds” providing a public good which will “accelerate
 research, enrich education, share the learning of the rich with the poor and the poor with the rich, make this
 literature as useful as it can be, and lay the foundation for uniting humanity in a common intellectual conversation and
 quest for knowledge”.
