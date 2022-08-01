@@ -3,9 +3,7 @@
 
 <!-- Title Page -->
 <pdf:nexttemplate name="titlepage">
-<pdf:nextpage>
-
-<p class="subtitle">TITLE</p>
+<p class="subtitle">MAIN ARTICLE</p>
 <p class="titlemeta"><br>DATE: {{ helper.created_at()|upper }}</p>
 
 
@@ -37,4 +35,8 @@ It provides a remarkably simple argument in support of open access
 publishing, i.e., it gets cited by more authors from more places.
 
 # Exciting things like data and table
-123 try again
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "box_div_by_cit_group_GiniSim_Institutions_{}.png" %} <img 
+src={{ create_boxplot_div_by_cit_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_boxplot_div_by_cit_group.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}

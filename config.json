@@ -55,6 +55,42 @@
     [
       "create_bar_uniq_cit_count",
       {}
+    ],
+    [
+      "create_line_compare_cit_regions",
+      {}
+    ],
+    [
+      "create_line_compare_cit_subregions",
+      {}
+    ],
+    [
+      "create_bar_compare_cit_regions",
+      {}
+    ],
+    [
+      "create_bar_compare_cit_subregions",
+      {}
+    ],
+    [
+      "create_figure2a",
+      {}
+    ],
+    [
+      "create_figure2b",
+      {}
+    ],
+    [
+      "create_figure2c",
+      {}
+    ],
+    [
+      "create_figure3a",
+      {}
+    ],
+    [
+      "create_figure3b",
+      {}
     ]
   ],
   "templates": [
