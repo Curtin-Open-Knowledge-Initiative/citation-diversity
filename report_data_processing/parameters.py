@@ -26,13 +26,16 @@ groups = ['Institutions', 'Countries', 'Subregions', 'Regions', 'Fields']
 metrics = ['GiniSim', 'Shannon']
 
 # which data year to run, i.e., 2010 to 2019
-years = list(range(2010, 2020))
+years = list(range(2010, 2021))
 
-# meansures of central location
+# measures of central location
 c_locs = ['mean', 'median']
 
-# Define Process.py parameters
+# Table Locations
 PROJECT_ID = 'coki-citation-diversity'
+DOI_TABLE = 'academic-observatory.observatory.doi20220730'
+MAG_REFERENCES_TABLE = 'academic-observatory.mag.PaperReferences20211206'
+CITATION_DIVERSITY_TABLE = 'coki-scratch-space.karl.citation_diversity_global'
 
 # plotly figure sizes
 scale=1
