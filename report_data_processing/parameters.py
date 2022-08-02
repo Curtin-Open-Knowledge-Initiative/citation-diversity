@@ -31,6 +31,68 @@ years = list(range(2010, 2021))
 # measures of central location
 c_locs = ['mean', 'median']
 
+# color mapping when comparing regions
+color_map_regions = {
+        "Asia": 'orange',
+        "Europe": 'limegreen',
+        "Americas": 'brown',
+        "Oceania": 'red',
+        "Africa": 'magenta'
+    }
+
+# display order when comparing regions
+order_regions = ["Asia", "Europe", "Americas", "Oceania", "Africa"]
+
+# color mapping when comparing subregions
+color_map_subregions = {
+        "Eastern Asia": 'orange',
+        "Southern Asia": 'orange',
+        "Western Asia": 'orange',
+        "South-eastern Asia": 'orange',
+        "Central Asia": 'orange',
+        "Southern Europe": 'limegreen',
+        "Eastern Europe": 'limegreen',
+        "Western Europe": 'limegreen',
+        "Northern Europe": 'limegreen',
+        "Latin America and the Caribbean": 'brown',
+        "Northern America": 'dodgerblue',
+        "Australia and New Zealand": 'red',
+        "Melanesia": 'red',
+        "Polynesia": 'red',
+        "Micronesia": 'red',
+        "Northern Africa": 'magenta',
+        "Sub-Saharan Africa": 'magenta'
+    }
+
+# line type mapping when comparing subregions
+dash_map_subregions = {
+        "Eastern Asia": 'solid',
+        "Southern Asia": 'longdash',
+        "Western Asia": 'dash',
+        "South-eastern Asia": 'dashdot',
+        "Central Asia": 'dot',
+        "Southern Europe": 'solid',
+        "Eastern Europe": 'dash',
+        "Western Europe": 'dashdot',
+        "Northern Europe": 'dot',
+        "Latin America and the Caribbean": 'solid',
+        "Northern America": 'solid',
+        "Australia and New Zealand": 'solid',
+        "Melanesia": 'dash',
+        "Polynesia": 'dashdot',
+        "Micronesia": 'dot',
+        "Northern Africa": 'solid',
+        "Sub-Saharan Africa": 'dash'
+    }
+
+# display order when comparing subregions
+order_subregions = [
+        "Eastern Asia", "Southern Asia", "Western Asia", "South-eastern Asia", "Central Asia",
+        "Southern Europe", "Eastern Europe", "Western Europe", "Northern Europe",
+        "Latin America and the Caribbean", "Northern America", "Australia and New Zealand", "Melanesia",
+        "Polynesia", "Micronesia", "Northern Africa", "Sub-Saharan Africa"
+    ]
+
 # Table Locations
 PROJECT_ID = 'coki-citation-diversity'
 DOI_TABLE = 'academic-observatory.observatory.doi20220730'
