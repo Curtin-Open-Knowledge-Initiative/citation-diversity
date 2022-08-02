@@ -18,6 +18,7 @@
 import json
 from pathlib import Path
 import os
+import copy
 
 import pandas as pd
 import numpy as np
@@ -54,8 +55,8 @@ def calculate_citation_diversity(af: AnalyticsFunction,
 
     query = load_sql_to_string('global_citation_query.sql',
                                parameters=dict(
-                                   first_year=years[0],
-                                   last_year=years[-1],
+                                   first_year=YEARS[0],
+                                   last_year=YEARS[-1],
                                    doi_table=DOI_TABLE,
                                    mag_references_table=MAG_REFERENCES_TABLE
                                ),
@@ -66,7 +67,7 @@ def calculate_citation_diversity(af: AnalyticsFunction,
             {query}
 
             """)
-        print(f'Destination Table: {MAG_REFERENCES_TABLE}')
+        print(f'Destination Table: {CITATION_DIVERSITY_TABLE}')
         return
 
     with bigquery.Client() as client:
@@ -133,19 +134,19 @@ def plot_boxplot_div_by_cit_group(df, method='GiniSim', group='Countries', year=
 def create_boxplot_div_by_cit_group(af: AnalyticsFunction):
     # create plots for all years, groupings, and diversity metrics
     print('... start boxplot_div_by_cit_group')
-    for year in years:
+    for year in YEARS:
         df_ = pd.read_csv('tempdata/samples_by_cit_group_and_oa_' + str(year) + '.csv', dtype={'cit_group': str})
         df_['cit_group'] = pd.Categorical(df_['cit_group'], ["2", "3", "4", "5-6", "7-9", "10-11", "12-14",
                                                            "15-16", "17-19", "20-23", "24-29", "30-42",
                                                            "43-59", ">=60"])
         df_ = df_.sort_values('cit_group')
-        for group in groups:
-            for metric in metrics:
+        for group in GROUPS:
+            for metric in METRICS:
                 fig = plot_boxplot_div_by_cit_group(df=df_, method=metric, group=group, year=year)
                 if not os.path.exists('report_graphs/box_div_by_cit_group'):
                     os.makedirs('report_graphs/box_div_by_cit_group')
                 fig.write_image('report_graphs/box_div_by_cit_group/box_div_by_cit_group_'
-                                +metric+'_'+group+'_'+str(year)+'.png', scale=scale, width=width, height=height)
+                                + metric +'_' + group +'_' + str(year) +'.png', scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
                 af.add_existing_file('report_graphs/box_div_by_cit_group/box_div_by_cit_group_'
                                 +metric+'_'+group+'_'+str(year)+'.png')
     print('... completed')
@@ -176,16 +177,16 @@ def plot_boxplot_div_by_oa_group(df, method='GiniSim', group='Countries', year=2
 def create_boxplot_div_by_oa_group(af: AnalyticsFunction):
     # create plots for all years, groupings, and diversity metrics
     print('... start boxplot_div_by_oa_group')
-    for year in years:
+    for year in YEARS:
         df_ = pd.read_csv('tempdata/samples_by_oa_' + str(year) + '.csv')
         df_.fillna(value=False, inplace=True)
-        for group in groups:
-            for metric in metrics:
+        for group in GROUPS:
+            for metric in METRICS:
                 fig = plot_boxplot_div_by_oa_group(df=df_, method=metric, group=group, year=year)
                 if not os.path.exists('report_graphs/box_div_by_oa_group'):
                     os.makedirs('report_graphs/box_div_by_oa_group')
                 fig.write_image('report_graphs/box_div_by_oa_group/box_div_by_oa_group_'
-                                +metric+'_'+group+'_'+str(year)+'.png', scale=scale, width=width, height=height)
+                                + metric +'_' + group +'_' + str(year) +'.png', scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
                 af.add_existing_file('report_graphs/box_div_by_oa_group/box_div_by_oa_group_'
                                 +metric+'_'+group+'_'+str(year)+'.png')
     print('... completed')
@@ -215,18 +216,18 @@ def plot_boxplot_uniq_cit_by_cit_group(df, group='Countries', year=2019):
 def create_boxplot_uniq_cit_by_cit_group(af: AnalyticsFunction):
     # create plots for all years, groupings, and diversity metrics
     print('... start boxplot_uniq_cit_by_cit_group')
-    for year in years:
+    for year in YEARS:
         df_ = pd.read_csv('tempdata/samples_by_cit_group_and_oa_' + str(year) + '.csv', dtype={'cit_group': str})
         df_['cit_group'] = pd.Categorical(df_['cit_group'], ["2", "3", "4", "5-6", "7-9", "10-11", "12-14",
                                                            "15-16", "17-19", "20-23", "24-29", "30-42",
                                                            "43-59", ">=60"])
         df_ = df_.sort_values('cit_group')
-        for group in groups:
+        for group in GROUPS:
                 fig = plot_boxplot_uniq_cit_by_cit_group(df=df_, group=group, year=year)
                 if not os.path.exists('report_graphs/box_uniq_cit_by_cit_group'):
                     os.makedirs('report_graphs/box_uniq_cit_by_cit_group')
                 fig.write_image('report_graphs/box_uniq_cit_by_cit_group/box_uniq_cit_by_cit_group_'
-                                +group+'_'+str(year)+'.png', scale=scale, width=width, height=height)
+                                + group +'_' + str(year) +'.png', scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
                 af.add_existing_file('report_graphs/box_uniq_cit_by_cit_group/box_uniq_cit_by_cit_group_'
                                 +group+'_'+str(year)+'.png')
     print('... completed')
@@ -256,15 +257,15 @@ def plot_boxplot_uniq_cit_by_oa_group(df, group='Countries', year=2019):
 def create_boxplot_uniq_cit_by_oa_group(af: AnalyticsFunction):
     # create plots for all years, groupings, and diversity metrics
     print('... start boxplot_uniq_cit_by_oa_group')
-    for year in years:
+    for year in YEARS:
         df_ = pd.read_csv('tempdata/samples_by_oa_' + str(year) + '.csv')
         df_.fillna(value=False, inplace=True)
-        for group in groups:
+        for group in GROUPS:
                 fig = plot_boxplot_uniq_cit_by_oa_group(df=df_, group=group, year=year)
                 if not os.path.exists('report_graphs/box_uniq_cit_by_oa_group'):
                     os.makedirs('report_graphs/box_uniq_cit_by_oa_group')
                 fig.write_image('report_graphs/box_uniq_cit_by_oa_group/box_uniq_cit_by_oa_group_'
-                                +group+'_'+str(year)+'.png', scale=scale, width=width, height=height)
+                                + group +'_' + str(year) +'.png', scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
                 af.add_existing_file('report_graphs/box_uniq_cit_by_oa_group/box_uniq_cit_by_oa_group_'
                                 +group+'_'+str(year)+'.png')
     print('... completed')
@@ -300,21 +301,18 @@ def plot_line_div_vs_cit_count(df, method='GiniSim', group='Countries', year=201
 def create_line_div_vs_cit_count(af: AnalyticsFunction):
     # create plots for all years, groupings, and diversity metrics
     # Fields exclude due to small numbers
-    groups_ = groups
-    groups_.remove('Fields')
     print('... start line_div_vs_cit_count')
-    for year in years:
+    for year in YEARS:
         df_ = pd.read_csv('tempdata/cit_div_vs_cit_count_' + str(year) + '.csv')
         df_ = df_.sort_values('CitationCount')
-        for group in groups_:
-            for metric in metrics:
+        for group in GROUPS_NOT_FIELDS:
+            for metric in METRICS:
                 fig = plot_line_div_vs_cit_count(df=df_, method=metric, group=group, year=year)
                 if not os.path.exists('report_graphs/line_div_vs_cit_count'):
                     os.makedirs('report_graphs/line_div_vs_cit_count')
-                fig.write_image('report_graphs/line_div_vs_cit_count/line_div_vs_cit_count_'
-                                +metric+'_'+group+'_'+str(year)+'.png', scale=scale, width=width, height=height)
-                af.add_existing_file('report_graphs/line_div_vs_cit_count/line_div_vs_cit_count_'
-                                +metric+'_'+group+'_'+str(year)+'.png')
+                filepath = f'report_graphs/line_div_vs_cit_count/line_div_vs_cit_count_{metric}_{group}_{str(year)}.png'
+                fig.write_image(filepath, scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
+                af.add_existing_file(filepath)
     print('... completed')
 
 
@@ -348,15 +346,15 @@ def create_bar_div_vs_year(af: AnalyticsFunction):
     # data = 'all_papers' or 'atleast2cit'; the latter is used below.
     df_ = pd.read_csv('tempdata/summary_stats_by_year_atleast2cit.csv')
     print('... start bar_div_vs_year')
-    for group in groups:
-        for metric in metrics:
-            for c_loc in c_locs:
+    for group in GROUPS:
+        for metric in METRICS:
+            for c_loc in C_LOCS:
                 fig = plot_bar_div_vs_year(df=df_, method=metric, group=group, c_loc=c_loc)
                 if not os.path.exists('report_graphs/bar_div_vs_year'):
                     os.makedirs('report_graphs/bar_div_vs_year')
-                fig.write_image('report_graphs/bar_div_vs_year/bar_div_vs_year_'+
-                                metric + '_' + group + '_' + c_loc + '.png', scale=scale, width=width, height=height)
-                af.add_existing_file('report_graphs/bar_div_vs_year/bar_div_vs_year_'+metric+'_'+group+'_'+c_loc+'.png')
+                filepath = f'report_graphs/bar_div_vs_year/bar_div_vs_year_{metric}_{group}_{c_loc}.png'
+                fig.write_image(filepath, scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
+                af.add_existing_file(filepath)
     print('... completed')
 
 
@@ -375,7 +373,7 @@ def create_bar_doi_count_combined(af: AnalyticsFunction):
     fig.update_layout(xaxis_type='category')
     if not os.path.exists('report_graphs/bar_doi_count'):
         os.makedirs('report_graphs/bar_doi_count')
-    fig.write_image('report_graphs/bar_doi_count/bar_doi_count_combined.png', scale=scale, width=width, height=height)
+    fig.write_image('report_graphs/bar_doi_count/bar_doi_count_combined.png', scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
     af.add_existing_file('report_graphs/bar_doi_count/bar_doi_count_combined.png')
     print('... completed')
 
@@ -398,7 +396,7 @@ def create_bar_doi_count_by_oa(af: AnalyticsFunction):
     fig.update_layout(xaxis_type='category')
     if not os.path.exists('report_graphs/bar_doi_count'):
         os.makedirs('report_graphs/bar_doi_count')
-    fig.write_image('report_graphs/bar_doi_count/bar_doi_count_by_oa.png', scale=scale, width=width, height=height)
+    fig.write_image('report_graphs/bar_doi_count/bar_doi_count_by_oa.png', scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
     af.add_existing_file('report_graphs/bar_doi_count/bar_doi_count_by_oa.png')
     print('... completed')
 
@@ -431,14 +429,13 @@ def create_bar_cit_count_by_oa(af: AnalyticsFunction):
     # data = 'all_papers' or 'atleast2cit'; the latter is used below.
     df_ = pd.read_csv('tempdata/summary_stats_by_year_atleast2cit.csv')
     print('... start bar_cit_count_by_oa')
-    for c_loc in c_locs:
+    for c_loc in C_LOCS:
         fig = plot_bar_cit_count_by_oa(df=df_, c_loc=c_loc)
         if not os.path.exists('report_graphs/bar_cit_count'):
             os.makedirs('report_graphs/bar_cit_count')
-        fig.write_image('report_graphs/bar_cit_count/bar_cit_count_by_oa_'
-                        +c_loc+'.png', scale=scale, width=width, height=height)
-        af.add_existing_file('report_graphs/bar_cit_count/bar_cit_count_by_oa_'
-                             +c_loc+'.png')
+        filepath = f'report_graphs/bar_cit_count/bar_cit_count_by_oa_{c_loc}.png'
+        fig.write_image(filepath, scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
+        af.add_existing_file(filepath)
     print('... completed')
 
 
@@ -473,15 +470,14 @@ def create_bar_uniq_cit_count(af: AnalyticsFunction):
     # data = 'all_papers' or 'atleast2cit'; the latter is used below.
     df_ = pd.read_csv('tempdata/summary_stats_by_year_atleast2cit.csv')
     print('... start bar_uniq_cit_count')
-    for group in groups:
-        for c_loc in c_locs:
+    for group in GROUPS:
+        for c_loc in C_LOCS:
             fig = plot_bar_uniq_cit_count(df=df_, group=group, c_loc=c_loc)
             if not os.path.exists('report_graphs/bar_uniq_cit_count'):
                 os.makedirs('report_graphs/bar_uniq_cit_count')
-            fig.write_image('report_graphs/bar_uniq_cit_count/bar_uniq_cit_count_'+
-                            group+'_'+c_loc+'.png', scale=scale, width=width, height=height)
-            af.add_existing_file('report_graphs/bar_uniq_cit_count/bar_uniq_cit_count_'+group+
-                                 '_'+c_loc+'.png')
+            filepath = f'report_graphs/bar_uniq_cit_count/bar_uniq_cit_count_{group}_{c_loc}.png'
+            fig.write_image(filepath, scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
+            af.add_existing_file(filepath)
     print('... completed')
 
 
@@ -489,8 +485,8 @@ def plot_line_compare_cit_regions(df, region='Asia'):
     # input variable: region
     # only papers with at least 2 citations are included
     fig = px.line(df, x='year', y='perc_change', color='name',
-                  color_discrete_map=color_map_regions,
-                  category_orders={"name": order_regions})
+                  color_discrete_map=COLOR_MAP_REGIONS,
+                  category_orders={"name": ORDER_REGIONS})
     fig.update_traces(mode='markers+lines')
     fig.update_layout(legend={"itemsizing": "trace", "itemwidth": 45})
     fig.update_layout(
@@ -509,9 +505,9 @@ def create_line_compare_cit_regions(af: AnalyticsFunction):
     print('... start plot_line_compare_cit_regions')
     for line in open('tempdata/summary_stats_by_region_atleast2cit.json', 'r'):
         data.append(json.loads(line))
-    for region in order_regions:
+    for region in ORDER_REGIONS:
         data_figure = pd.DataFrame(columns=['name', 'total_oa', 'total_noa', 'perc_change', 'year'])
-        for year in years:
+        for year in YEARS:
             df_oa = [x for x in data if ((x['region'] == region) & (x['year'] == str(year)) & (x['is_oa'] == 'true'))]
             df_noa = [x for x in data if ((x['region'] == region) & (x['year'] == str(year)) & (x['is_oa'] == 'false'))]
             df_oa_doi = int(df_oa[0]['count_doi'])
@@ -528,7 +524,7 @@ def create_line_compare_cit_regions(af: AnalyticsFunction):
         if not os.path.exists('report_graphs/line_compare_cit_count_regions'):
             os.makedirs('report_graphs/line_compare_cit_count_regions')
         fig.write_image('report_graphs/line_compare_cit_count_regions/line_compare_cit_count_regions_for_'
-                        + region + '.png', scale=scale, width=width, height=height)
+                        + region + '.png', scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
         af.add_existing_file('report_graphs/line_compare_cit_count_regions/line_compare_cit_count_regions_for_'
                              + region + '.png')
     print('... completed')
@@ -538,9 +534,9 @@ def plot_line_compare_cit_subregions(df, subregion='Sub-Saharan Africa'):
     # input variable: subregion
     # only papers with at least 2 citations are included
     fig = px.line(df, x='year', y='perc_change', color='name', line_dash='name',
-                  color_discrete_map=color_map_subregions,
-                  line_dash_map=dash_map_subregions,
-                  category_orders={"name": order_subregions})
+                  color_discrete_map=COLOR_MAP_SUBREGIONS,
+                  line_dash_map=DASH_MAP_SUBREGIONS,
+                  category_orders={"name": ORDER_SUBREGIONS})
     fig.update_traces(mode='markers+lines')
     fig.update_layout(legend={"itemsizing": "trace", "itemwidth": 45})
     fig.update_layout(
@@ -559,9 +555,9 @@ def create_line_compare_cit_subregions(af: AnalyticsFunction):
     for line in open('tempdata/summary_stats_by_subregion_atleast2cit.json', 'r'):
         data.append(json.loads(line))
     print('... start plot_line_compare_cit_subregions')
-    for subregion in order_subregions:
+    for subregion in ORDER_SUBREGIONS:
         data_figure = pd.DataFrame(columns=['name', 'total_oa', 'total_noa', 'perc_change', 'year'])
-        for year in years:
+        for year in YEARS:
             df_oa = [x for x in data if ((x['subregion'] == subregion) & (x['year'] == str(year)) & (x['is_oa'] == 'true'))]
             df_noa = [x for x in data if ((x['subregion'] == subregion) & (x['year'] == str(year)) & (x['is_oa'] == 'false'))]
             if (len(df_oa) > 0) & (len(df_noa) > 0):
@@ -579,7 +575,7 @@ def create_line_compare_cit_subregions(af: AnalyticsFunction):
         if not os.path.exists('report_graphs/line_compare_cit_count_subregions'):
             os.makedirs('report_graphs/line_compare_cit_count_subregions')
         fig.write_image('report_graphs/line_compare_cit_count_subregions/line_compare_cit_count_subregions_for_'
-                        + subregion + '.png', scale=scale, width=width, height=height)
+                        + subregion + '.png', scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
         af.add_existing_file('report_graphs/line_compare_cit_count_subregions/line_compare_cit_count_subregions_for_'
                              + subregion + '.png')
     print('... completed')
@@ -605,8 +601,8 @@ def create_bar_compare_cit_regions(af: AnalyticsFunction):
     for line in open('tempdata/summary_stats_by_region_atleast2cit.json', 'r'):
         data.append(json.loads(line))
     print('... start plot_bar_compare_cit_regions')
-    for region in order_regions:
-        for year in years:
+    for region in ORDER_REGIONS:
+        for year in YEARS:
             df_oa = [x for x in data if ((x['region'] == region) & (x['year'] == str(year)) & (x['is_oa'] == 'true'))]
             df_noa = [x for x in data if ((x['region'] == region) & (x['year'] == str(year)) & (x['is_oa'] == 'false'))]
             df_oa = pd.json_normalize(df_oa[0]['CitingRegions_table_all'])
@@ -618,7 +614,7 @@ def create_bar_compare_cit_regions(af: AnalyticsFunction):
             if not os.path.exists('report_graphs/bar_compare_cit_regions'):
                 os.makedirs('report_graphs/bar_compare_cit_regions')
             fig.write_image('report_graphs/bar_compare_cit_regions/bar_compare_cit_regions_for_'
-                            + region + '_' + str(year) + '.png', scale=scale, width=width, height=height)
+                            + region + '_' + str(year) + '.png', scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
             af.add_existing_file(
                 'report_graphs/bar_compare_cit_regions/bar_compare_cit_regions_for_'
                 + region + '_' + str(year) + '.png')
@@ -645,8 +641,8 @@ def create_bar_compare_cit_subregions(af: AnalyticsFunction):
     for line in open('tempdata/summary_stats_by_subregion_atleast2cit.json', 'r'):
         data.append(json.loads(line))
     print('... start plot_bar_compare_cit_subregions')
-    for subregion in order_subregions:
-        for year in years:
+    for subregion in ORDER_SUBREGIONS:
+        for year in YEARS:
             df_oa = [x for x in data if ((x['subregion'] == subregion) & (x['year'] == str(year)) & (x['is_oa'] == 'true'))]
             df_noa = [x for x in data if ((x['subregion'] == subregion) & (x['year'] == str(year)) & (x['is_oa'] == 'false'))]
             if (len(df_oa) > 0) & (len(df_noa) > 0):
@@ -659,7 +655,7 @@ def create_bar_compare_cit_subregions(af: AnalyticsFunction):
                 if not os.path.exists('report_graphs/bar_compare_cit_subregions'):
                     os.makedirs('report_graphs/bar_compare_cit_subregions')
                 fig.write_image('report_graphs/bar_compare_cit_subregions/bar_compare_cit_subregions_for_'
-                                + subregion + '_' + str(year) + '.png', scale=scale, width=width, height=height)
+                                + subregion + '_' + str(year) + '.png', scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
                 af.add_existing_file(
                     'report_graphs/bar_compare_cit_subregions/bar_compare_cit_subregions_for_'
                     + subregion + '_' + str(year) + '.png')
@@ -686,7 +682,7 @@ def create_figure2a(af: AnalyticsFunction):
     ))
     if not os.path.exists('report_graphs/figure2'):
         os.makedirs('report_graphs/figure2')
-    fig.write_image('report_graphs/figure2/figure2a.png', scale=scale, width=500, height=320)
+    fig.write_image('report_graphs/figure2/figure2a.png', scale=FIG_SCALE, width=500, height=320)
     af.add_existing_file('report_graphs/figure2/figure2a.png')
     print('... completed')
 
@@ -736,7 +732,7 @@ def create_figure2b(af: AnalyticsFunction):
 
     fig.update_layout(title='Fig. 2B: Mean Shannon scores')
     fig.update_layout(xaxis_type='category')
-    fig.update_layout(xaxis4=dict(tickvals=years))
+    fig.update_layout(xaxis4=dict(tickvals=YEARS))
     fig.update_layout(legend=dict(
         orientation="h",
         yanchor="bottom",
@@ -746,7 +742,7 @@ def create_figure2b(af: AnalyticsFunction):
     ))
     if not os.path.exists('report_graphs/figure2'):
         os.makedirs('report_graphs/figure2')
-    fig.write_image('report_graphs/figure2/figure2b.png', scale=scale, width=500, height=700)
+    fig.write_image('report_graphs/figure2/figure2b.png', scale=FIG_SCALE, width=500, height=700)
     af.add_existing_file('report_graphs/figure2/figure2b.png')
     print('... completed')
 
@@ -758,7 +754,7 @@ def create_figure2c(af: AnalyticsFunction):
     df.fillna(value=False, inplace=True)
     method = "Shannon"
     group_labels = ["CLOSED", "OPEN"]
-    fig = make_subplots(rows=5, cols=1, subplot_titles=groups, vertical_spacing=0.05,
+    fig = make_subplots(rows=5, cols=1, subplot_titles=GROUPS, vertical_spacing=0.05,
                         y_title="Probability density", x_title=method + " index score")
 
     x1 = df['CitingInstitutions' + '_' + str(method)].loc[df.s_noa]
@@ -824,7 +820,7 @@ def create_figure2c(af: AnalyticsFunction):
     ))
     if not os.path.exists('report_graphs/figure2'):
         os.makedirs('report_graphs/figure2')
-    fig.write_image('report_graphs/figure2/figure2c.png', scale=scale, width=500, height=1020)
+    fig.write_image('report_graphs/figure2/figure2c.png', scale=FIG_SCALE, width=500, height=1020)
     af.add_existing_file('report_graphs/figure2/figure2c.png')
     print('... completed')
 
@@ -881,7 +877,7 @@ def create_figure3a(af: AnalyticsFunction):
     fig.update_layout(title='Fig. 3A: % change in citations for 2019')
     if not os.path.exists('report_graphs/figure3'):
         os.makedirs('report_graphs/figure3')
-    fig.write_image('report_graphs/figure3/figure3a.png', scale=scale, width=370, height=700)
+    fig.write_image('report_graphs/figure3/figure3a.png', scale=FIG_SCALE, width=370, height=700)
     af.add_existing_file('report_graphs/figure3/figure3a.png')
     print('... completed')
 
@@ -898,7 +894,7 @@ def create_figure3b(af: AnalyticsFunction):
                         vertical_spacing=0.08, y_title="% ratios in average citations")
     # data and plot for subregion 1
     data_figure = pd.DataFrame(columns=['name', 'total_oa', 'total_noa', 'perc_change', 'year'])
-    for year in years:
+    for year in YEARS:
         df_oa = [x for x in data if
                          ((x['subregion'] == subregions_compare[0]) & (x['year'] == str(year)) & (x['is_oa'] == 'true'))]
         df_noa = [x for x in data if
@@ -916,19 +912,19 @@ def create_figure3b(af: AnalyticsFunction):
             data_figure = pd.concat([data_figure, df])
     data_figure1 = data_figure[data_figure.name == subregions_compare[0]]
     fig.add_trace(go.Scatter(x=data_figure1['year'], y=data_figure1['perc_change'],
-                             name=subregions_compare[0], marker_color=color_map_subregions[subregions_compare[0]]),
+                             name=subregions_compare[0], marker_color=COLOR_MAP_SUBREGIONS[subregions_compare[0]]),
                   row=1, col=1)
     data_figure1 = data_figure[data_figure.name == subregions_compare[1]]
     fig.add_trace(go.Scatter(x=data_figure1['year'], y=data_figure1['perc_change'],
-                             name=subregions_compare[1], marker_color=color_map_subregions[subregions_compare[1]]),
+                             name=subregions_compare[1], marker_color=COLOR_MAP_SUBREGIONS[subregions_compare[1]]),
                   row=1, col=1)
     data_figure1 = data_figure[data_figure.name == subregions_compare[2]]
     fig.add_trace(go.Scatter(x=data_figure1['year'], y=data_figure1['perc_change'],
-                             name=subregions_compare[2], marker_color=color_map_subregions[subregions_compare[2]]),
+                             name=subregions_compare[2], marker_color=COLOR_MAP_SUBREGIONS[subregions_compare[2]]),
                   row=1, col=1)
     # data and plot for subregion 2
     data_figure = pd.DataFrame(columns=['name', 'total_oa', 'total_noa', 'perc_change', 'year'])
-    for year in years:
+    for year in YEARS:
         df_oa = [x for x in data if
                  ((x['subregion'] == subregions_compare[1]) & (x['year'] == str(year)) & (x['is_oa'] == 'true'))]
         df_noa = [x for x in data if
@@ -946,22 +942,22 @@ def create_figure3b(af: AnalyticsFunction):
             data_figure = pd.concat([data_figure, df])
     data_figure1 = data_figure[data_figure.name == subregions_compare[0]]
     fig.add_trace(go.Scatter(x=data_figure1['year'], y=data_figure1['perc_change'],
-                             name=subregions_compare[0], marker_color=color_map_subregions[subregions_compare[0]],
+                             name=subregions_compare[0], marker_color=COLOR_MAP_SUBREGIONS[subregions_compare[0]],
                              showlegend=False),
                   row=2, col=1)
     data_figure1 = data_figure[data_figure.name == subregions_compare[1]]
     fig.add_trace(go.Scatter(x=data_figure1['year'], y=data_figure1['perc_change'],
-                             name=subregions_compare[1], marker_color=color_map_subregions[subregions_compare[1]],
+                             name=subregions_compare[1], marker_color=COLOR_MAP_SUBREGIONS[subregions_compare[1]],
                              showlegend=False),
                   row=2, col=1)
     data_figure1 = data_figure[data_figure.name == subregions_compare[2]]
     fig.add_trace(go.Scatter(x=data_figure1['year'], y=data_figure1['perc_change'],
-                             name=subregions_compare[2], marker_color=color_map_subregions[subregions_compare[2]],
+                             name=subregions_compare[2], marker_color=COLOR_MAP_SUBREGIONS[subregions_compare[2]],
                              showlegend=False),
                   row=2, col=1)
     # data and plot for subregion 3
     data_figure = pd.DataFrame(columns=['name', 'total_oa', 'total_noa', 'perc_change', 'year'])
-    for year in years:
+    for year in YEARS:
         df_oa = [x for x in data if
                  ((x['subregion'] == subregions_compare[2]) & (x['year'] == str(year)) & (x['is_oa'] == 'true'))]
         df_noa = [x for x in data if
@@ -979,17 +975,17 @@ def create_figure3b(af: AnalyticsFunction):
             data_figure = pd.concat([data_figure, df])
     data_figure1 = data_figure[data_figure.name == subregions_compare[0]]
     fig.add_trace(go.Scatter(x=data_figure1['year'], y=data_figure1['perc_change'],
-                             name=subregions_compare[0], marker_color=color_map_subregions[subregions_compare[0]],
+                             name=subregions_compare[0], marker_color=COLOR_MAP_SUBREGIONS[subregions_compare[0]],
                              showlegend=False),
                   row=3, col=1)
     data_figure1 = data_figure[data_figure.name == subregions_compare[1]]
     fig.add_trace(go.Scatter(x=data_figure1['year'], y=data_figure1['perc_change'],
-                             name=subregions_compare[1], marker_color=color_map_subregions[subregions_compare[1]],
+                             name=subregions_compare[1], marker_color=COLOR_MAP_SUBREGIONS[subregions_compare[1]],
                              showlegend=False),
                   row=3, col=1)
     data_figure1 = data_figure[data_figure.name == subregions_compare[2]]
     fig.add_trace(go.Scatter(x=data_figure1['year'], y=data_figure1['perc_change'],
-                             name=subregions_compare[2], marker_color=color_map_subregions[subregions_compare[2]],
+                             name=subregions_compare[2], marker_color=COLOR_MAP_SUBREGIONS[subregions_compare[2]],
                              showlegend=False),
                   row=3, col=1)
 
@@ -1006,7 +1002,7 @@ def create_figure3b(af: AnalyticsFunction):
         title='Fig. 3B: % ratios in average citations for all years ')
     if not os.path.exists('report_graphs/figure3'):
         os.makedirs('report_graphs/figure3')
-    fig.write_image('report_graphs/figure3/figure3b.png', scale=scale, width=630, height=700)
+    fig.write_image('report_graphs/figure3/figure3b.png', scale=FIG_SCALE, width=630, height=700)
     af.add_existing_file('report_graphs/figure3/figure3b.png')
     print('... completed')
 

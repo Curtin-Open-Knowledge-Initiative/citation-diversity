@@ -20,19 +20,20 @@
 # from pathlib import Path
 
 # which groupings to run
-groups = ['Institutions', 'Countries', 'Subregions', 'Regions', 'Fields']
+GROUPS_NOT_FIELDS = ['Institutions', 'Countries', 'Subregions', 'Regions']
+GROUPS = GROUPS_NOT_FIELDS + ['Fields']
 
 # which citation diversity metric to run
-metrics = ['GiniSim', 'Shannon']
+METRICS = ['GiniSim', 'Shannon']
 
 # which data year to run, i.e., 2010 to 2019
-years = list(range(2010, 2021))
+YEARS = list(range(2010, 2020))
 
 # measures of central location
-c_locs = ['mean', 'median']
+C_LOCS = ['mean', 'median']
 
 # color mapping when comparing regions
-color_map_regions = {
+COLOR_MAP_REGIONS = {
         "Asia": 'orange',
         "Europe": 'limegreen',
         "Americas": 'brown',
@@ -41,10 +42,10 @@ color_map_regions = {
     }
 
 # display order when comparing regions
-order_regions = ["Asia", "Europe", "Americas", "Oceania", "Africa"]
+ORDER_REGIONS = ["Asia", "Europe", "Americas", "Oceania", "Africa"]
 
 # color mapping when comparing subregions
-color_map_subregions = {
+COLOR_MAP_SUBREGIONS = {
         "Eastern Asia": 'orange',
         "Southern Asia": 'orange',
         "Western Asia": 'orange',
@@ -65,7 +66,7 @@ color_map_subregions = {
     }
 
 # line type mapping when comparing subregions
-dash_map_subregions = {
+DASH_MAP_SUBREGIONS = {
         "Eastern Asia": 'solid',
         "Southern Asia": 'longdash',
         "Western Asia": 'dash',
@@ -86,7 +87,7 @@ dash_map_subregions = {
     }
 
 # display order when comparing subregions
-order_subregions = [
+ORDER_SUBREGIONS = [
         "Eastern Asia", "Southern Asia", "Western Asia", "South-eastern Asia", "Central Asia",
         "Southern Europe", "Eastern Europe", "Western Europe", "Northern Europe",
         "Latin America and the Caribbean", "Northern America", "Australia and New Zealand", "Melanesia",
@@ -100,6 +101,6 @@ MAG_REFERENCES_TABLE = 'academic-observatory.mag.PaperReferences20211206'
 CITATION_DIVERSITY_TABLE = 'coki-scratch-space.karl.citation_diversity_global'
 
 # plotly figure sizes
-scale=1
-width=1000
-height=600
+FIG_SCALE=1
+FIG_WIDTH=1000
+FIG_HEIGHT=600

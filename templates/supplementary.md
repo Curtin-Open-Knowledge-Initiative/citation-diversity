@@ -52,7 +52,7 @@ Green OA garners the highest number of unique citing entities. We do note howeve
 are also likely to be published Green OA. This means these papers potentially gets the benefits of both routes of OA. 
 We also note that flat pattern for the median number of unique regions is the result of low number of possible regions, 
 and a similar pattern is shown for the median number of citing fields due to most citations occurring within-field.
-{% for group in ["Institutions","Countries","Subregions","Regions","Fields"] %}
+{% for group in ["Institutions","Countries","Subregions","Fields", "Regions"] %}
 {% set filename = "bar_uniq_cit_count_{}_mean.png" %} <img 
 src={{ create_bar_uniq_cit_count.files[filename.format(group)].cache_filepath }} width="300" /> {% 
 set filename = "bar_uniq_cit_count_{}_median.png" %} <img 
