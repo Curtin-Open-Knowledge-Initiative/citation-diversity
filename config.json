@@ -10,6 +10,10 @@
   },
   "analytics": [
     [
+      "calculate_citation_diversity",
+      {}
+    ],
+    [
       "create_boxplot_div_by_cit_group",
       {
       }

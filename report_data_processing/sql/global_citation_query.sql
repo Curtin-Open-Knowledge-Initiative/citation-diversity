@@ -13,14 +13,14 @@ WITH
     cited_id AS (
         SELECT
             DISTINCT(mag.PaperId)
-        FROM `academic-observatory.observatory.doi20211002`
+        FROM `{doi_table}`
     ),
     #collect articles' ids in MAG that cite articles from above
     citing_id AS (
         SELECT
             pr.PaperId AS PaperId,
             ARRAY_AGG(cited_id.PaperId) AS CitedId
-        FROM `academic-observatory.mag.PaperReferences20210329` AS pr 
+        FROM `{mag_references_table}` AS pr
             JOIN cited_id on pr.PaperReferenceId = cited_id.PaperId 
         GROUP BY 
             pr.PaperId
@@ -42,8 +42,8 @@ WITH
             mag.CitationCount,
             mag.fields,
             events.events,
-            grids,
-            (SELECT COUNT(X) FROM UNNEST(grids) AS X) as grids_count,
+            # grids,
+            # (SELECT COUNT(X) FROM UNNEST(grids) AS X) as grids_count,
             affiliations.institutions,
             affiliations.countries,
             affiliations.subregions,
@@ -51,7 +51,7 @@ WITH
             affiliations.authors,
             CitedId
         FROM citing_id
-            LEFT JOIN `academic-observatory.observatory.doi20210807` ON PaperId = mag.PaperId
+            LEFT JOIN `{doi_table}` ON PaperId = mag.PaperId
     ),
     #group citing institutions to cited articles
     CitingInstitutions AS (
@@ -126,7 +126,7 @@ WITH
             affiliations.countries,
             affiliations.subregions,
             affiliations.regions,
-        FROM `academic-observatory.observatory.doi20211002` AS outputs
+        FROM `{doi_table}` AS outputs
             LEFT JOIN CitingInstitutions AS C1 ON outputs.mag.PaperId = C1.PaperId  
             LEFT JOIN CitingCountries AS C2 ON outputs.mag.PaperId = C2.PaperId  
             LEFT JOIN CitingSubregions AS C3 ON outputs.mag.PaperId = C3.PaperId 
@@ -149,4 +149,4 @@ SELECT
   (SELECT -SUM((X.count/CitingFields_count_all)*LN(X.count/CitingFields_count_all)) FROM UNNEST(CitingFields_table) AS X) as CitingFields_Shannon
 FROM cited_articles
 WHERE 
-  (PaperId IS NOT NULL) AND (year > 2000) AND (year < 2022)
+  (PaperId IS NOT NULL) AND (year >= {first_year}) AND (year < {last_year})
