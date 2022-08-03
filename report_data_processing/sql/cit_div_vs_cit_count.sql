@@ -1,64 +1,65 @@
-DECLARE y INT64 DEFAULT 2019;
-
 WITH
   data_perc AS (
       SELECT
-        is_oa,
+        year,
         CitationCount,
-        PERCENTILE_CONT(CitingInstitutions_GiniSim,0) OVER(PARTITION BY CitationCount) AS CitingInstitutions_GiniSim_perc0,
-        PERCENTILE_CONT(CitingInstitutions_GiniSim,0.25) OVER(PARTITION BY CitationCount) AS CitingInstitutions_GiniSim_perc25,
-        PERCENTILE_CONT(CitingInstitutions_GiniSim,0.5) OVER(PARTITION BY CitationCount) AS CitingInstitutions_GiniSim_perc50,
-        PERCENTILE_CONT(CitingInstitutions_GiniSim,0.75) OVER(PARTITION BY CitationCount) AS CitingInstitutions_GiniSim_perc75,
-        PERCENTILE_CONT(CitingInstitutions_GiniSim,1) OVER(PARTITION BY CitationCount) AS CitingInstitutions_GiniSim_perc100,
 
-        PERCENTILE_CONT(CitingCountries_GiniSim,0) OVER(PARTITION BY CitationCount) AS CitingCountries_GiniSim_perc0,
-        PERCENTILE_CONT(CitingCountries_GiniSim,0.25) OVER(PARTITION BY CitationCount) AS CitingCountries_GiniSim_perc25,
-        PERCENTILE_CONT(CitingCountries_GiniSim,0.5) OVER(PARTITION BY CitationCount) AS CitingCountries_GiniSim_perc50,
-        PERCENTILE_CONT(CitingCountries_GiniSim,0.75) OVER(PARTITION BY CitationCount) AS CitingCountries_GiniSim_perc75,
-        PERCENTILE_CONT(CitingCountries_GiniSim,1) OVER(PARTITION BY CitationCount) AS CitingCountries_GiniSim_perc100,
+        PERCENTILE_CONT(CitingInstitutions_GiniSim,0) OVER(PARTITION BY CitationCount, year) AS CitingInstitutions_GiniSim_perc0,
+        PERCENTILE_CONT(CitingInstitutions_GiniSim,0.25) OVER(PARTITION BY CitationCount, year) AS CitingInstitutions_GiniSim_perc25,
+        PERCENTILE_CONT(CitingInstitutions_GiniSim,0.5) OVER(PARTITION BY CitationCount, year) AS CitingInstitutions_GiniSim_perc50,
+        PERCENTILE_CONT(CitingInstitutions_GiniSim,0.75) OVER(PARTITION BY CitationCount, year) AS CitingInstitutions_GiniSim_perc75,
+        PERCENTILE_CONT(CitingInstitutions_GiniSim,1) OVER(PARTITION BY CitationCount, year) AS CitingInstitutions_GiniSim_perc100,
 
-        PERCENTILE_CONT(CitingSubregions_GiniSim,0) OVER(PARTITION BY CitationCount) AS CitingSubregions_GiniSim_perc0,
-        PERCENTILE_CONT(CitingSubregions_GiniSim,0.25) OVER(PARTITION BY CitationCount) AS CitingSubregions_GiniSim_perc25,
-        PERCENTILE_CONT(CitingSubregions_GiniSim,0.5) OVER(PARTITION BY CitationCount) AS CitingSubregions_GiniSim_perc50,
-        PERCENTILE_CONT(CitingSubregions_GiniSim,0.75) OVER(PARTITION BY CitationCount) AS CitingSubregions_GiniSim_perc75,
-        PERCENTILE_CONT(CitingSubregions_GiniSim,1) OVER(PARTITION BY CitationCount) AS CitingSubregions_GiniSim_perc100,
+        PERCENTILE_CONT(CitingCountries_GiniSim,0) OVER(PARTITION BY CitationCount, year) AS CitingCountries_GiniSim_perc0,
+        PERCENTILE_CONT(CitingCountries_GiniSim,0.25) OVER(PARTITION BY CitationCount, year) AS CitingCountries_GiniSim_perc25,
+        PERCENTILE_CONT(CitingCountries_GiniSim,0.5) OVER(PARTITION BY CitationCount, year) AS CitingCountries_GiniSim_perc50,
+        PERCENTILE_CONT(CitingCountries_GiniSim,0.75) OVER(PARTITION BY CitationCount, year) AS CitingCountries_GiniSim_perc75,
+        PERCENTILE_CONT(CitingCountries_GiniSim,1) OVER(PARTITION BY CitationCount, year) AS CitingCountries_GiniSim_perc100,
 
-        PERCENTILE_CONT(CitingRegions_GiniSim,0) OVER(PARTITION BY CitationCount) AS CitingRegions_GiniSim_perc0,
-        PERCENTILE_CONT(CitingRegions_GiniSim,0.25) OVER(PARTITION BY CitationCount) AS CitingRegions_GiniSim_perc25,
-        PERCENTILE_CONT(CitingRegions_GiniSim,0.5) OVER(PARTITION BY CitationCount) AS CitingRegions_GiniSim_perc50,
-        PERCENTILE_CONT(CitingRegions_GiniSim,0.75) OVER(PARTITION BY CitationCount) AS CitingRegions_GiniSim_perc75,
-        PERCENTILE_CONT(CitingRegions_GiniSim,1) OVER(PARTITION BY CitationCount) AS CitingRegions_GiniSim_perc100,
+        PERCENTILE_CONT(CitingSubregions_GiniSim,0) OVER(PARTITION BY CitationCount, year) AS CitingSubregions_GiniSim_perc0,
+        PERCENTILE_CONT(CitingSubregions_GiniSim,0.25) OVER(PARTITION BY CitationCount, year) AS CitingSubregions_GiniSim_perc25,
+        PERCENTILE_CONT(CitingSubregions_GiniSim,0.5) OVER(PARTITION BY CitationCount, year) AS CitingSubregions_GiniSim_perc50,
+        PERCENTILE_CONT(CitingSubregions_GiniSim,0.75) OVER(PARTITION BY CitationCount, year) AS CitingSubregions_GiniSim_perc75,
+        PERCENTILE_CONT(CitingSubregions_GiniSim,1) OVER(PARTITION BY CitationCount, year) AS CitingSubregions_GiniSim_perc100,
 
-        PERCENTILE_CONT(CitingInstitutions_Shannon,0) OVER(PARTITION BY CitationCount) AS CitingInstitutions_Shannon_perc0,
-        PERCENTILE_CONT(CitingInstitutions_Shannon,0.25) OVER(PARTITION BY CitationCount) AS CitingInstitutions_Shannon_perc25,
-        PERCENTILE_CONT(CitingInstitutions_Shannon,0.5) OVER(PARTITION BY CitationCount) AS CitingInstitutions_Shannon_perc50,
-        PERCENTILE_CONT(CitingInstitutions_Shannon,0.75) OVER(PARTITION BY CitationCount) AS CitingInstitutions_Shannon_perc75,
-        PERCENTILE_CONT(CitingInstitutions_Shannon,1) OVER(PARTITION BY CitationCount) AS CitingInstitutions_Shannon_perc100,
+        PERCENTILE_CONT(CitingRegions_GiniSim,0) OVER(PARTITION BY CitationCount, year) AS CitingRegions_GiniSim_perc0,
+        PERCENTILE_CONT(CitingRegions_GiniSim,0.25) OVER(PARTITION BY CitationCount, year) AS CitingRegions_GiniSim_perc25,
+        PERCENTILE_CONT(CitingRegions_GiniSim,0.5) OVER(PARTITION BY CitationCount, year) AS CitingRegions_GiniSim_perc50,
+        PERCENTILE_CONT(CitingRegions_GiniSim,0.75) OVER(PARTITION BY CitationCount, year) AS CitingRegions_GiniSim_perc75,
+        PERCENTILE_CONT(CitingRegions_GiniSim,1) OVER(PARTITION BY CitationCount, year) AS CitingRegions_GiniSim_perc100,
 
-        PERCENTILE_CONT(CitingCountries_Shannon,0) OVER(PARTITION BY CitationCount) AS CitingCountries_Shannon_perc0,
-        PERCENTILE_CONT(CitingCountries_Shannon,0.25) OVER(PARTITION BY CitationCount) AS CitingCountries_Shannon_perc25,
-        PERCENTILE_CONT(CitingCountries_Shannon,0.5) OVER(PARTITION BY CitationCount) AS CitingCountries_Shannon_perc50,
-        PERCENTILE_CONT(CitingCountries_Shannon,0.75) OVER(PARTITION BY CitationCount) AS CitingCountries_Shannon_perc75,
-        PERCENTILE_CONT(CitingCountries_Shannon,1) OVER(PARTITION BY CitationCount) AS CitingCountries_Shannon_perc100,
+        PERCENTILE_CONT(CitingInstitutions_Shannon,0) OVER(PARTITION BY CitationCount, year) AS CitingInstitutions_Shannon_perc0,
+        PERCENTILE_CONT(CitingInstitutions_Shannon,0.25) OVER(PARTITION BY CitationCount, year) AS CitingInstitutions_Shannon_perc25,
+        PERCENTILE_CONT(CitingInstitutions_Shannon,0.5) OVER(PARTITION BY CitationCount, year) AS CitingInstitutions_Shannon_perc50,
+        PERCENTILE_CONT(CitingInstitutions_Shannon,0.75) OVER(PARTITION BY CitationCount, year) AS CitingInstitutions_Shannon_perc75,
+        PERCENTILE_CONT(CitingInstitutions_Shannon,1) OVER(PARTITION BY CitationCount, year) AS CitingInstitutions_Shannon_perc100,
 
-        PERCENTILE_CONT(CitingSubregions_Shannon,0) OVER(PARTITION BY CitationCount) AS CitingSubregions_Shannon_perc0,
-        PERCENTILE_CONT(CitingSubregions_Shannon,0.25) OVER(PARTITION BY CitationCount) AS CitingSubregions_Shannon_perc25,
-        PERCENTILE_CONT(CitingSubregions_Shannon,0.5) OVER(PARTITION BY CitationCount) AS CitingSubregions_Shannon_perc50,
-        PERCENTILE_CONT(CitingSubregions_Shannon,0.75) OVER(PARTITION BY CitationCount) AS CitingSubregions_Shannon_perc75,
-        PERCENTILE_CONT(CitingSubregions_Shannon,1) OVER(PARTITION BY CitationCount) AS CitingSubregions_Shannon_perc100,
+        PERCENTILE_CONT(CitingCountries_Shannon,0) OVER(PARTITION BY CitationCount, year) AS CitingCountries_Shannon_perc0,
+        PERCENTILE_CONT(CitingCountries_Shannon,0.25) OVER(PARTITION BY CitationCount, year) AS CitingCountries_Shannon_perc25,
+        PERCENTILE_CONT(CitingCountries_Shannon,0.5) OVER(PARTITION BY CitationCount, year) AS CitingCountries_Shannon_perc50,
+        PERCENTILE_CONT(CitingCountries_Shannon,0.75) OVER(PARTITION BY CitationCount, year) AS CitingCountries_Shannon_perc75,
+        PERCENTILE_CONT(CitingCountries_Shannon,1) OVER(PARTITION BY CitationCount, year) AS CitingCountries_Shannon_perc100,
 
-        PERCENTILE_CONT(CitingRegions_Shannon,0) OVER(PARTITION BY CitationCount) AS CitingRegions_Shannon_perc0,
-        PERCENTILE_CONT(CitingRegions_Shannon,0.25) OVER(PARTITION BY CitationCount) AS CitingRegions_Shannon_perc25,
-        PERCENTILE_CONT(CitingRegions_Shannon,0.5) OVER(PARTITION BY CitationCount) AS CitingRegions_Shannon_perc50,
-        PERCENTILE_CONT(CitingRegions_Shannon,0.75) OVER(PARTITION BY CitationCount) AS CitingRegions_Shannon_perc75,
-        PERCENTILE_CONT(CitingRegions_Shannon,1) OVER(PARTITION BY CitationCount) AS CitingRegions_Shannon_perc100
+        PERCENTILE_CONT(CitingSubregions_Shannon,0) OVER(PARTITION BY CitationCount, year) AS CitingSubregions_Shannon_perc0,
+        PERCENTILE_CONT(CitingSubregions_Shannon,0.25) OVER(PARTITION BY CitationCount, year) AS CitingSubregions_Shannon_perc25,
+        PERCENTILE_CONT(CitingSubregions_Shannon,0.5) OVER(PARTITION BY CitationCount, year) AS CitingSubregions_Shannon_perc50,
+        PERCENTILE_CONT(CitingSubregions_Shannon,0.75) OVER(PARTITION BY CitationCount, year) AS CitingSubregions_Shannon_perc75,
+        PERCENTILE_CONT(CitingSubregions_Shannon,1) OVER(PARTITION BY CitationCount, year) AS CitingSubregions_Shannon_perc100,
+
+        PERCENTILE_CONT(CitingRegions_Shannon,0) OVER(PARTITION BY CitationCount, year) AS CitingRegions_Shannon_perc0,
+        PERCENTILE_CONT(CitingRegions_Shannon,0.25) OVER(PARTITION BY CitationCount, year) AS CitingRegions_Shannon_perc25,
+        PERCENTILE_CONT(CitingRegions_Shannon,0.5) OVER(PARTITION BY CitationCount, year) AS CitingRegions_Shannon_perc50,
+        PERCENTILE_CONT(CitingRegions_Shannon,0.75) OVER(PARTITION BY CitationCount, year) AS CitingRegions_Shannon_perc75,
+        PERCENTILE_CONT(CitingRegions_Shannon,1) OVER(PARTITION BY CitationCount, year) AS CitingRegions_Shannon_perc100
       FROM
         `coki-scratch-space.citation_diversity_analysis.citation_diversity_global`
       WHERE
-        (CitationCount >= 2) AND (year=y) AND (is_oa IS NOT NULL)
+        (CitationCount >= 2) AND (is_oa IS NOT NULL)
   )
 SELECT
+  year,
   CitationCount,
+
   ANY_VALUE(CitingInstitutions_GiniSim_perc0) AS CitingInstitutions_GiniSim_perc0,
   ANY_VALUE(CitingInstitutions_GiniSim_perc25) AS CitingInstitutions_GiniSim_perc25,
   ANY_VALUE(CitingInstitutions_GiniSim_perc50) AS CitingInstitutions_GiniSim_perc50,
@@ -109,6 +110,5 @@ SELECT
 
 FROM
   data_perc
-GROUP BY CitationCount
-ORDER BY CitationCount
-
+GROUP BY year, CitationCount
+ORDER BY year, CitationCount

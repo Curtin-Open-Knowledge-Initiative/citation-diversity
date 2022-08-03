@@ -302,12 +302,14 @@ def create_line_div_vs_cit_count(af: AnalyticsFunction):
     # create plots for all years, groupings, and diversity metrics
     # Fields exclude due to small numbers
     print('... start line_div_vs_cit_count')
+
+    df_ = pd.read_csv('tempdata/cit_div_vs_cit_count.csv')
     for year in YEARS:
-        df_ = pd.read_csv('tempdata/cit_div_vs_cit_count_' + str(year) + '.csv')
-        df_ = df_.sort_values('CitationCount')
+        df_year = df_[df_.year == year]
+        df_year = df_year.sort_values('CitationCount')
         for group in GROUPS_NOT_FIELDS:
             for metric in METRICS:
-                fig = plot_line_div_vs_cit_count(df=df_, method=metric, group=group, year=year)
+                fig = plot_line_div_vs_cit_count(df=df_year, method=metric, group=group, year=year)
                 if not os.path.exists('report_graphs/line_div_vs_cit_count'):
                     os.makedirs('report_graphs/line_div_vs_cit_count')
                 filepath = f'report_graphs/line_div_vs_cit_count/line_div_vs_cit_count_{metric}_{group}_{str(year)}.png'
