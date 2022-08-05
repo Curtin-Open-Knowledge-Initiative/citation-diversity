@@ -1,3 +1,22 @@
+/*
+## Summary
+
+Creates the main DOI level citation diversity table to be deployed to BigQuery
+
+## Description
+
+## Contacts
+karl.huang@curtin.edu.au
+
+## Requires
+table bigquery://{doi_table}
+table bigquery://{mag_references_table}
+
+## Creates
+table bigquery://{citation_diversity_table}
+
+*/
+
 #function for creating frequency table from a list of names
 CREATE TEMP FUNCTION GetNamesAndCounts(elements ARRAY<STRING>) AS (
   ARRAY(
