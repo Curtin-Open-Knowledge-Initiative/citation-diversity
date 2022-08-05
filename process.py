@@ -30,7 +30,7 @@ from typing import Optional, Callable, Union
 
 from google.cloud import bigquery
 
-from observatory.reports import report_utils
+from observatory.reports import report_utils, provndoc_utils
 from precipy.analytics_function import AnalyticsFunction
 from report_data_processing.parameters import *
 from report_data_processing.sql import *
@@ -46,21 +46,22 @@ PROJECT_ID = 'coki-scratch-space'
 TEMPDIR = Path('tempdir')
 
 
+def provenance_n_documentation(af: AnalyticsFunction,
+                               rerun: bool = RERUN):
+
+    provndoc_utils.process_sql_to_queries(af,rerun, SQL_TEMPLATES_DIRECTORY, SQL_PROCESSED_DIRECTORY)
+    provndoc_utils.build_sql_dag(af, rerun, SQL_PROCESSED_DIRECTORY)
+
+
 def calculate_citation_diversity(af: AnalyticsFunction,
-                                 rerun: bool = False,
+                                 rerun: bool = RERUN,
                                  verbose: bool = True):
     """
-    Run global_citations_query.sql to generate article level citation diversity data
+    Run global_citations_query.sql_templates to generate article level citation diversity data
     """
 
     query = load_sql_to_string('global_citation_query.sql',
-                               parameters=dict(
-                                   first_year=YEARS[0],
-                                   last_year=YEARS[-1],
-                                   doi_table=DOI_TABLE,
-                                   mag_references_table=MAG_REFERENCES_TABLE
-                               ),
-                               directory="report_data_processing/sql")
+                               directory=SQL_PROCESSED_DIRECTORY)
 
     if not report_utils.bigquery_rerun(af, rerun, verbose):
         print(f"""Query is:            
@@ -90,9 +91,9 @@ def get_data(af: AnalyticsFunction):
     print("Generating the Citation Diversity Table")
 
     for year in YEAR_RANGE:
-        query = load_sql_to_string('cit_div_vs_cit_count.sql',
+        query = load_sql_to_string('cit_div_vs_cit_count.sql_templates',
                                    parameters=dict(year=year),
-                                   directory='report_data_processing/sql')
+                                   directory='report_data_processing/sql_templates')
 
         # Start the query, passing in the extra configuration.
         query_job = client.query(global_citation_query, job_config=job_config)  # Make an API request.
@@ -101,7 +102,7 @@ def get_data(af: AnalyticsFunction):
     print("...completed")
 
 
-def pull_data(af:AnalyticsFunction):
+def pull_data(af: AnalyticsFunction):
     """
     Pull data down for analysis
     """
@@ -117,16 +118,16 @@ def plot_boxplot_div_by_cit_group(df, method='GiniSim', group='Countries', year=
     # input variables method is either GiniSim or Shannon, group is one of Institutions, Countries, Subregions,
     # or Regions or Fields
     fig = go.Figure()
-    fig.add_trace(go.Box(y=df['Citing'+str(group)+'_'+str(method)].loc[df.is_oa],
+    fig.add_trace(go.Box(y=df['Citing' + str(group) + '_' + str(method)].loc[df.is_oa],
                          x=df['cit_group'].loc[df.is_oa], name='OA'))
-    fig.add_trace(go.Box(y=df['Citing'+str(group)+'_'+str(method)].loc[~df.is_oa],
+    fig.add_trace(go.Box(y=df['Citing' + str(group) + '_' + str(method)].loc[~df.is_oa],
                          x=df['cit_group'].loc[~df.is_oa], name='not OA'))
-    fig.update_layout(title='Figure: Box plots of '+str(method)+' index on citing '+str(group)
-                            +' by citation groups for '+ str(year) +
+    fig.update_layout(title='Figure: Box plots of ' + str(method) + ' index on citing ' + str(group)
+                            + ' by citation groups for ' + str(year) +
                             '<br><sup>(A total of 56000 papers. '
                             'Each group consists of a sample 2000 OA papers and 2000 non-OA papers)</sup>',
                       xaxis_title="Groups by citation count",
-                      yaxis_title=str(method)+" index",
+                      yaxis_title=str(method) + " index",
                       boxmode='group')
     return fig
 
@@ -137,8 +138,8 @@ def create_boxplot_div_by_cit_group(af: AnalyticsFunction):
     for year in YEARS:
         df_ = pd.read_csv('tempdata/samples_by_cit_group_and_oa_' + str(year) + '.csv', dtype={'cit_group': str})
         df_['cit_group'] = pd.Categorical(df_['cit_group'], ["2", "3", "4", "5-6", "7-9", "10-11", "12-14",
-                                                           "15-16", "17-19", "20-23", "24-29", "30-42",
-                                                           "43-59", ">=60"])
+                                                             "15-16", "17-19", "20-23", "24-29", "30-42",
+                                                             "43-59", ">=60"])
         df_ = df_.sort_values('cit_group')
         for group in GROUPS:
             for metric in METRICS:
@@ -146,11 +147,11 @@ def create_boxplot_div_by_cit_group(af: AnalyticsFunction):
                 if not os.path.exists('report_graphs/box_div_by_cit_group'):
                     os.makedirs('report_graphs/box_div_by_cit_group')
                 fig.write_image('report_graphs/box_div_by_cit_group/box_div_by_cit_group_'
-                                + metric +'_' + group +'_' + str(year) +'.png', scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
+                                + metric + '_' + group + '_' + str(year) + '.png', scale=FIG_SCALE, width=FIG_WIDTH,
+                                height=FIG_HEIGHT)
                 af.add_existing_file('report_graphs/box_div_by_cit_group/box_div_by_cit_group_'
-                                +metric+'_'+group+'_'+str(year)+'.png')
+                                     + metric + '_' + group + '_' + str(year) + '.png')
     print('... completed')
-
 
 
 def plot_boxplot_div_by_oa_group(df, method='GiniSim', group='Countries', year=2019):
@@ -159,18 +160,19 @@ def plot_boxplot_div_by_oa_group(df, method='GiniSim', group='Countries', year=2
     fig = go.Figure()
     fig.add_trace(go.Box(y=df['Citing' + str(group) + '_' + str(method)].loc[df.s_noa], name='not OA',
                          marker_color='indianred'))
-    fig.add_trace(go.Box(y=df['Citing'+str(group)+ '_' + str(method)].loc[df.s_oa], name='OA',
+    fig.add_trace(go.Box(y=df['Citing' + str(group) + '_' + str(method)].loc[df.s_oa], name='OA',
                          marker_color='royalblue'))
     fig.add_trace(go.Box(y=df['Citing' + str(group) + '_' + str(method)].loc[df.s_gold], name='gold OA',
                          marker_color='darkgoldenrod'))
     fig.add_trace(go.Box(y=df['Citing' + str(group) + '_' + str(method)].loc[df.s_green], name='green OA',
                          marker_color='darkgreen'))
-    fig.update_layout(title='Figure: Box plots of '+str(method)+' index on citing '+str(group)+' by OA status for '
-                            + str(year) +
-                            '<br><sup>(samples of 10000 non-OA, 10000 OA, '
-                            '10000 gold and 10000 green papers.)</sup>',
-                      xaxis_title="OA status",
-                      yaxis_title=str(method)+" index")
+    fig.update_layout(
+        title='Figure: Box plots of ' + str(method) + ' index on citing ' + str(group) + ' by OA status for '
+              + str(year) +
+              '<br><sup>(samples of 10000 non-OA, 10000 OA, '
+              '10000 gold and 10000 green papers.)</sup>',
+        xaxis_title="OA status",
+        yaxis_title=str(method) + " index")
     return fig
 
 
@@ -186,11 +188,11 @@ def create_boxplot_div_by_oa_group(af: AnalyticsFunction):
                 if not os.path.exists('report_graphs/box_div_by_oa_group'):
                     os.makedirs('report_graphs/box_div_by_oa_group')
                 fig.write_image('report_graphs/box_div_by_oa_group/box_div_by_oa_group_'
-                                + metric +'_' + group +'_' + str(year) +'.png', scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
+                                + metric + '_' + group + '_' + str(year) + '.png', scale=FIG_SCALE, width=FIG_WIDTH,
+                                height=FIG_HEIGHT)
                 af.add_existing_file('report_graphs/box_div_by_oa_group/box_div_by_oa_group_'
-                                +metric+'_'+group+'_'+str(year)+'.png')
+                                     + metric + '_' + group + '_' + str(year) + '.png')
     print('... completed')
-
 
 
 def plot_boxplot_uniq_cit_by_cit_group(df, group='Countries', year=2019):
@@ -208,7 +210,7 @@ def plot_boxplot_uniq_cit_by_cit_group(df, group='Countries', year=2019):
                             '<br><sup>(A total of 56000 papers. '
                             'Each group consists of a sample 2000 OA papers and 2000 non-OA papers)</sup>',
                       xaxis_title="Groups by citation count",
-                      yaxis_title="number of unique citing "+str(group),
+                      yaxis_title="number of unique citing " + str(group),
                       boxmode='group')
     return fig
 
@@ -219,17 +221,17 @@ def create_boxplot_uniq_cit_by_cit_group(af: AnalyticsFunction):
     for year in YEARS:
         df_ = pd.read_csv('tempdata/samples_by_cit_group_and_oa_' + str(year) + '.csv', dtype={'cit_group': str})
         df_['cit_group'] = pd.Categorical(df_['cit_group'], ["2", "3", "4", "5-6", "7-9", "10-11", "12-14",
-                                                           "15-16", "17-19", "20-23", "24-29", "30-42",
-                                                           "43-59", ">=60"])
+                                                             "15-16", "17-19", "20-23", "24-29", "30-42",
+                                                             "43-59", ">=60"])
         df_ = df_.sort_values('cit_group')
         for group in GROUPS:
-                fig = plot_boxplot_uniq_cit_by_cit_group(df=df_, group=group, year=year)
-                if not os.path.exists('report_graphs/box_uniq_cit_by_cit_group'):
-                    os.makedirs('report_graphs/box_uniq_cit_by_cit_group')
-                fig.write_image('report_graphs/box_uniq_cit_by_cit_group/box_uniq_cit_by_cit_group_'
-                                + group +'_' + str(year) +'.png', scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
-                af.add_existing_file('report_graphs/box_uniq_cit_by_cit_group/box_uniq_cit_by_cit_group_'
-                                +group+'_'+str(year)+'.png')
+            fig = plot_boxplot_uniq_cit_by_cit_group(df=df_, group=group, year=year)
+            if not os.path.exists('report_graphs/box_uniq_cit_by_cit_group'):
+                os.makedirs('report_graphs/box_uniq_cit_by_cit_group')
+            fig.write_image('report_graphs/box_uniq_cit_by_cit_group/box_uniq_cit_by_cit_group_'
+                            + group + '_' + str(year) + '.png', scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
+            af.add_existing_file('report_graphs/box_uniq_cit_by_cit_group/box_uniq_cit_by_cit_group_'
+                                 + group + '_' + str(year) + '.png')
     print('... completed')
 
 
@@ -239,18 +241,18 @@ def plot_boxplot_uniq_cit_by_oa_group(df, group='Countries', year=2019):
     fig = go.Figure()
     fig.add_trace(go.Box(y=df['Citing' + str(group) + '_count_uniq'].loc[df.s_noa], name='not OA',
                          marker_color='indianred'))
-    fig.add_trace(go.Box(y=df['Citing'+str(group)+ '_count_uniq'].loc[df.s_oa], name='OA',
+    fig.add_trace(go.Box(y=df['Citing' + str(group) + '_count_uniq'].loc[df.s_oa], name='OA',
                          marker_color='royalblue'))
     fig.add_trace(go.Box(y=df['Citing' + str(group) + '_count_uniq'].loc[df.s_gold], name='gold OA',
                          marker_color='darkgoldenrod'))
     fig.add_trace(go.Box(y=df['Citing' + str(group) + '_count_uniq'].loc[df.s_green], name='green OA',
                          marker_color='darkgreen'))
-    fig.update_layout(title='Figure: Box plots of number of unique citing '+str(group)+' by OA status for '
+    fig.update_layout(title='Figure: Box plots of number of unique citing ' + str(group) + ' by OA status for '
                             + str(year) +
                             '<br><sup>(samples of 10000 non-OA, 10000 OA, '
                             '10000 gold and 10000 green papers.)</sup>',
                       xaxis_title="OA status",
-                      yaxis_title="number of unique citing "+str(group))
+                      yaxis_title="number of unique citing " + str(group))
     return fig
 
 
@@ -261,13 +263,13 @@ def create_boxplot_uniq_cit_by_oa_group(af: AnalyticsFunction):
         df_ = pd.read_csv('tempdata/samples_by_oa_' + str(year) + '.csv')
         df_.fillna(value=False, inplace=True)
         for group in GROUPS:
-                fig = plot_boxplot_uniq_cit_by_oa_group(df=df_, group=group, year=year)
-                if not os.path.exists('report_graphs/box_uniq_cit_by_oa_group'):
-                    os.makedirs('report_graphs/box_uniq_cit_by_oa_group')
-                fig.write_image('report_graphs/box_uniq_cit_by_oa_group/box_uniq_cit_by_oa_group_'
-                                + group +'_' + str(year) +'.png', scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
-                af.add_existing_file('report_graphs/box_uniq_cit_by_oa_group/box_uniq_cit_by_oa_group_'
-                                +group+'_'+str(year)+'.png')
+            fig = plot_boxplot_uniq_cit_by_oa_group(df=df_, group=group, year=year)
+            if not os.path.exists('report_graphs/box_uniq_cit_by_oa_group'):
+                os.makedirs('report_graphs/box_uniq_cit_by_oa_group')
+            fig.write_image('report_graphs/box_uniq_cit_by_oa_group/box_uniq_cit_by_oa_group_'
+                            + group + '_' + str(year) + '.png', scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
+            af.add_existing_file('report_graphs/box_uniq_cit_by_oa_group/box_uniq_cit_by_oa_group_'
+                                 + group + '_' + str(year) + '.png')
     print('... completed')
 
 
@@ -276,24 +278,24 @@ def plot_line_div_vs_cit_count(df, method='GiniSim', group='Countries', year=201
     # or Regions or Fields
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=df['CitationCount'],
-                             y=df['Citing'+str(group)+'_'+str(method)+'_perc0'],
+                             y=df['Citing' + str(group) + '_' + str(method) + '_perc0'],
                              name='min', line=dict(color='firebrick', dash='dot')))
     fig.add_trace(go.Scatter(x=df['CitationCount'],
-                             y=df['Citing'+str(group)+'_'+str(method)+'_perc25'],
+                             y=df['Citing' + str(group) + '_' + str(method) + '_perc25'],
                              name='1stQ', line=dict(color='firebrick')))
     fig.add_trace(go.Scatter(x=df['CitationCount'],
-                             y=df['Citing'+str(group)+'_'+str(method)+'_perc75'],
+                             y=df['Citing' + str(group) + '_' + str(method) + '_perc75'],
                              name='3rdQ', line=dict(color='royalblue')))
     fig.add_trace(go.Scatter(x=df['CitationCount'],
-                             y=df['Citing'+str(group)+'_'+str(method)+'_perc100'],
+                             y=df['Citing' + str(group) + '_' + str(method) + '_perc100'],
                              name='max', line=dict(color='royalblue', dash='dot')))
     fig.add_trace(go.Scatter(x=df['CitationCount'],
-                             y=df['Citing'+str(group)+'_'+str(method)+'_perc50'],
+                             y=df['Citing' + str(group) + '_' + str(method) + '_perc50'],
                              name='median', line=dict(color='black', width=3)))
-    fig.update_layout(title='Figure: Citation count versus '+str(method)+' index of citing '+str(group)+' for '
-                            +str(year),
+    fig.update_layout(title='Figure: Citation count versus ' + str(method) + ' index of citing ' + str(group) + ' for '
+                            + str(year),
                       xaxis_title="Citation count",
-                      yaxis_title=str(method)+" index")
+                      yaxis_title=str(method) + " index")
     fig.update_layout(xaxis_type='category')
     return fig
 
@@ -326,7 +328,7 @@ def plot_bar_div_vs_year(df, method='GiniSim', group='Countries', c_loc='mean'):
                          y=df['noa_' + str(group) + '_' + str(method) + '_' + str(c_loc)],
                          name='not OA', marker_color='indianred'))
     fig.add_trace(go.Bar(x=df['year'],
-                         y=df['oa_'+str(group)+'_'+str(method)+'_'+str(c_loc)],
+                         y=df['oa_' + str(group) + '_' + str(method) + '_' + str(c_loc)],
                          name='OA', marker_color='royalblue'))
     fig.add_trace(go.Bar(x=df['year'],
                          y=df['gold_' + str(group) + '_' + str(method) + '_' + str(c_loc)],
@@ -334,9 +336,9 @@ def plot_bar_div_vs_year(df, method='GiniSim', group='Countries', c_loc='mean'):
     fig.add_trace(go.Bar(x=df['year'],
                          y=df['green_' + str(group) + '_' + str(method) + '_' + str(c_loc)],
                          name='green OA', marker_color='darkgreen'))
-    fig.update_layout(title='Figure: The ' + str(c_loc) + ' ' + str(method)+' index of citing '+str(group)+' ',
+    fig.update_layout(title='Figure: The ' + str(c_loc) + ' ' + str(method) + ' index of citing ' + str(group) + ' ',
                       xaxis_title="year",
-                      yaxis_title=str(method)+" index")
+                      yaxis_title=str(method) + " index")
     fig.update_layout(xaxis_type='category')
     return fig
 
@@ -373,7 +375,8 @@ def create_bar_doi_count_combined(af: AnalyticsFunction):
     fig.update_layout(xaxis_type='category')
     if not os.path.exists('report_graphs/bar_doi_count'):
         os.makedirs('report_graphs/bar_doi_count')
-    fig.write_image('report_graphs/bar_doi_count/bar_doi_count_combined.png', scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
+    fig.write_image('report_graphs/bar_doi_count/bar_doi_count_combined.png', scale=FIG_SCALE, width=FIG_WIDTH,
+                    height=FIG_HEIGHT)
     af.add_existing_file('report_graphs/bar_doi_count/bar_doi_count_combined.png')
     print('... completed')
 
@@ -396,7 +399,8 @@ def create_bar_doi_count_by_oa(af: AnalyticsFunction):
     fig.update_layout(xaxis_type='category')
     if not os.path.exists('report_graphs/bar_doi_count'):
         os.makedirs('report_graphs/bar_doi_count')
-    fig.write_image('report_graphs/bar_doi_count/bar_doi_count_by_oa.png', scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
+    fig.write_image('report_graphs/bar_doi_count/bar_doi_count_by_oa.png', scale=FIG_SCALE, width=FIG_WIDTH,
+                    height=FIG_HEIGHT)
     af.add_existing_file('report_graphs/bar_doi_count/bar_doi_count_by_oa.png')
     print('... completed')
 
@@ -406,20 +410,20 @@ def plot_bar_cit_count_by_oa(df, c_loc='mean'):
     # c_loc = 'mean' or 'median'
     fig = go.Figure()
     fig.add_trace(go.Bar(x=df['year'],
-                         y=df['noa_cc_'+ str(c_loc)],
+                         y=df['noa_cc_' + str(c_loc)],
                          name='not OA', marker_color='indianred'))
     fig.add_trace(go.Bar(x=df['year'],
-                         y=df['oa_cc_'+str(c_loc)],
+                         y=df['oa_cc_' + str(c_loc)],
                          name='OA', marker_color='royalblue'))
     fig.add_trace(go.Bar(x=df['year'],
-                         y=df['gold_cc_'+ str(c_loc)],
+                         y=df['gold_cc_' + str(c_loc)],
                          name='gold OA', marker_color='darkgoldenrod'))
     fig.add_trace(go.Bar(x=df['year'],
-                         y=df['green_cc_'+ str(c_loc)],
+                         y=df['green_cc_' + str(c_loc)],
                          name='green OA', marker_color='darkgreen'))
     fig.update_layout(title='Figure: The ' + str(c_loc) + ' citation count per OA type',
                       xaxis_title="year",
-                      yaxis_title=str(c_loc)+" citation count")
+                      yaxis_title=str(c_loc) + " citation count")
     fig.update_layout(xaxis_type='category')
     return fig
 
@@ -439,7 +443,6 @@ def create_bar_cit_count_by_oa(af: AnalyticsFunction):
     print('... completed')
 
 
-
 def plot_bar_uniq_cit_count(df, group='Countries', c_loc='mean'):
     # input variables:
     # group = Institutions, Countries, Subregions, or Regions or Fields;
@@ -450,7 +453,7 @@ def plot_bar_uniq_cit_count(df, group='Countries', c_loc='mean'):
                          y=df['noa_' + str(group) + '_uniq_' + str(c_loc)],
                          name='not OA', marker_color='indianred'))
     fig.add_trace(go.Bar(x=df['year'],
-                         y=df['oa_'+str(group)+'_uniq_'+str(c_loc)],
+                         y=df['oa_' + str(group) + '_uniq_' + str(c_loc)],
                          name='OA', marker_color='royalblue'))
     fig.add_trace(go.Bar(x=df['year'],
                          y=df['gold_' + str(group) + '_uniq_' + str(c_loc)],
@@ -458,9 +461,9 @@ def plot_bar_uniq_cit_count(df, group='Countries', c_loc='mean'):
     fig.add_trace(go.Bar(x=df['year'],
                          y=df['green_' + str(group) + '_uniq_' + str(c_loc)],
                          name='green OA', marker_color='darkgreen'))
-    fig.update_layout(title='Figure: The '+ str(c_loc) + ' number of unique citing '+str(group),
+    fig.update_layout(title='Figure: The ' + str(c_loc) + ' number of unique citing ' + str(group),
                       xaxis_title="year",
-                      yaxis_title=str(c_loc)+" unique citing "+str(group))
+                      yaxis_title=str(c_loc) + " unique citing " + str(group))
     fig.update_layout(xaxis_type='category')
     return fig
 
@@ -516,7 +519,7 @@ def create_line_compare_cit_regions(af: AnalyticsFunction):
             df_noa = pd.json_normalize(df_noa[0]['CitingRegions_table_all'])
             df = df_oa.merge(df_noa, on=['name'], suffixes=('_oa', '_noa'))
             df = df.astype({"total_oa": int, "total_noa": int})
-            df['perc_change'] = (df['total_oa']/df_oa_doi)/(df['total_noa']/df_noa_doi)*100
+            df['perc_change'] = (df['total_oa'] / df_oa_doi) / (df['total_noa'] / df_noa_doi) * 100
             df['year'] = str(year)
             df = pd.DataFrame(df)
             data_figure = pd.concat([data_figure, df])
@@ -558,8 +561,10 @@ def create_line_compare_cit_subregions(af: AnalyticsFunction):
     for subregion in ORDER_SUBREGIONS:
         data_figure = pd.DataFrame(columns=['name', 'total_oa', 'total_noa', 'perc_change', 'year'])
         for year in YEARS:
-            df_oa = [x for x in data if ((x['subregion'] == subregion) & (x['year'] == str(year)) & (x['is_oa'] == 'true'))]
-            df_noa = [x for x in data if ((x['subregion'] == subregion) & (x['year'] == str(year)) & (x['is_oa'] == 'false'))]
+            df_oa = [x for x in data if
+                     ((x['subregion'] == subregion) & (x['year'] == str(year)) & (x['is_oa'] == 'true'))]
+            df_noa = [x for x in data if
+                      ((x['subregion'] == subregion) & (x['year'] == str(year)) & (x['is_oa'] == 'false'))]
             if (len(df_oa) > 0) & (len(df_noa) > 0):
                 df_oa_doi = int(df_oa[0]['count_doi'])
                 df_noa_doi = int(df_noa[0]['count_doi'])
@@ -567,7 +572,7 @@ def create_line_compare_cit_subregions(af: AnalyticsFunction):
                 df_noa = pd.json_normalize(df_noa[0]['CitingSubregions_table_all'])
                 df = df_oa.merge(df_noa, on=['name'], suffixes=('_oa', '_noa'))
                 df = df.astype({"total_oa": int, "total_noa": int})
-                df['perc_change'] = (df['total_oa']/df_oa_doi)/(df['total_noa']/df_noa_doi)*100
+                df['perc_change'] = (df['total_oa'] / df_oa_doi) / (df['total_noa'] / df_noa_doi) * 100
                 df['year'] = str(year)
                 df = pd.DataFrame(df)
                 data_figure = pd.concat([data_figure, df])
@@ -643,8 +648,10 @@ def create_bar_compare_cit_subregions(af: AnalyticsFunction):
     print('... start plot_bar_compare_cit_subregions')
     for subregion in ORDER_SUBREGIONS:
         for year in YEARS:
-            df_oa = [x for x in data if ((x['subregion'] == subregion) & (x['year'] == str(year)) & (x['is_oa'] == 'true'))]
-            df_noa = [x for x in data if ((x['subregion'] == subregion) & (x['year'] == str(year)) & (x['is_oa'] == 'false'))]
+            df_oa = [x for x in data if
+                     ((x['subregion'] == subregion) & (x['year'] == str(year)) & (x['is_oa'] == 'true'))]
+            df_noa = [x for x in data if
+                      ((x['subregion'] == subregion) & (x['year'] == str(year)) & (x['is_oa'] == 'false'))]
             if (len(df_oa) > 0) & (len(df_noa) > 0):
                 df_oa = pd.json_normalize(df_oa[0]['CitingSubregions_table_all'])
                 df_noa = pd.json_normalize(df_noa[0]['CitingSubregions_table_all'])
@@ -655,7 +662,8 @@ def create_bar_compare_cit_subregions(af: AnalyticsFunction):
                 if not os.path.exists('report_graphs/bar_compare_cit_subregions'):
                     os.makedirs('report_graphs/bar_compare_cit_subregions')
                 fig.write_image('report_graphs/bar_compare_cit_subregions/bar_compare_cit_subregions_for_'
-                                + subregion + '_' + str(year) + '.png', scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
+                                + subregion + '_' + str(year) + '.png', scale=FIG_SCALE, width=FIG_WIDTH,
+                                height=FIG_HEIGHT)
                 af.add_existing_file(
                     'report_graphs/bar_compare_cit_subregions/bar_compare_cit_subregions_for_'
                     + subregion + '_' + str(year) + '.png')
@@ -724,7 +732,7 @@ def create_figure2b(af: AnalyticsFunction):
     fig.add_trace(go.Scatter(x=df['year'], y=df['noa_Fields_Shannon_mean'],
                              name='CLOSED', marker_color='gray'), row=4, col=1)
     fig.add_trace(go.Scatter(x=df['year'], y=df['oa_Fields_Shannon_mean'],
-                             name='OPEN', marker_color='#E7664C'),  row=4, col=1)
+                             name='OPEN', marker_color='#E7664C'), row=4, col=1)
     fig.add_trace(go.Scatter(x=df['year'], y=df['gold_Fields_Shannon_mean'],
                              name='GOLD', marker_color='#FFD700'), row=4, col=1)
     fig.add_trace(go.Scatter(x=df['year'], y=df['green_Fields_Shannon_mean'],
@@ -834,14 +842,16 @@ def create_figure3a(af: AnalyticsFunction):
         data.append(json.loads(line))
     print('... start figure3a')
     # create fig space with 3 subplots
-    fig = make_subplots(rows=3, cols=1, subplot_titles=["Citations to "+subregions_compare[0],
-                                                        "Citations to "+subregions_compare[1],
-                                                        "Citations to "+subregions_compare[2]],
+    fig = make_subplots(rows=3, cols=1, subplot_titles=["Citations to " + subregions_compare[0],
+                                                        "Citations to " + subregions_compare[1],
+                                                        "Citations to " + subregions_compare[2]],
                         vertical_spacing=0.1, y_title="% change in total citations",
                         shared_xaxes=True)
     # bar plot for subregion 1
-    df_oa = [x for x in data if ((x['subregion'] == subregions_compare[0]) & (x['year'] == '2019') & (x['is_oa'] == 'true'))]
-    df_noa = [x for x in data if ((x['subregion'] == subregions_compare[0]) & (x['year'] == '2019') & (x['is_oa'] == 'false'))]
+    df_oa = [x for x in data if
+             ((x['subregion'] == subregions_compare[0]) & (x['year'] == '2019') & (x['is_oa'] == 'true'))]
+    df_noa = [x for x in data if
+              ((x['subregion'] == subregions_compare[0]) & (x['year'] == '2019') & (x['is_oa'] == 'false'))]
     if (len(df_oa) > 0) & (len(df_noa) > 0):
         df_oa = pd.json_normalize(df_oa[0]['CitingSubregions_table_all'])
         df_noa = pd.json_normalize(df_noa[0]['CitingSubregions_table_all'])
@@ -849,10 +859,13 @@ def create_figure3a(af: AnalyticsFunction):
         df = df.astype({"total_oa": int, "total_noa": int})
         df['perc_change'] = (df['total_oa'] - df['total_noa']) / df['total_noa'] * 100
         df = df[df.name.isin(subregions_compare)]
-        fig.add_trace(go.Bar(x=df['name'], y=df['perc_change'], marker_color='royalblue', showlegend=False), row=1, col=1)
+        fig.add_trace(go.Bar(x=df['name'], y=df['perc_change'], marker_color='royalblue', showlegend=False), row=1,
+                      col=1)
     # bar plot for subregion 2
-    df_oa = [x for x in data if ((x['subregion'] == subregions_compare[1]) & (x['year'] == '2019') & (x['is_oa'] == 'true'))]
-    df_noa = [x for x in data if ((x['subregion'] == subregions_compare[1]) & (x['year'] == '2019') & (x['is_oa'] == 'false'))]
+    df_oa = [x for x in data if
+             ((x['subregion'] == subregions_compare[1]) & (x['year'] == '2019') & (x['is_oa'] == 'true'))]
+    df_noa = [x for x in data if
+              ((x['subregion'] == subregions_compare[1]) & (x['year'] == '2019') & (x['is_oa'] == 'false'))]
     if (len(df_oa) > 0) & (len(df_noa) > 0):
         df_oa = pd.json_normalize(df_oa[0]['CitingSubregions_table_all'])
         df_noa = pd.json_normalize(df_noa[0]['CitingSubregions_table_all'])
@@ -860,10 +873,13 @@ def create_figure3a(af: AnalyticsFunction):
         df = df.astype({"total_oa": int, "total_noa": int})
         df['perc_change'] = (df['total_oa'] - df['total_noa']) / df['total_noa'] * 100
         df = df[df.name.isin(subregions_compare)]
-        fig.add_trace(go.Bar(x=df['name'], y=df['perc_change'], marker_color='royalblue', showlegend=False), row=2, col=1)
+        fig.add_trace(go.Bar(x=df['name'], y=df['perc_change'], marker_color='royalblue', showlegend=False), row=2,
+                      col=1)
     # bar plot for subregion 3
-    df_oa = [x for x in data if ((x['subregion'] == subregions_compare[2]) & (x['year'] == '2019') & (x['is_oa'] == 'true'))]
-    df_noa = [x for x in data if ((x['subregion'] == subregions_compare[2]) & (x['year'] == '2019') & (x['is_oa'] == 'false'))]
+    df_oa = [x for x in data if
+             ((x['subregion'] == subregions_compare[2]) & (x['year'] == '2019') & (x['is_oa'] == 'true'))]
+    df_noa = [x for x in data if
+              ((x['subregion'] == subregions_compare[2]) & (x['year'] == '2019') & (x['is_oa'] == 'false'))]
     if (len(df_oa) > 0) & (len(df_noa) > 0):
         df_oa = pd.json_normalize(df_oa[0]['CitingSubregions_table_all'])
         df_noa = pd.json_normalize(df_noa[0]['CitingSubregions_table_all'])
@@ -871,7 +887,8 @@ def create_figure3a(af: AnalyticsFunction):
         df = df.astype({"total_oa": int, "total_noa": int})
         df['perc_change'] = (df['total_oa'] - df['total_noa']) / df['total_noa'] * 100
         df = df[df.name.isin(subregions_compare)]
-        fig.add_trace(go.Bar(x=df['name'], y=df['perc_change'], marker_color='royalblue', showlegend=False), row=3, col=1)
+        fig.add_trace(go.Bar(x=df['name'], y=df['perc_change'], marker_color='royalblue', showlegend=False), row=3,
+                      col=1)
     fig.update_layout(xaxis_type='category')
     fig.update_xaxes(categoryorder='category ascending')
     fig.update_layout(title='Fig. 3A: % change in citations for 2019')
@@ -896,9 +913,9 @@ def create_figure3b(af: AnalyticsFunction):
     data_figure = pd.DataFrame(columns=['name', 'total_oa', 'total_noa', 'perc_change', 'year'])
     for year in YEARS:
         df_oa = [x for x in data if
-                         ((x['subregion'] == subregions_compare[0]) & (x['year'] == str(year)) & (x['is_oa'] == 'true'))]
+                 ((x['subregion'] == subregions_compare[0]) & (x['year'] == str(year)) & (x['is_oa'] == 'true'))]
         df_noa = [x for x in data if
-                          ((x['subregion'] == subregions_compare[0]) & (x['year'] == str(year)) & (x['is_oa'] == 'false'))]
+                  ((x['subregion'] == subregions_compare[0]) & (x['year'] == str(year)) & (x['is_oa'] == 'false'))]
         if (len(df_oa) > 0) & (len(df_noa) > 0):
             df_oa_doi = int(df_oa[0]['count_doi'])
             df_noa_doi = int(df_noa[0]['count_doi'])
@@ -1005,7 +1022,3 @@ def create_figure3b(af: AnalyticsFunction):
     fig.write_image('report_graphs/figure3/figure3b.png', scale=FIG_SCALE, width=630, height=700)
     af.add_existing_file('report_graphs/figure3/figure3b.png')
     print('... completed')
-
-
-
-
