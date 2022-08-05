@@ -46,16 +46,27 @@ PROJECT_ID = 'coki-scratch-space'
 TEMPDIR = Path('tempdir')
 
 
+def process_sql_templates_to_queries(af: AnalyticsFunction,
+                                     rerun: bool=RERUN):
+
+    parameters = dict(
+
+    )
+    provndoc_utils.process_sql_to_queries(af,
+                                          SQL_TEMPLATE_PARAMETERS,
+                                          rerun,
+                                          SQL_TEMPLATES_DIRECTORY,
+                                          SQL_PROCESSED_DIRECTORY)
+
 def provenance_n_documentation(af: AnalyticsFunction,
                                rerun: bool = RERUN):
 
-    provndoc_utils.process_sql_to_queries(af,rerun, SQL_TEMPLATES_DIRECTORY, SQL_PROCESSED_DIRECTORY)
     provndoc_utils.build_sql_dag(af, rerun, SQL_PROCESSED_DIRECTORY)
 
 
-def calculate_citation_diversity(af: AnalyticsFunction,
-                                 rerun: bool = RERUN,
-                                 verbose: bool = True):
+def create_global_citation_diversity_table(af: AnalyticsFunction,
+                                           rerun: bool = RERUN,
+                                           verbose: bool = True):
     """
     Run global_citations_query.sql_templates to generate article level citation diversity data
     """
@@ -1024,3 +1035,7 @@ def create_figure3b(af: AnalyticsFunction):
     fig.write_image('report_graphs/figure3/figure3b.png', scale=FIG_SCALE, width=630, height=700)
     af.add_existing_file('report_graphs/figure3/figure3b.png')
     print('... completed')
+
+
+if __name__ == '__main__':
+    process_sql_templates_to_queries(af='mock', rerun=True)

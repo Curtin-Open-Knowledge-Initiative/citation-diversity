@@ -9,7 +9,7 @@ NEEDS A SUMMARY HERE
 karl.huang@curtin.edu.au
 
 ## Requires
-table bigquery://{citation_diversity_table}
+table bigquery://coki-scratch-space.karl.citation_diversity_global
 
 ## Creates
 file cit_div_vs_cit_count.csv
@@ -70,7 +70,7 @@ WITH
         PERCENTILE_CONT(CitingRegions_Shannon,0.75) OVER(PARTITION BY CitationCount, year) AS CitingRegions_Shannon_perc75,
         PERCENTILE_CONT(CitingRegions_Shannon,1) OVER(PARTITION BY CitationCount, year) AS CitingRegions_Shannon_perc100
       FROM
-        `{citation_diversity_table}`
+        `coki-scratch-space.karl.citation_diversity_global`
       WHERE
         (CitationCount >= 2) AND (is_oa IS NOT NULL)
   )

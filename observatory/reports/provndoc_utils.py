@@ -5,8 +5,7 @@ from pathlib import Path
 
 from precipy.analytics_function import AnalyticsFunction
 
-
-# from .report_data_processing.sql import load_sql_to_string
+from report_data_processing.sql import load_sql_to_string
 
 
 def process_sql_to_queries(af: AnalyticsFunction,
@@ -16,16 +15,29 @@ def process_sql_to_queries(af: AnalyticsFunction,
                            sql_processed_dir: Union[Path, str]):
     if not rerun:
         return
-    sql_templates = sorted(Path(sql_template_dir).glob('*.sql_templates'))
+    sql_templates = sorted(Path(sql_template_dir).glob('*.sql'))
     jinja_templates = sorted(Path(sql_template_dir).glob('*.jinja2'))
 
     for template in sql_templates:
-        query = load_sql_to_string(template.name,
-                                   parameters=parameters,
-                                   directory=sql_template_dir)
-        filepath = Path(sql_processed_dir) / template
-        with open(filepath) as f:
-            f.write(query)
+        try:
+            query = load_sql_to_string(template.name,
+                                       parameters=parameters,
+                                       directory=sql_template_dir)
+            filepath = Path(sql_processed_dir) / template.name
+            with open(filepath, 'w') as f:
+                f.write(query)
+        except KeyError:  # Case for templates that need to be processed for each year
+            for year in parameters.get('years'):
+                parameters.update(dict(
+                    year=year
+                ))
+                query = load_sql_to_string(template.name,
+                                           parameters=parameters,
+                                           directory=sql_template_dir)
+                filepath = Path(sql_processed_dir) / f'{template.stem}_{year}{template.suffix}'
+                with open(filepath, 'w') as f:
+                    f.write(query)
+            parameters.pop('year')
 
         # af.add_existing_file(filepath)
 

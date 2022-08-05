@@ -9,7 +9,7 @@ Creates the main DOI level citation diversity table to be deployed to BigQuery
 karl.huang@curtin.edu.au
 
 ## Requires
-table bigquery://{citation_diversity_table}
+table bigquery://coki-scratch-space.karl.citation_diversity_global
 
 ## Creates
 file summary_stats_by_subregion_atleast2cit.json
@@ -30,7 +30,7 @@ WITH
       PERCENTILE_CONT(CitingSubregions_count_uniq,0.5) OVER(PARTITION BY subregion.name, year, is_oa) AS CitingSubregions_count_uniq_median,
       PERCENTILE_CONT(CitingSubregions_GiniSim,0.5) OVER(PARTITION BY subregion.name, year, is_oa) AS CitingSubregions_GiniSim_median,
       PERCENTILE_CONT(CitingSubregions_Shannon,0.5) OVER(PARTITION BY subregion.name, year, is_oa) AS CitingSubregions_Shannon_median
-    FROM `{citation_diversity_table}`, UNNEST(subregions) AS subregion
+    FROM `coki-scratch-space.karl.citation_diversity_global`, UNNEST(subregions) AS subregion
     WHERE CitationCount >= 2
   ),
   datatemp2 AS (

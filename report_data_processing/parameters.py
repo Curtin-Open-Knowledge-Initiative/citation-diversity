@@ -26,7 +26,7 @@ GROUPS = GROUPS_NOT_FIELDS + ['Fields']
 # which citation diversity metric to run
 METRICS = ['GiniSim', 'Shannon']
 
-# which data year to run, i.e., 2010 to 2019
+# which data year to run. The final year is *not* included so for eg 2010 to 2019 use (2010, 2020)
 YEARS = list(range(2010, 2020))
 
 # measures of central location
@@ -102,6 +102,7 @@ MAG_REFERENCES_TABLE = 'academic-observatory.mag.PaperReferences20211206'
 CITATION_DIVERSITY_TABLE = 'coki-scratch-space.karl.citation_diversity_global'
 
 SQL_TEMPLATE_PARAMETERS = dict(
+    years=YEARS,
     first_year=YEARS[0],
     last_year=YEARS[-1],
     doi_table=DOI_TABLE,

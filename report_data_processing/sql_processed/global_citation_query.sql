@@ -9,11 +9,11 @@ Creates the main DOI level citation diversity table to be deployed to BigQuery
 karl.huang@curtin.edu.au
 
 ## Requires
-table bigquery://{doi_table}
-table bigquery://{mag_references_table}
+table bigquery://academic-observatory.observatory.doi20220730
+table bigquery://academic-observatory.mag.PaperReferences20211206
 
 ## Creates
-table bigquery://{citation_diversity_table}
+table bigquery://coki-scratch-space.karl.citation_diversity_global
 
 */
 
@@ -32,14 +32,14 @@ WITH
     cited_id AS (
         SELECT
             DISTINCT(mag.PaperId)
-        FROM `{doi_table}`
+        FROM `academic-observatory.observatory.doi20220730`
     ),
     #collect articles' ids in MAG that cite articles from above
     citing_id AS (
         SELECT
             pr.PaperId AS PaperId,
             ARRAY_AGG(cited_id.PaperId) AS CitedId
-        FROM `{mag_references_table}` AS pr
+        FROM `academic-observatory.mag.PaperReferences20211206` AS pr
             JOIN cited_id on pr.PaperReferenceId = cited_id.PaperId 
         GROUP BY 
             pr.PaperId
@@ -70,7 +70,7 @@ WITH
             affiliations.authors,
             CitedId
         FROM citing_id
-            LEFT JOIN `{doi_table}` ON PaperId = mag.PaperId
+            LEFT JOIN `academic-observatory.observatory.doi20220730` ON PaperId = mag.PaperId
     ),
     #group citing institutions to cited articles
     CitingInstitutions AS (
@@ -145,7 +145,7 @@ WITH
             affiliations.countries,
             affiliations.subregions,
             affiliations.regions,
-        FROM `{doi_table}` AS outputs
+        FROM `academic-observatory.observatory.doi20220730` AS outputs
             LEFT JOIN CitingInstitutions AS C1 ON outputs.mag.PaperId = C1.PaperId  
             LEFT JOIN CitingCountries AS C2 ON outputs.mag.PaperId = C2.PaperId  
             LEFT JOIN CitingSubregions AS C3 ON outputs.mag.PaperId = C3.PaperId 
@@ -168,4 +168,4 @@ SELECT
   (SELECT -SUM((X.count/CitingFields_count_all)*LN(X.count/CitingFields_count_all)) FROM UNNEST(CitingFields_table) AS X) as CitingFields_Shannon
 FROM cited_articles
 WHERE 
-  (PaperId IS NOT NULL) AND (year >= {first_year}) AND (year <= {last_year})
+  (PaperId IS NOT NULL) AND (year >= 2010) AND (year <= 2019)

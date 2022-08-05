@@ -9,10 +9,10 @@ NEW SUMMARY DESCRIPTION
 karl.huang@curtin.edu.au
 
 ## Requires
-table bigquery://{citation_diversity_table}
+table bigquery://coki-scratch-space.karl.citation_diversity_global
 
 ## Creates
-file samples_by_cit_group_and_oa_{year}.csv
+file samples_by_cit_group_and_oa_2015.csv
 
 */
 
@@ -21,14 +21,14 @@ WITH
       (SELECT
         doi,
         '2' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE CitationCount=2 AND year={year} AND is_oa=TRUE )
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE CitationCount=2 AND year=2015 AND is_oa=TRUE )
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
       UNION ALL
       (SELECT
         doi,
         '2' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE CitationCount=2 AND year={year} AND is_oa=FALSE )
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE CitationCount=2 AND year=2015 AND is_oa=FALSE )
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
   ),
@@ -36,14 +36,14 @@ WITH
       (SELECT
         doi,
         '3' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE CitationCount=3 AND year={year} AND is_oa=TRUE)
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE CitationCount=3 AND year=2015 AND is_oa=TRUE)
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
       UNION ALL
       (SELECT
         doi,
         '3' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE CitationCount=3 AND year={year} AND is_oa=FALSE )
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE CitationCount=3 AND year=2015 AND is_oa=FALSE )
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
   ),
@@ -51,14 +51,14 @@ WITH
       (SELECT
         doi,
         '4' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE CitationCount=4 AND year={year} AND is_oa=TRUE)
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE CitationCount=4 AND year=2015 AND is_oa=TRUE)
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
       UNION ALL
       (SELECT
         doi,
         '4' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE CitationCount=4 AND year={year} AND is_oa=FALSE )
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE CitationCount=4 AND year=2015 AND is_oa=FALSE )
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
   ),
@@ -66,14 +66,14 @@ WITH
       (SELECT
         doi,
         '5-6' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount BETWEEN 5 AND 6) AND year={year} AND is_oa=TRUE)
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE (CitationCount BETWEEN 5 AND 6) AND year=2015 AND is_oa=TRUE)
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
       UNION ALL
       (SELECT
         doi,
         '5-6' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount BETWEEN 5 AND 6) AND year={year} AND is_oa=FALSE )
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE (CitationCount BETWEEN 5 AND 6) AND year=2015 AND is_oa=FALSE )
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
   ),
@@ -81,14 +81,14 @@ WITH
       (SELECT
         doi,
         '7-9' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount BETWEEN 7 AND 9) AND year={year} AND is_oa=TRUE)
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE (CitationCount BETWEEN 7 AND 9) AND year=2015 AND is_oa=TRUE)
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
       UNION ALL
       (SELECT
         doi,
         '7-9' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount BETWEEN 7 AND 9) AND year={year} AND is_oa=FALSE )
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE (CitationCount BETWEEN 7 AND 9) AND year=2015 AND is_oa=FALSE )
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
   ),
@@ -96,14 +96,14 @@ WITH
       (SELECT
         doi,
         '10-11' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount BETWEEN 10 AND 11) AND year={year} AND is_oa=TRUE)
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE (CitationCount BETWEEN 10 AND 11) AND year=2015 AND is_oa=TRUE)
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
       UNION ALL
       (SELECT
         doi,
         '10-11' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount BETWEEN 10 AND 11) AND year={year} AND is_oa=FALSE )
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE (CitationCount BETWEEN 10 AND 11) AND year=2015 AND is_oa=FALSE )
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
   ),
@@ -111,14 +111,14 @@ WITH
       (SELECT
         doi,
         '12-14' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount BETWEEN 12 AND 14) AND year={year} AND is_oa=TRUE )
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE (CitationCount BETWEEN 12 AND 14) AND year=2015 AND is_oa=TRUE )
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
       UNION ALL
       (SELECT
         doi,
         '12-14' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount BETWEEN 12 AND 14) AND year={year} AND is_oa=FALSE )
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE (CitationCount BETWEEN 12 AND 14) AND year=2015 AND is_oa=FALSE )
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
   ),
@@ -126,14 +126,14 @@ WITH
       (SELECT
         doi,
         '15-16' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount BETWEEN 15 AND 16) AND year={year} AND is_oa=TRUE)
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE (CitationCount BETWEEN 15 AND 16) AND year=2015 AND is_oa=TRUE)
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
       UNION ALL
       (SELECT
         doi,
         '15-16' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount BETWEEN 15 AND 16) AND year={year} AND is_oa=FALSE )
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE (CitationCount BETWEEN 15 AND 16) AND year=2015 AND is_oa=FALSE )
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
   ),
@@ -141,14 +141,14 @@ WITH
       (SELECT
         doi,
         '17-19' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount BETWEEN 17 AND 19) AND year={year} AND is_oa=TRUE)
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE (CitationCount BETWEEN 17 AND 19) AND year=2015 AND is_oa=TRUE)
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
       UNION ALL
       (SELECT
         doi,
         '17-19' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount BETWEEN 17 AND 19) AND year={year} AND is_oa=FALSE )
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE (CitationCount BETWEEN 17 AND 19) AND year=2015 AND is_oa=FALSE )
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
   ),
@@ -156,14 +156,14 @@ WITH
       (SELECT
         doi,
         '20-23' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount BETWEEN 20 AND 23) AND year={year} AND is_oa=TRUE )
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE (CitationCount BETWEEN 20 AND 23) AND year=2015 AND is_oa=TRUE )
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
       UNION ALL
       (SELECT
         doi,
         '20-23' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount BETWEEN 20 AND 23) AND year={year} AND is_oa=FALSE )
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE (CitationCount BETWEEN 20 AND 23) AND year=2015 AND is_oa=FALSE )
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
   ),
@@ -171,14 +171,14 @@ WITH
       (SELECT
         doi,
         '24-29' AS cit_group,
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount BETWEEN 24 AND 29) AND year={year} AND is_oa=TRUE )
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE (CitationCount BETWEEN 24 AND 29) AND year=2015 AND is_oa=TRUE )
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
       UNION ALL
       (SELECT
         doi,
         '24-29' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount BETWEEN 24 AND 29) AND year={year} AND is_oa=FALSE )
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE (CitationCount BETWEEN 24 AND 29) AND year=2015 AND is_oa=FALSE )
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
   ),
@@ -186,14 +186,14 @@ WITH
       (SELECT
         doi,
         '30-42' AS cit_group,
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount BETWEEN 30 AND 42) AND year={year} AND is_oa=TRUE)
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE (CitationCount BETWEEN 30 AND 42) AND year=2015 AND is_oa=TRUE)
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
       UNION ALL
       (SELECT
         doi,
         '30-42' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount BETWEEN 30 AND 42) AND year={year} AND is_oa=FALSE )
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE (CitationCount BETWEEN 30 AND 42) AND year=2015 AND is_oa=FALSE )
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
   ),
@@ -201,14 +201,14 @@ WITH
       (SELECT
         doi,
         '43-59' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount BETWEEN 43 AND 59) AND year={year} AND is_oa=TRUE)
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE (CitationCount BETWEEN 43 AND 59) AND year=2015 AND is_oa=TRUE)
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
       UNION ALL
       (SELECT
         doi,
         '43-59' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount BETWEEN 43 AND 59) AND year={year} AND is_oa=FALSE )
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE (CitationCount BETWEEN 43 AND 59) AND year=2015 AND is_oa=FALSE )
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
   ),
@@ -216,14 +216,14 @@ WITH
       (SELECT
         doi,
         '>=60' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount >= 60) AND year={year} AND is_oa=TRUE)
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE (CitationCount >= 60) AND year=2015 AND is_oa=TRUE)
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
       UNION ALL
       (SELECT
         doi,
         '>=60' AS cit_group
-      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount >=60) AND year={year} AND is_oa=FALSE )
+      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE (CitationCount >=60) AND year=2015 AND is_oa=FALSE )
       ORDER BY FARM_FINGERPRINT(doi)
       LIMIT 2000)
   ),
@@ -266,5 +266,5 @@ SELECT
   CitingSubregions_Shannon,
   CitingRegions_Shannon,
   CitingFields_Shannon
-FROM sample LEFT JOIN `{citation_diversity_table}` USING(doi)
+FROM sample LEFT JOIN `coki-scratch-space.karl.citation_diversity_global` USING(doi)
 
