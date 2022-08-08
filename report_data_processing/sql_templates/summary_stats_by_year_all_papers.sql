@@ -1,9 +1,26 @@
-#This includes all papers regardless of number of citations
+/*
+## Summary
+
+Creates the main DOI level citation diversity table to be deployed to BigQuery
+
+## Description
+
+## Contacts
+karl.huang@curtin.edu.au
+
+## Requires
+table bigquery://{citation_diversity_table}
+
+## Creates
+file summary_stats_by_year_all_papers.json
+
+*/
+
 WITH
   DataTemp1 AS(
     SELECT *
-    FROM `coki-scratch-space.citation_diversity_analysis.citation_diversity_global`
-    WHERE year>=2010 AND year<=2019 AND is_oa IS NOT NULL
+    FROM `{citation_diversity_table}`
+    WHERE year>={first_year} AND year<={last_year} AND is_oa IS NOT NULL
   ),
   DataTemp2 AS(
     SELECT

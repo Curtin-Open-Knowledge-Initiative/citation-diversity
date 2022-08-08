@@ -1,4 +1,21 @@
-#main
+/*
+## Summary
+
+CHANGE THIS
+
+## Description
+
+## Contacts
+karl.huang@curtin.edu.au
+
+## Requires
+table bigquery://{citation_diversity_table}
+
+## Creates
+file summary_stats_by_region_atleast2cit.json
+
+*/
+
 WITH
   datatemp1 AS (
     SELECT
@@ -14,7 +31,7 @@ WITH
       PERCENTILE_CONT(CitingRegions_count_uniq,0.5) OVER(PARTITION BY region.name, year, is_oa) AS CitingRegions_count_uniq_median,
       PERCENTILE_CONT(CitingRegions_GiniSim,0.5) OVER(PARTITION BY region.name, year, is_oa) AS CitingRegions_GiniSim_median,
       PERCENTILE_CONT(CitingRegions_Shannon,0.5) OVER(PARTITION BY region.name, year, is_oa) AS CitingRegions_Shannon_median
-    FROM `coki-scratch-space.citation_diversity_analysis.citation_diversity_global`, UNNEST(regions) AS region
+    FROM `{citation_diversity_table}`, UNNEST(regions) AS region
     WHERE CitationCount >= 2
   ),
   datatemp2 AS (

@@ -1,3 +1,22 @@
+/*
+## Summary
+
+Creates the main DOI level citation diversity table to be deployed to BigQuery
+
+## Description
+
+## Contacts
+karl.huang@curtin.edu.au
+
+## Requires
+table bigquery://{doi_table}
+table bigquery://{mag_references_table}
+
+## Creates
+table bigquery://{citation_diversity_table}
+
+*/
+
 #function for creating frequency table from a list of names
 CREATE TEMP FUNCTION GetNamesAndCounts(elements ARRAY<STRING>) AS (
   ARRAY(
@@ -149,4 +168,4 @@ SELECT
   (SELECT -SUM((X.count/CitingFields_count_all)*LN(X.count/CitingFields_count_all)) FROM UNNEST(CitingFields_table) AS X) as CitingFields_Shannon
 FROM cited_articles
 WHERE 
-  (PaperId IS NOT NULL) AND (year >= {first_year}) AND (year < {last_year})
+  (PaperId IS NOT NULL) AND (year >= {first_year}) AND (year <= {last_year})

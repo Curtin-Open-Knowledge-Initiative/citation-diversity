@@ -23,8 +23,8 @@
 from pathlib import Path
 from typing import Union, Optional
 
-SQL_DIRECTORY = Path("report_data_processing/sql")
-
+SQL_TEMPLATES_DIRECTORY = Path("report_data_processing/sql_templates")
+SQL_PROCESSED_DIRECTORY = Path("report_data_processing/sql_processed")
 
 def load_sql_to_string(filepath: Union[str, Path],
                        parameters: Optional[dict] = None,
@@ -33,22 +33,13 @@ def load_sql_to_string(filepath: Union[str, Path],
     if directory:
         filepath = Path(directory) / filepath
 
-    assert filepath.suffix == '.sql'
+    assert ((filepath.suffix == '.sql') or (filepath.suffix == '.jinja2'))
 
     with open(filepath, 'r') as f:
-        sql = f.readlines()
-
-    sql_string = "".join(sql)
+        sql_string = f.read()
 
     if parameters:
         sql_string = sql_string.format(**parameters)
 
     return sql_string
 
-
-# Example
-# Metadata Elements and MAG Added Value to Crossref
-# doi_table_categories_query = load_sql_to_string("doi_table_categories_query.sql",
-# directory=SQL_DIRECTORY)
-global_citation_query = load_sql_to_string('global_citation_query.sql',
-                                           directory=SQL_DIRECTORY)
