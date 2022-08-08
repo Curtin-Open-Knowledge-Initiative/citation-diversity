@@ -470,65 +470,145 @@ def create_figure2c():
     df = pd.read_csv('tempdata/samples_by_oa_2019.csv')
     df.fillna(value=False, inplace=True)
     # df = df[df['CitationCount'] >= 10]
-    method = "GiniSim"
+    method = "Shannon"
     groups = ['Institutions', 'Countries', 'Subregions', 'Regions', 'Fields']
     group_labels = ["CLOSED", "OPEN"]
-    fig = make_subplots(rows=5, cols=1, subplot_titles=groups,
-                        y_title="Probability density", x_title=method + " index score")
+    fig = make_subplots(rows=5, cols=2, column_widths=[0.9, 0.1],
+                        subplot_titles=[val for val in groups for _ in (0, 1)],
+                        vertical_spacing=0.06,
+                        horizontal_spacing=0.1,
+                        y_title="Probability density / Frequency", x_title=method + " index score")
 
-    x1 = df['Citing' + str(groups[0]) + '_' + str(method)].loc[df.s_noa]
+    x1 = df['Citing' + str(groups[0]) + '_' + str(method)].loc[df['Citing' + str(groups[0]) + '_' + str(method)]>0].loc[df.s_noa]
     x1 = x1.astype(float)
-    x2 = df['Citing' + str(groups[0]) + '_' + str(method)].loc[df.s_oa]
+    x2 = df['Citing' + str(groups[0]) + '_' + str(method)].loc[df['Citing' + str(groups[0]) + '_' + str(method)]>0].loc[df.s_oa]
     x2 = x2.astype(float)
     hist_data = [x1, x2]
-    fig_sub = ff.create_distplot(hist_data, group_labels, show_hist=False, show_rug=False)
-    fig.add_trace(go.Scatter(fig_sub['data'][0], line=dict(color='gray', width=2), showlegend=False),
+    fig_sub = ff.create_distplot(hist_data, group_labels, show_hist=True, bin_size=[0.13, 0.13], show_rug=False)
+    fig.add_trace(go.Histogram(fig_sub['data'][0], marker_color='gray', opacity=.3, showlegend=False),
                   row=1, col=1)
-    fig.add_trace(go.Scatter(fig_sub['data'][1], line=dict(color='#E7664C', width=2), showlegend=False),
+    fig.add_trace(go.Histogram(fig_sub['data'][1], marker_color='#E7664C', opacity=.3, showlegend=False),
+                  row=1, col=1)
+    fig.add_trace(go.Scatter(fig_sub['data'][2], line=dict(color='gray', width=2), showlegend=False),
+                  row=1, col=1)
+    fig.add_trace(go.Scatter(fig_sub['data'][3], line=dict(color='#E7664C', width=2), showlegend=False),
                   row=1, col=1)
 
-    x1 = df['Citing' + str(groups[1]) + '_' + str(method)].loc[df.s_noa]
+    x1 = df['Citing' + str(groups[0]) + '_' + str(method)].loc[df['Citing' + str(groups[0]) + '_' + str(method)] == 0].loc[
+        df.s_noa]
     x1 = x1.astype(float)
-    x2 = df['Citing' + str(groups[1]) + '_' + str(method)].loc[df.s_oa]
+    x2 = df['Citing' + str(groups[0]) + '_' + str(method)].loc[df['Citing' + str(groups[0]) + '_' + str(method)] == 0].loc[
+        df.s_oa]
+    x2 = x2.astype(float)
+    fig.add_trace(go.Histogram(x=x1, marker_color='gray', opacity=.3, showlegend=False),
+                  row=1, col=2)
+    fig.add_trace(go.Histogram(x=x2, marker_color='#E7664C', opacity=.3, showlegend=False),
+                  row=1, col=2)
+
+    x1 = df['Citing' + str(groups[1]) + '_' + str(method)].loc[df['Citing' + str(groups[1]) + '_' + str(method)]>0].loc[df.s_noa]
+    x1 = x1.astype(float)
+    x2 = df['Citing' + str(groups[1]) + '_' + str(method)].loc[df['Citing' + str(groups[1]) + '_' + str(method)]>0].loc[df.s_oa]
     x2 = x2.astype(float)
     hist_data = [x1, x2]
-    fig_sub = ff.create_distplot(hist_data, group_labels, show_hist=False, show_rug=False)
-    fig.add_trace(go.Scatter(fig_sub['data'][0], line=dict(color='gray', width=2), showlegend=False),
+    fig_sub = ff.create_distplot(hist_data, group_labels, show_hist=True, bin_size=[0.08, 0.08], show_rug=False)
+    fig.add_trace(go.Histogram(fig_sub['data'][0], marker_color='gray', opacity=.3, showlegend=False),
                   row=2, col=1)
-    fig.add_trace(go.Scatter(fig_sub['data'][1], line=dict(color='#E7664C', width=2), showlegend=False),
+    fig.add_trace(go.Histogram(fig_sub['data'][1], marker_color='#E7664C', opacity=.3, showlegend=False),
+                  row=2, col=1)
+    fig.add_trace(go.Scatter(fig_sub['data'][2], line=dict(color='gray', width=2), showlegend=False),
+                  row=2, col=1)
+    fig.add_trace(go.Scatter(fig_sub['data'][3], line=dict(color='#E7664C', width=2), showlegend=False),
                   row=2, col=1)
 
-    x1 = df['Citing' + str(groups[2]) + '_' + str(method)].loc[df.s_noa]
+    x1 = df['Citing' + str(groups[1]) + '_' + str(method)].loc[df['Citing' + str(groups[1])
+                                                                  + '_' + str(method)] == 0].loc[df.s_noa]
     x1 = x1.astype(float)
-    x2 = df['Citing' + str(groups[2]) + '_' + str(method)].loc[df.s_oa]
+    x2 = df['Citing' + str(groups[1]) + '_' + str(method)].loc[df['Citing' + str(groups[1])
+                                                                  + '_' + str(method)] == 0].loc[df.s_oa]
+    x2 = x2.astype(float)
+    fig.add_trace(go.Histogram(x=x1, marker_color='gray', opacity=.3, showlegend=False),
+                  row=2, col=2)
+    fig.add_trace(go.Histogram(x=x2, marker_color='#E7664C', opacity=.3, showlegend=False),
+                  row=2, col=2)
+
+    x1 = df['Citing' + str(groups[2]) + '_' + str(method)].loc[df['Citing' + str(groups[2]) + '_' + str(method)]>0].loc[df.s_noa]
+    x1 = x1.astype(float)
+    x2 = df['Citing' + str(groups[2]) + '_' + str(method)].loc[df['Citing' + str(groups[2]) + '_' + str(method)]>0].loc[df.s_oa]
     x2 = x2.astype(float)
     hist_data = [x1, x2]
-    fig_sub = ff.create_distplot(hist_data, group_labels, show_hist=False, show_rug=False)
-    fig.add_trace(go.Scatter(fig_sub['data'][0], line=dict(color='gray', width=2), showlegend=False),
+    fig_sub = ff.create_distplot(hist_data, group_labels, show_hist=True, bin_size=[0.05, 0.05], show_rug=False)
+    fig.add_trace(go.Histogram(fig_sub['data'][0], marker_color='gray', opacity=.3, showlegend=False),
                   row=3, col=1)
-    fig.add_trace(go.Scatter(fig_sub['data'][1], line=dict(color='#E7664C', width=2), showlegend=False),
+    fig.add_trace(go.Histogram(fig_sub['data'][1], marker_color='#E7664C', opacity=.3, showlegend=False),
+                  row=3, col=1)
+    fig.add_trace(go.Scatter(fig_sub['data'][2], line=dict(color='gray', width=2), showlegend=False),
+                  row=3, col=1)
+    fig.add_trace(go.Scatter(fig_sub['data'][3], line=dict(color='#E7664C', width=2), showlegend=False),
                   row=3, col=1)
 
-    x1 = df['Citing' + str(groups[3]) + '_' + str(method)].loc[df.s_noa]
+    x1 = df['Citing' + str(groups[2]) + '_' + str(method)].loc[df['Citing' + str(groups[2])
+                                                                  + '_' + str(method)] == 0].loc[df.s_noa]
     x1 = x1.astype(float)
-    x2 = df['Citing' + str(groups[3]) + '_' + str(method)].loc[df.s_oa]
+    x2 = df['Citing' + str(groups[2]) + '_' + str(method)].loc[df['Citing' + str(groups[2])
+                                                                  + '_' + str(method)] == 0].loc[df.s_oa]
+    x2 = x2.astype(float)
+    fig.add_trace(go.Histogram(x=x1, marker_color='gray', opacity=.3, showlegend=False),
+                  row=3, col=2)
+    fig.add_trace(go.Histogram(x=x2, marker_color='#E7664C', opacity=.3, showlegend=False),
+                  row=3, col=2)
+
+    x1 = df['Citing' + str(groups[3]) + '_' + str(method)].loc[df['Citing' + str(groups[3]) + '_' + str(method)]>0].loc[df.s_noa]
+    x1 = x1.astype(float)
+    x2 = df['Citing' + str(groups[3]) + '_' + str(method)].loc[df['Citing' + str(groups[3]) + '_' + str(method)]>0].loc[df.s_oa]
     x2 = x2.astype(float)
     hist_data = [x1, x2]
-    fig_sub = ff.create_distplot(hist_data, group_labels, show_hist=False, show_rug=False)
-    fig.add_trace(go.Scatter(fig_sub['data'][0], line=dict(color='gray', width=2), showlegend=False),
+    fig_sub = ff.create_distplot(hist_data, group_labels, show_hist=True, bin_size=[0.04, 0.04], show_rug=False)
+    fig.add_trace(go.Histogram(fig_sub['data'][0], marker_color='gray', opacity=.3, showlegend=False),
                   row=4, col=1)
-    fig.add_trace(go.Scatter(fig_sub['data'][1], line=dict(color='#E7664C', width=2), showlegend=False),
+    fig.add_trace(go.Histogram(fig_sub['data'][1], marker_color='#E7664C', opacity=.3, showlegend=False),
+                  row=4, col=1)
+    fig.add_trace(go.Scatter(fig_sub['data'][2], line=dict(color='gray', width=2), showlegend=False),
+                  row=4, col=1)
+    fig.add_trace(go.Scatter(fig_sub['data'][3], line=dict(color='#E7664C', width=2), showlegend=False),
                   row=4, col=1)
 
-    x1 = df['Citing' + str(groups[4]) + '_' + str(method)].loc[df.s_noa]
+    x1 = df['Citing' + str(groups[3]) + '_' + str(method)].loc[df['Citing' + str(groups[3])
+                                                                  + '_' + str(method)] == 0].loc[df.s_noa]
     x1 = x1.astype(float)
-    x2 = df['Citing' + str(groups[4]) + '_' + str(method)].loc[df.s_oa]
+    x2 = df['Citing' + str(groups[3]) + '_' + str(method)].loc[df['Citing' + str(groups[3])
+                                                                  + '_' + str(method)] == 0].loc[df.s_oa]
+    x2 = x2.astype(float)
+    fig.add_trace(go.Histogram(x=x1, marker_color='gray', opacity=.3, showlegend=False),
+                  row=4, col=2)
+    fig.add_trace(go.Histogram(x=x2, marker_color='#E7664C', opacity=.3, showlegend=False),
+                  row=4, col=2)
+
+    x1 = df['Citing' + str(groups[4]) + '_' + str(method)].loc[df['Citing' + str(groups[4]) + '_' + str(method)]>0].loc[df.s_noa]
+    x1 = x1.astype(float)
+    x2 = df['Citing' + str(groups[4]) + '_' + str(method)].loc[df['Citing' + str(groups[4]) + '_' + str(method)]>0].loc[df.s_oa]
     x2 = x2.astype(float)
     hist_data = [x1, x2]
-    fig_sub = ff.create_distplot(hist_data, group_labels, show_hist=False, show_rug=False)
-    fig.add_trace(go.Scatter(fig_sub['data'][0], line=dict(color='gray', width=2)), row=5, col=1)
-    fig.add_trace(go.Scatter(fig_sub['data'][1], line=dict(color='#E7664C', width=2)), row=5, col=1)
+    fig_sub = ff.create_distplot(hist_data, group_labels, show_hist=True, bin_size=[0.05, 0.05], show_rug=False)
+    fig.add_trace(go.Histogram(fig_sub['data'][0], marker_color='gray', opacity=.3, showlegend=False),
+                  row=5, col=1)
+    fig.add_trace(go.Histogram(fig_sub['data'][1], marker_color='#E7664C', opacity=.3, showlegend=False),
+                  row=5, col=1)
+    fig.add_trace(go.Scatter(fig_sub['data'][2], line=dict(color='gray', width=2), showlegend=True), row=5, col=1)
+    fig.add_trace(go.Scatter(fig_sub['data'][3], line=dict(color='#E7664C', width=2), showlegend=True), row=5, col=1)
 
+    x1 = df['Citing' + str(groups[4]) + '_' + str(method)].loc[df['Citing' + str(groups[4])
+                                                                  + '_' + str(method)] == 0].loc[df.s_noa]
+    x1 = x1.astype(float)
+    x2 = df['Citing' + str(groups[4]) + '_' + str(method)].loc[df['Citing' + str(groups[4])
+                                                                  + '_' + str(method)] == 0].loc[df.s_oa]
+    x2 = x2.astype(float)
+    fig.add_trace(go.Histogram(x=x1, marker_color='gray', opacity=.3, showlegend=False),
+                  row=5, col=2)
+    fig.add_trace(go.Histogram(x=x2, marker_color='#E7664C', opacity=.3, showlegend=False),
+                  row=5, col=2)
+
+    # fig.update_yaxes(type="log")
+    # fig.update_layout(barmode='overlay')
     fig.update_layout(title='Fig. 2C: KDE on ' + method + ' scores' +
                             '<br><sup>(samples of 10000 non-OA and 10000 OA papers in each case)</sup>')
     fig.update_layout(legend=dict(
@@ -809,5 +889,5 @@ if __name__ == "__main__":
     # generate_subregion_vs_citations_perc_change_over_time(subregion='Micronesia', year_start='2010', year_end='2019')
 
     # generate_line_year_vs_cit_div()
-    create_figure3b_test()
+    create_figure2c()
 

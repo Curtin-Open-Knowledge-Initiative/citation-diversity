@@ -668,12 +668,13 @@ def create_figure2a(af: AnalyticsFunction):
     # create plot for panel A of figure 1 of main text
     df = pd.read_csv('tempdata/summary_stats_by_year_atleast2cit.csv')
     print('... start figure2a')
-    fig = make_subplots(rows=1, cols=1, y_title="Gini-Simpson score", x_title="Year")
-    fig.add_trace(go.Scatter(x=df['year'], y=df['noa_Institutions_GiniSim_median'],
+    fig = make_subplots(rows=1, cols=1, y_title="Shannon score")
+    fig.add_trace(go.Scatter(x=df['year'], y=df['noa_Institutions_Shannon_median'],
                              name='CLOSED', marker_color='gray'), row=1, col=1)
-    fig.add_trace(go.Scatter(x=df['year'], y=df['oa_Institutions_GiniSim_median'],
+    fig.add_trace(go.Scatter(x=df['year'], y=df['oa_Institutions_Shannon_median'],
                              name='OPEN', marker_color='#E7664C'), row=1, col=1)
-    fig.update_layout(title='Fig. 2A: Median Gini-Simpson scores (Institutions)')
+    fig.update_xaxes(tickangle=270)
+    fig.update_layout(title='Fig. 2A: Median Shannon scores (Institutions)')
     fig.update_layout(xaxis_type='category')
     fig.update_layout(legend=dict(
         orientation="h",
@@ -694,7 +695,7 @@ def create_figure2b(af: AnalyticsFunction):
     df = pd.read_csv('tempdata/summary_stats_by_year_atleast2cit.csv')
     print('... start figure2b')
     fig = make_subplots(rows=4, cols=1, subplot_titles=("Countries", "Subregions", "Regions", "Fields"),
-                        shared_xaxes=True, vertical_spacing=0.04, y_title="Shannon score", x_title="Year")
+                        shared_xaxes=True, vertical_spacing=0.04, y_title="Shannon score")
 
     fig.add_trace(go.Scatter(x=df['year'], y=df['noa_Countries_Shannon_mean'],
                              name='CLOSED', marker_color='gray', showlegend=False), row=1, col=1)
@@ -732,6 +733,7 @@ def create_figure2b(af: AnalyticsFunction):
     fig.add_trace(go.Scatter(x=df['year'], y=df['green_Fields_Shannon_mean'],
                              name='GREEN', marker_color='#006400'), row=4, col=1)
 
+    fig.update_xaxes(tickangle=270)
     fig.update_layout(title='Fig. 2B: Mean Shannon scores')
     fig.update_layout(xaxis_type='category')
     fig.update_layout(xaxis4=dict(tickvals=YEARS))
@@ -750,68 +752,41 @@ def create_figure2b(af: AnalyticsFunction):
 
 
 def create_figure2c(af: AnalyticsFunction):
-    # create plot for panel C of figure 1 of main text
+    # create plot for panel C of figure 2 of main text
     print('... start figure2c')
+
     df = pd.read_csv('tempdata/samples_by_oa_2019.csv')
     df.fillna(value=False, inplace=True)
     method = "Shannon"
     group_labels = ["CLOSED", "OPEN"]
     fig = make_subplots(rows=5, cols=1, subplot_titles=GROUPS, vertical_spacing=0.05,
-                        y_title="Probability density", x_title=method + " index score")
+                        y_title="Probability density / Frequency", x_title=method + " score")
 
-    x1 = df['CitingInstitutions' + '_' + str(method)].loc[df.s_noa]
-    x1 = x1.astype(float)
-    x2 = df['CitingInstitutions' + '_' + str(method)].loc[df.s_oa]
-    x2 = x2.astype(float)
-    hist_data = [x1, x2]
-    fig_sub = ff.create_distplot(hist_data, group_labels, show_hist=False, show_rug=False)
-    fig.add_trace(go.Scatter(fig_sub['data'][0], line=dict(color='gray', width=2), showlegend=False),
-                  row=1, col=1)
-    fig.add_trace(go.Scatter(fig_sub['data'][1], line=dict(color='#E7664C', width=2), showlegend=False),
-                  row=1, col=1)
+    for subplot_count in list(range(len(GROUPS))):
+        x1 = df['Citing' + str(GROUPS[subplot_count]) + '_' +
+                str(method)].loc[df['Citing' + str(GROUPS[subplot_count]) + '_' + str(method)] > 0].loc[df.s_noa]
+        x1 = x1.astype(float)
+        x2 = df['Citing' + str(GROUPS[subplot_count]) + '_' +
+                str(method)].loc[df['Citing' + str(GROUPS[subplot_count]) + '_' + str(method)] > 0].loc[df.s_oa]
+        x2 = x2.astype(float)
+        hist_data = [x1, x2]
+        bin1 = max(x1)/50
+        bin2 = max(x2)/50
+        if subplot_count == len(GROUPS)-1:
+            print_legend = True
+        else:
+            print_legend = False
+        fig_sub = ff.create_distplot(hist_data, group_labels, show_hist=True, bin_size=[bin1, bin2], show_rug=False)
+        fig.add_trace(go.Histogram(fig_sub['data'][0], marker_color='gray', opacity=.3, showlegend=False),
+                      row=subplot_count+1, col=1)
+        fig.add_trace(go.Histogram(fig_sub['data'][1], marker_color='#E7664C', opacity=.3, showlegend=False),
+                      row=subplot_count+1, col=1)
+        fig.add_trace(go.Scatter(fig_sub['data'][2], line=dict(color='gray', width=2), showlegend=print_legend),
+                      row=subplot_count+1, col=1)
+        fig.add_trace(go.Scatter(fig_sub['data'][3], line=dict(color='#E7664C', width=2), showlegend=print_legend),
+                      row=subplot_count+1, col=1)
 
-    x1 = df['CitingCountries' + '_' + str(method)].loc[df.s_noa]
-    x1 = x1.astype(float)
-    x2 = df['CitingCountries' + '_' + str(method)].loc[df.s_oa]
-    x2 = x2.astype(float)
-    hist_data = [x1, x2]
-    fig_sub = ff.create_distplot(hist_data, group_labels, show_hist=False, show_rug=False)
-    fig.add_trace(go.Scatter(fig_sub['data'][0], line=dict(color='gray', width=2), showlegend=False),
-                  row=2, col=1)
-    fig.add_trace(go.Scatter(fig_sub['data'][1], line=dict(color='#E7664C', width=2), showlegend=False),
-                  row=2, col=1)
-
-    x1 = df['CitingSubregions' + '_' + str(method)].loc[df.s_noa]
-    x1 = x1.astype(float)
-    x2 = df['CitingSubregions' + '_' + str(method)].loc[df.s_oa]
-    x2 = x2.astype(float)
-    hist_data = [x1, x2]
-    fig_sub = ff.create_distplot(hist_data, group_labels, show_hist=False, show_rug=False)
-    fig.add_trace(go.Scatter(fig_sub['data'][0], line=dict(color='gray', width=2), showlegend=False),
-                  row=3, col=1)
-    fig.add_trace(go.Scatter(fig_sub['data'][1], line=dict(color='#E7664C', width=2), showlegend=False),
-                  row=3, col=1)
-
-    x1 = df['CitingRegions' + '_' + str(method)].loc[df.s_noa]
-    x1 = x1.astype(float)
-    x2 = df['CitingRegions' + '_' + str(method)].loc[df.s_oa]
-    x2 = x2.astype(float)
-    hist_data = [x1, x2]
-    fig_sub = ff.create_distplot(hist_data, group_labels, show_hist=False, show_rug=False)
-    fig.add_trace(go.Scatter(fig_sub['data'][0], line=dict(color='gray', width=2), showlegend=False),
-                  row=4, col=1)
-    fig.add_trace(go.Scatter(fig_sub['data'][1], line=dict(color='#E7664C', width=2), showlegend=False),
-                  row=4, col=1)
-
-    x1 = df['CitingFields' + '_' + str(method)].loc[df.s_noa]
-    x1 = x1.astype(float)
-    x2 = df['CitingFields' + '_' + str(method)].loc[df.s_oa]
-    x2 = x2.astype(float)
-    hist_data = [x1, x2]
-    fig_sub = ff.create_distplot(hist_data, group_labels, show_hist=False, show_rug=False)
-    fig.add_trace(go.Scatter(fig_sub['data'][0], line=dict(color='gray', width=2)), row=5, col=1)
-    fig.add_trace(go.Scatter(fig_sub['data'][1], line=dict(color='#E7664C', width=2)), row=5, col=1)
-
+    fig.update_layout(barmode='overlay')
     fig.update_layout(title='Fig. 2C: KDE on ' + method + ' scores based on samples')
     fig.update_layout(legend=dict(
         orientation="h",
