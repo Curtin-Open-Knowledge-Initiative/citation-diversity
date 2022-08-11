@@ -99,7 +99,7 @@ RERUN = False
 PROJECT_ID = 'coki-citation-diversity'
 DOI_TABLE = 'academic-observatory.observatory.doi20220730'
 MAG_REFERENCES_TABLE = 'academic-observatory.mag.PaperReferences20211206'
-CITATION_DIVERSITY_TABLE = 'coki-scratch-space.karl.citation_diversity_global'
+CITATION_DIVERSITY_TABLE = 'coki-scratch-space.citation_diversity_analysis.citation_diversity_global'
 
 SQL_TEMPLATE_PARAMETERS = dict(
     years=YEARS,

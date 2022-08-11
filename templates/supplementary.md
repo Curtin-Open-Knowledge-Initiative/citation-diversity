@@ -670,3 +670,111 @@ For papers affiliated to Africa:
 src={{ create_bar_compare_cit_regions.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_bar_compare_cit_regions.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
+
+
+<pdf:nextpage>
+# Section M: Citation diversity by field of study
+This section explores the OA effect on citation diversity as per field of study. For each field of study (as defined by 
+the MAG Level 0 fields), we track the mean and median Shannon and Gini-Simpson scores for the four OA categories, as 
+per citing actor.
+
+For Gini-Simpson scores on citing institutions:
+{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
+"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
+"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
+{% set filename = "line_div_by_field_{}_Institutions_GiniSim_mean.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
+set filename = "line_div_by_field_{}_Institutions_GiniSim_median.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
+{% endfor %}
+
+For Shannon scores on citing institutions:
+{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
+"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
+"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
+{% set filename = "line_div_by_field_{}_Institutions_Shannon_mean.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
+set filename = "line_div_by_field_{}_Institutions_Shannon_median.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
+{% endfor %}
+
+For Gini-Simpson scores on citing countries:
+{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
+"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
+"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
+{% set filename = "line_div_by_field_{}_Countries_GiniSim_mean.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
+set filename = "line_div_by_field_{}_Countries_GiniSim_median.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
+{% endfor %}
+
+For Shannon scores on citing countries:
+{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
+"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
+"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
+{% set filename = "line_div_by_field_{}_Countries_Shannon_mean.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
+set filename = "line_div_by_field_{}_Countries_Shannon_median.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
+{% endfor %}
+
+For Gini-Simpson scores on citing subregions:
+{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
+"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
+"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
+{% set filename = "line_div_by_field_{}_Subregions_GiniSim_mean.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
+set filename = "line_div_by_field_{}_Subregions_GiniSim_median.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
+{% endfor %}
+
+For Shannon scores on citing subregions:
+{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
+"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
+"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
+{% set filename = "line_div_by_field_{}_Subregions_Shannon_mean.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
+set filename = "line_div_by_field_{}_Subregions_Shannon_median.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
+{% endfor %}
+
+For Gini-Simpson scores on citing regions:
+{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
+"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
+"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
+{% set filename = "line_div_by_field_{}_Regions_GiniSim_mean.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
+set filename = "line_div_by_field_{}_Regions_GiniSim_median.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
+{% endfor %}
+
+For Shannon scores on citing regions:
+{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
+"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
+"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
+{% set filename = "line_div_by_field_{}_Regions_Shannon_mean.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
+set filename = "line_div_by_field_{}_Regions_Shannon_median.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
+{% endfor %}
+
+For Gini-Simpson scores on citing fields:
+{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
+"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
+"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
+{% set filename = "line_div_by_field_{}_Fields_GiniSim_mean.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
+set filename = "line_div_by_field_{}_Fields_GiniSim_median.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
+{% endfor %}
+
+For Shannon scores on citing fields:
+{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
+"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
+"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
+{% set filename = "line_div_by_field_{}_Fields_Shannon_mean.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
+set filename = "line_div_by_field_{}_Fields_Shannon_median.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
+{% endfor %}
+

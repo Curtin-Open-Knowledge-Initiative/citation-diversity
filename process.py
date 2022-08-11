@@ -1012,5 +1012,54 @@ def create_figure3b(af: AnalyticsFunction):
     print('... completed')
 
 
+def plot_line_div_by_field(df, field='Art', method='GiniSim', group='Countries', c_loc='median'):
+    # input variables method is either GiniSim or Shannon, group is one of Institutions, Countries, Subregions,
+    # or Regions or Fields
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=df['year'],
+                             y=df['noa_Citing' + str(group) + '_' + str(method) + '_' + c_loc],
+                             name='CLOSED', line=dict(color='gray')))
+    fig.add_trace(go.Scatter(x=df['year'],
+                             y=df['oa_Citing' + str(group) + '_' + str(method) + '_' + c_loc],
+                             name='OPEN', line=dict(color='#E7664C')))
+    fig.add_trace(go.Scatter(x=df['year'],
+                             y=df['gold_Citing' + str(group) + '_' + str(method) + '_' + c_loc],
+                             name='GOLD', line=dict(color='#FFD700')))
+    fig.add_trace(go.Scatter(x=df['year'],
+                             y=df['green_Citing' + str(group) + '_' + str(method) + '_' + c_loc],
+                             name='GREEN', line=dict(color='#006400')))
+    fig.update_layout(title='Figure: Comparing ' + c_loc + ' ' + str(method) + ' on citing ' + str(group) +
+                            ' for ' + field,
+                      xaxis_title="year",
+                      yaxis_title=str(method) + " index")
+    fig.update_layout(xaxis_type='category')
+    return fig
+
+
+def create_line_div_by_field(af: AnalyticsFunction):
+    # create plots for all years, groupings, and diversity metrics
+    # Fields exclude due to small numbers
+    print('... start line_div_by_field')
+    df_ = pd.read_csv('tempdata/cit_div_by_field.csv')
+    fields = df_['field'].unique()
+    for field in fields:
+        for group in GROUPS:
+            for metric in METRICS:
+                for c_loc in C_LOCS:
+                    fig = plot_line_div_by_field(df=df_[df_["field"] == field], field=field, method=metric, group=group, c_loc=c_loc)
+                    if not os.path.exists('report_graphs/line_div_by_field'):
+                        os.makedirs('report_graphs/line_div_by_field')
+                    filepath = f'report_graphs/line_div_by_field/line_div_by_field_{field}_{group}_{metric}_{c_loc}.png'
+                    fig.write_image(filepath, scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
+                    af.add_existing_file(filepath)
+    print('... completed')
+
+
+
+
+
+
+
+
 if __name__ == '__main__':
     process_sql_templates_to_queries(af='mock', rerun=True)

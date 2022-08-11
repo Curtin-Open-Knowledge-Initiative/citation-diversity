@@ -868,6 +868,11 @@ def create_figure3b_test():
     print('... completed')
 
 
+def testing():
+    df_ = pd.read_csv('tempdata/cit_div_by_field.csv')
+    fields = df_['field'].unique()
+    print(fields)
+
 if __name__ == "__main__":
     # generate_boxplot_div_by_cit_group(method='Shannon', group='Subregions', year=2015)
     # generate_boxplot_div_by_oa_group(method='Shannon', group='Countries', year=2019)
@@ -889,5 +894,5 @@ if __name__ == "__main__":
     # generate_subregion_vs_citations_perc_change_over_time(subregion='Micronesia', year_start='2010', year_end='2019')
 
     # generate_line_year_vs_cit_div()
-    create_figure2c()
+    testing()
 

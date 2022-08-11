@@ -10,10 +10,6 @@
   },
   "analytics": [
     [
-      "calculate_citation_diversity",
-      {}
-    ],
-    [
       "create_boxplot_div_by_cit_group",
       {
       }
@@ -94,6 +90,10 @@
     ],
     [
       "create_figure3b",
+      {}
+    ],
+    [
+      "create_line_div_by_field",
       {}
     ]
   ],
