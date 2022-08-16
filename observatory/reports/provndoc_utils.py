@@ -1,4 +1,5 @@
 import pyparsing as pp
+import json
 
 from typing import Union, List, Dict, NamedTuple, AnyStr
 from pathlib import Path
@@ -61,6 +62,41 @@ class Dag(object):
         self.nodes = nodes
         self.edges = edges
 
+    def to_dict(self):
+        return dict(
+            nodes=self.nodes,
+            edges=self.edges
+        )
+
+    def to_json(self,
+                filepath: Union[Path, str, None]=None):
+        if filepath:
+            with open(filepath, 'w') as f:
+                json.dump(f, self.to_dict())
+        else:
+            return json.dumps(self.to_dict())
+
+    def from_json(self,
+                  filepath: Union[Path, str],
+                  assert_empty: bool = True):
+        with open(filepath) as f:
+            j = json.load(f)
+
+        if assert_empty:
+            assert len(self.nodes) == 0
+            assert len(self.edges) == 0
+
+        self.nodes.update(j.get('nodes'))
+        self.edges.extend(j.get('edges'))
+
+    def edges_by_from_node(self,
+                          from_node: Union[str, Node]):
+
+        if type(from_node) == Node:
+            from_node = from_node.name
+
+        return [edge for edge in self.edges if edge[0] == from_node]
+
     def mermaid(self,
                 github_string=True):
         mermaid_string = """
@@ -95,8 +131,8 @@ graph LR
         return f'{body}{puncmap.get(node_type)[0]}{body}{puncmap.get(node_type)[1]}:::{node_type}'
 
 
-def build_sql_dag(rerun: bool,
-                  sql_processed_dir: Union[Path, str]):
+def build_sql_dag(sql_processed_dir: Union[Path, str])->Dag:
+
     dag = Dag()
     processed_sql = sorted(Path(sql_processed_dir).glob('*.sql'))
 
@@ -107,14 +143,14 @@ def build_sql_dag(rerun: bool,
     requires_head = heading_marker + pp.Literal('Requires') + pp.White()
     creates_head = heading_marker + pp.Literal('Creates') + pp.White()
 
-    info_body = pp.ZeroOrMore(pp.Word(pp.alphas + '.@://{}_'))
+    info_body = pp.ZeroOrMore(pp.Word(pp.alphas + pp.nums + '.@://{}_-'))
     summary = summary_head.suppress() + pp.Combine(info_body, adjacent=False, join_string=" ").set_results_name(
         'summary')
     description = description_head + info_body.set_results_name('description')
     contacts = contacts_head + info_body.set_results_name('contacts')
 
     node_type = (pp.Literal('table') ^ pp.Literal('file')).set_results_name('type', list_all_matches=True)
-    node_name = pp.Word(pp.alphas + '.@://{}_').set_results_name('name', list_all_matches=True)
+    node_name = pp.Word(pp.alphas + pp.nums + '.@://{}_-').set_results_name('name', list_all_matches=True)
     reference = node_type + node_name
     references = pp.Group(reference).set_results_name('references', list_all_matches=True)
     requires = requires_head + pp.Group(references[...]).set_results_name('requires')
@@ -155,9 +191,13 @@ def build_sql_dag(rerun: bool,
             print(e)
             print(f'Failed on {sql}')
             continue
-        test = dag.mermaid()
-        print(dag.mermaid())
 
+    return dag
+
+def dag_from_json(filepath):
+    dag = Dag()
+    dag.from_json(filepath)
 
 if __name__ == '__main__':
-    build_sql_dag(True, Path('../../report_data_processing/sql_templates'))
+    dag = build_sql_dag(Path('../../report_data_processing/sql_processed'))
+    print(dag.mermaid())

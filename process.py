@@ -49,80 +49,43 @@ TEMPDIR = Path('tempdir')
 def process_sql_templates_to_queries(af: AnalyticsFunction,
                                      rerun: bool=RERUN):
 
-    parameters = dict(
-
-    )
     provndoc_utils.process_sql_to_queries(af,
                                           SQL_TEMPLATE_PARAMETERS,
                                           rerun,
                                           SQL_TEMPLATES_DIRECTORY,
                                           SQL_PROCESSED_DIRECTORY)
 
+
 def provenance_n_documentation(af: AnalyticsFunction,
                                rerun: bool = RERUN):
 
-    provndoc_utils.build_sql_dag(af, rerun, SQL_PROCESSED_DIRECTORY)
+    dag = provndoc_utils.build_sql_dag(SQL_PROCESSED_DIRECTORY)
+    dag.to_json(DAG_FILEPATH)
 
 
-def create_global_citation_diversity_table(af: AnalyticsFunction,
-                                           rerun: bool = RERUN,
-                                           verbose: bool = True):
-    """
-    Run global_citations_query.sql_templates to generate article level citation diversity data
-    """
+def run_all_queries(af: AnalyticsFunction,
+                    rerun: bool = RERUN,
+                    verbose: bool = VERBOSE):
 
-    query = load_sql_to_string('global_citation_query.sql',
-                               directory=SQL_PROCESSED_DIRECTORY)
+    sql_files = sorted(Path(SQL_PROCESSED_DIRECTORY).glob('*.sql'))
+    dag = provndoc_utils.dag_from_json(DAG_FILEPATH)
 
-    if not report_utils.bigquery_rerun(af, rerun, verbose):
-        print(f"""Query is:            
-            {query}
+    for sql_file in sql_files:
+        query = load_sql_to_string(sql_file)
+        edges = dag.edges_by_from_node(f'file_{sql_file}')
+        assert len(edges) == 1
+        edge = edges[0]
+        if edge.to_node.startswith('table_'):
+            run_query_to_bq_table(query=query,
+                                  query_name=sql_file.name,
+                                  destination_table=DESTINATION_TABLES.get(sql_file.name),
+                                  rerun=rerun,
+                                  verbose=verbose
+                                  )
 
-            """)
-        print(f'Destination Table: {CITATION_DIVERSITY_TABLE}')
-        return
-
-    with bigquery.Client() as client:
-        job_config = bigquery.QueryJobConfig(destination=CITATION_DIVERSITY_TABLE,
-                                             create_disposition="CREATE_IF_NEEDED",
-                                             write_disposition="WRITE_TRUNCATE")
-
-        # Start the query, passing in the extra configuration.
-        query_job = client.query(query, job_config=job_config)  # Make an API request.
-        query_job.result()  # Wait for the job to complete.
-
-    print("...completed")
-
-
-def get_data(af: AnalyticsFunction):
-    """
-    Create main citation diversity table and save as new table in BigQuery
-    """
-
-    print("Generating the Citation Diversity Table")
-
-    for year in YEAR_RANGE:
-        query = load_sql_to_string('cit_div_vs_cit_count.sql_templates',
-                                   parameters=dict(year=year),
-                                   directory='report_data_processing/sql_templates')
-
-        # Start the query, passing in the extra configuration.
-        query_job = client.query(global_citation_query, job_config=job_config)  # Make an API request.
-        query_job.result()  # Wait for the job to complete.
-
-    print("...completed")
-
-
-def pull_data(af: AnalyticsFunction):
-    """
-    Pull data down for analysis
-    """
-
-    print("Pulling data from Bigquery")
-    data = pd.read_gbq(query=global_citation_query)
-    data.to_csv(TEMPDIR / 'file.csv')
-    af.add_existing_file(TEMPDIR / 'file.csv')
-    print('...completed')
+        elif edge.to_node.startswith('file_'):
+            df = pd.read_gbq(query)
+            df.to_csv(DATA_FOLDER / f'{sql_file.stem}.csv')
 
 
 def plot_boxplot_div_by_cit_group(df, method='GiniSim', group='Countries', year=2019):

@@ -23,6 +23,10 @@
 from pathlib import Path
 from typing import Union, Optional
 
+from google.cloud import bigquery
+
+from observatory.reports import report_utils
+
 SQL_TEMPLATES_DIRECTORY = Path("report_data_processing/sql_templates")
 SQL_PROCESSED_DIRECTORY = Path("report_data_processing/sql_processed")
 
@@ -43,3 +47,27 @@ def load_sql_to_string(filepath: Union[str, Path],
 
     return sql_string
 
+def run_query_to_bq_table(query: str,
+                          query_name,
+                          destination_table,
+                          rerun,
+                          verbose):
+
+    if not report_utils.bigquery_rerun(query_name, rerun, verbose):
+        print(f"""Query is:            
+            {query}
+
+            """)
+        print(f'Destination Table: {destination_table}')
+        return
+
+    with bigquery.Client() as client:
+        job_config = bigquery.QueryJobConfig(destination=destination_table,
+                                             create_disposition="CREATE_IF_NEEDED",
+                                             write_disposition="WRITE_TRUNCATE")
+
+        # Start the query, passing in the extra configuration.
+        query_job = client.query(query, job_config=job_config)  # Make an API request.
+        query_job.result()  # Wait for the job to complete.
+
+    print("...completed")

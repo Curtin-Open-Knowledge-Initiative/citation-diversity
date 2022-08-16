@@ -17,7 +17,7 @@
 # Authors: COKI Team
 
 # Utility functions
-# from pathlib import Path
+from pathlib import Path
 
 # which groupings to run
 GROUPS_NOT_FIELDS = ['Institutions', 'Countries', 'Subregions', 'Regions']
@@ -31,6 +31,32 @@ YEARS = list(range(2010, 2020))
 
 # measures of central location
 C_LOCS = ['mean', 'median']
+
+# Table Locations
+RERUN = False
+VERBOSE = True
+PROJECT_ID = 'coki-citation-diversity'
+DOI_TABLE = 'academic-observatory.observatory.doi20220730'
+MAG_REFERENCES_TABLE = 'academic-observatory.mag.PaperReferences20211206'
+CITATION_DIVERSITY_TABLE = 'coki-scratch-space.citation_diversity_analysis.citation_diversity_global'
+
+DESTINATION_TABLES = {
+    'global_citation_query.sql': CITATION_DIVERSITY_TABLE
+}
+
+SQL_TEMPLATE_PARAMETERS = dict(
+    years=YEARS,
+    first_year=YEARS[0],
+    last_year=YEARS[-1],
+    doi_table=DOI_TABLE,
+    mag_references_table=MAG_REFERENCES_TABLE,
+    citation_diversity_table=CITATION_DIVERSITY_TABLE
+)
+
+# File Locations
+DATA_FOLDER = Path('tempdata')
+DAG_FILENAME = 'dag.json'
+DAG_FILEPATH = DATA_FOLDER / DAG_FILENAME
 
 # color mapping when comparing regions
 COLOR_MAP_REGIONS = {
@@ -93,22 +119,6 @@ ORDER_SUBREGIONS = [
     "Latin America and the Caribbean", "Northern America", "Australia and New Zealand", "Melanesia",
     "Polynesia", "Micronesia", "Northern Africa", "Sub-Saharan Africa"
 ]
-
-# Table Locations
-RERUN = False
-PROJECT_ID = 'coki-citation-diversity'
-DOI_TABLE = 'academic-observatory.observatory.doi20220730'
-MAG_REFERENCES_TABLE = 'academic-observatory.mag.PaperReferences20211206'
-CITATION_DIVERSITY_TABLE = 'coki-scratch-space.citation_diversity_analysis.citation_diversity_global'
-
-SQL_TEMPLATE_PARAMETERS = dict(
-    years=YEARS,
-    first_year=YEARS[0],
-    last_year=YEARS[-1],
-    doi_table=DOI_TABLE,
-    mag_references_table=MAG_REFERENCES_TABLE,
-    citation_diversity_table=CITATION_DIVERSITY_TABLE
-)
 
 # plotly figure sizes
 FIG_SCALE = 1
