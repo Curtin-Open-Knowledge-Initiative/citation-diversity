@@ -130,9 +130,9 @@ def plot_boxplot_div_by_cit_group(df, method='GiniSim', group='Countries', year=
     # or Regions or Fields
     fig = go.Figure()
     fig.add_trace(go.Box(y=df['Citing' + str(group) + '_' + str(method)].loc[df.is_oa],
-                         x=df['cit_group'].loc[df.is_oa], name='OA'))
+                         x=df['cit_group'].loc[df.is_oa], name='OPEN', marker_color='#E7664C'))
     fig.add_trace(go.Box(y=df['Citing' + str(group) + '_' + str(method)].loc[~df.is_oa],
-                         x=df['cit_group'].loc[~df.is_oa], name='not OA'))
+                         x=df['cit_group'].loc[~df.is_oa], name='CLOSED', marker_color='gray'))
     fig.update_layout(title='Figure: Box plots of ' + str(method) + ' index on citing ' + str(group)
                             + ' by citation groups for ' + str(year) +
                             '<br><sup>(A total of 56000 papers. '
@@ -152,6 +152,7 @@ def create_boxplot_div_by_cit_group(af: AnalyticsFunction):
                                                              "15-16", "17-19", "20-23", "24-29", "30-42",
                                                              "43-59", ">=60"])
         df_ = df_.sort_values('cit_group')
+
         for group in GROUPS:
             for metric in METRICS:
                 fig = plot_boxplot_div_by_cit_group(df=df_, method=metric, group=group, year=year)
@@ -169,14 +170,14 @@ def plot_boxplot_div_by_oa_group(df, method='GiniSim', group='Countries', year=2
     # input variables method is either GiniSim or Shannon, group is one of Institutions, Countries, Subregions,
     # or Regions or Fields
     fig = go.Figure()
-    fig.add_trace(go.Box(y=df['Citing' + str(group) + '_' + str(method)].loc[df.s_noa], name='not OA',
-                         marker_color='indianred'))
-    fig.add_trace(go.Box(y=df['Citing' + str(group) + '_' + str(method)].loc[df.s_oa], name='OA',
-                         marker_color='royalblue'))
-    fig.add_trace(go.Box(y=df['Citing' + str(group) + '_' + str(method)].loc[df.s_gold], name='gold OA',
-                         marker_color='darkgoldenrod'))
-    fig.add_trace(go.Box(y=df['Citing' + str(group) + '_' + str(method)].loc[df.s_green], name='green OA',
-                         marker_color='darkgreen'))
+    fig.add_trace(go.Box(y=df['Citing' + str(group) + '_' + str(method)].loc[df.s_noa], name='CLOSED',
+                         marker_color='gray'))
+    fig.add_trace(go.Box(y=df['Citing' + str(group) + '_' + str(method)].loc[df.s_oa], name='OPEN',
+                         marker_color='#E7664C'))
+    fig.add_trace(go.Box(y=df['Citing' + str(group) + '_' + str(method)].loc[df.s_gold], name='GOLD',
+                         marker_color='#FFD700'))
+    fig.add_trace(go.Box(y=df['Citing' + str(group) + '_' + str(method)].loc[df.s_green], name='GREEN',
+                         marker_color='#006400'))
     fig.update_layout(
         title='Figure: Box plots of ' + str(method) + ' index on citing ' + str(group) + ' by OA status for '
               + str(year) +
@@ -209,13 +210,12 @@ def create_boxplot_div_by_oa_group(af: AnalyticsFunction):
 def plot_boxplot_uniq_cit_by_cit_group(df, group='Countries', year=2019):
     # input variable group is one of Institutions, Countries, Subregions,
     # or Regions or Fields
-
     # print(df[df['is_oa'] == True][['CitingCountries_Shannon']])
     fig = go.Figure()
     fig.add_trace(go.Box(y=df['Citing' + str(group) + '_count_uniq'].loc[df.is_oa],
-                         x=df['cit_group'].loc[df.is_oa], name='OA'))
+                         x=df['cit_group'].loc[df.is_oa], name='OPEN', marker_color='#E7664C'))
     fig.add_trace(go.Box(y=df['Citing' + str(group) + '_count_uniq'].loc[~df.is_oa],
-                         x=df['cit_group'].loc[~df.is_oa], name='not OA'))
+                         x=df['cit_group'].loc[~df.is_oa], name='CLOSED', marker_color='gray'))
     fig.update_layout(title='Figure: Box plots of number of unique citing ' + str(group)
                             + ' by citation groups for ' + str(year) +
                             '<br><sup>(A total of 56000 papers. '
@@ -229,6 +229,7 @@ def plot_boxplot_uniq_cit_by_cit_group(df, group='Countries', year=2019):
 def create_boxplot_uniq_cit_by_cit_group(af: AnalyticsFunction):
     # create plots for all years, groupings, and diversity metrics
     print('... start boxplot_uniq_cit_by_cit_group')
+
     for year in YEARS:
         df_ = pd.read_csv('tempdata/samples_by_cit_group_and_oa_' + str(year) + '.csv', dtype={'cit_group': str})
         df_['cit_group'] = pd.Categorical(df_['cit_group'], ["2", "3", "4", "5-6", "7-9", "10-11", "12-14",
@@ -250,14 +251,14 @@ def plot_boxplot_uniq_cit_by_oa_group(df, group='Countries', year=2019):
     # input variable group is one of Institutions, Countries, Subregions,
     # or Regions or Fields
     fig = go.Figure()
-    fig.add_trace(go.Box(y=df['Citing' + str(group) + '_count_uniq'].loc[df.s_noa], name='not OA',
-                         marker_color='indianred'))
-    fig.add_trace(go.Box(y=df['Citing' + str(group) + '_count_uniq'].loc[df.s_oa], name='OA',
-                         marker_color='royalblue'))
-    fig.add_trace(go.Box(y=df['Citing' + str(group) + '_count_uniq'].loc[df.s_gold], name='gold OA',
-                         marker_color='darkgoldenrod'))
-    fig.add_trace(go.Box(y=df['Citing' + str(group) + '_count_uniq'].loc[df.s_green], name='green OA',
-                         marker_color='darkgreen'))
+    fig.add_trace(go.Box(y=df['Citing' + str(group) + '_count_uniq'].loc[df.s_noa], name='CLOSED',
+                         marker_color='gray'))
+    fig.add_trace(go.Box(y=df['Citing' + str(group) + '_count_uniq'].loc[df.s_oa], name='OPEN',
+                         marker_color='#E7664C'))
+    fig.add_trace(go.Box(y=df['Citing' + str(group) + '_count_uniq'].loc[df.s_gold], name='GOLD',
+                         marker_color='#FFD700'))
+    fig.add_trace(go.Box(y=df['Citing' + str(group) + '_count_uniq'].loc[df.s_green], name='GREEN',
+                         marker_color='#006400'))
     fig.update_layout(title='Figure: Box plots of number of unique citing ' + str(group) + ' by OA status for '
                             + str(year) +
                             '<br><sup>(samples of 10000 non-OA, 10000 OA, '
@@ -270,6 +271,7 @@ def plot_boxplot_uniq_cit_by_oa_group(df, group='Countries', year=2019):
 def create_boxplot_uniq_cit_by_oa_group(af: AnalyticsFunction):
     # create plots for all years, groupings, and diversity metrics
     print('... start boxplot_uniq_cit_by_oa_group')
+
     for year in YEARS:
         df_ = pd.read_csv('tempdata/samples_by_oa_' + str(year) + '.csv')
         df_.fillna(value=False, inplace=True)
@@ -337,18 +339,18 @@ def plot_bar_div_vs_year(df, method='GiniSim', group='Countries', c_loc='mean'):
     # group = Institutions, Countries, Subregions, or Regions or Fields;
     # c_loc = 'mean' or 'median'
     fig = go.Figure()
-    fig.add_trace(go.Bar(x=df['year'],
+    fig.add_trace(go.Scatter(x=df['year'],
                          y=df['noa_' + str(group) + '_' + str(method) + '_' + str(c_loc)],
-                         name='not OA', marker_color='indianred'))
-    fig.add_trace(go.Bar(x=df['year'],
+                         name='CLOSED', line=dict(color='gray')))
+    fig.add_trace(go.Scatter(x=df['year'],
                          y=df['oa_' + str(group) + '_' + str(method) + '_' + str(c_loc)],
-                         name='OA', marker_color='royalblue'))
-    fig.add_trace(go.Bar(x=df['year'],
+                         name='OPEN', line=dict(color='#E7664C')))
+    fig.add_trace(go.Scatter(x=df['year'],
                          y=df['gold_' + str(group) + '_' + str(method) + '_' + str(c_loc)],
-                         name='gold OA', marker_color='darkgoldenrod'))
-    fig.add_trace(go.Bar(x=df['year'],
+                         name='GOLD', line=dict(color='#FFD700')))
+    fig.add_trace(go.Scatter(x=df['year'],
                          y=df['green_' + str(group) + '_' + str(method) + '_' + str(c_loc)],
-                         name='green OA', marker_color='darkgreen'))
+                         name='GREEN', line=dict(color='#006400')))
     fig.update_layout(title='Figure: The ' + str(c_loc) + ' ' + str(method) + ' index of citing ' + str(group) + ' ',
                       xaxis_title="year",
                       yaxis_title=str(method) + " index")
@@ -360,7 +362,9 @@ def create_bar_div_vs_year(af: AnalyticsFunction):
     # create plots for all years, groupings, and diversity metrics
     # data = 'all_papers' or 'atleast2cit'; the latter is used below.
     df_ = pd.read_csv('tempdata/summary_stats_by_year_atleast2cit.csv')
+
     print('... start bar_div_vs_year')
+
     for group in GROUPS:
         for metric in METRICS:
             for c_loc in C_LOCS:
@@ -378,6 +382,7 @@ def create_bar_doi_count_combined(af: AnalyticsFunction):
     # data = 'all_papers' or 'atleast2cit', latter used here
     df = pd.read_csv('tempdata/summary_stats_by_year_atleast2cit.csv')
     print('... start bar_doi_count_combined')
+
     fig = go.Figure()
     fig.add_trace(go.Bar(x=df['year'],
                          y=df['doi_count'],
@@ -399,13 +404,14 @@ def create_bar_doi_count_by_oa(af: AnalyticsFunction):
     # data = 'all_papers' or 'atleast2cit', latter used here
     df = pd.read_csv('tempdata/summary_stats_by_year_atleast2cit.csv')
     print('... start bar_doi_count_by_oa')
+
     fig = go.Figure()
     fig.add_trace(go.Bar(x=df['year'],
                          y=df['noa_count'],
-                         name='not OA', marker_color='indianred'))
+                         name='CLOSED', marker_color='gray'))
     fig.add_trace(go.Bar(x=df['year'],
                          y=df['oa_count'],
-                         name='OA', marker_color='royalblue'))
+                         name='OPEN', marker_color='#E7664C'))
     fig.update_layout(title='Figure: Annual OA versus non-OA DOI counts',
                       xaxis_title="year",
                       yaxis_title="doi_count")
@@ -422,19 +428,19 @@ def plot_bar_cit_count_by_oa(df, c_loc='mean'):
     # input variables:
     # c_loc = 'mean' or 'median'
     fig = go.Figure()
-    fig.add_trace(go.Bar(x=df['year'],
-                         y=df['noa_cc_' + str(c_loc)],
-                         name='not OA', marker_color='indianred'))
-    fig.add_trace(go.Bar(x=df['year'],
-                         y=df['oa_cc_' + str(c_loc)],
-                         name='OA', marker_color='royalblue'))
-    fig.add_trace(go.Bar(x=df['year'],
-                         y=df['gold_cc_' + str(c_loc)],
-                         name='gold OA', marker_color='darkgoldenrod'))
-    fig.add_trace(go.Bar(x=df['year'],
-                         y=df['green_cc_' + str(c_loc)],
-                         name='green OA', marker_color='darkgreen'))
-    fig.update_layout(title='Figure: The ' + str(c_loc) + ' citation count per OA type',
+    fig.add_trace(go.Scatter(x=df['year'],
+                             y=df['noa_cc_' + str(c_loc)],
+                             name='CLOSED', line=dict(color='gray')))
+    fig.add_trace(go.Scatter(x=df['year'],
+                             y=df['oa_cc_' + str(c_loc)],
+                             name='OPEN', line=dict(color='#E7664C')))
+    fig.add_trace(go.Scatter(x=df['year'],
+                             y=df['gold_cc_' + str(c_loc)],
+                             name='GOLD', line=dict(color='#FFD700')))
+    fig.add_trace(go.Scatter(x=df['year'],
+                             y=df['green_cc_' + str(c_loc)],
+                             name='GREEN', line=dict(color='#006400')))
+    fig.update_layout(title='Figure: The ' + str(c_loc) + ' citation count per OA category',
                       xaxis_title="year",
                       yaxis_title=str(c_loc) + " citation count")
     fig.update_layout(xaxis_type='category')
@@ -445,6 +451,7 @@ def create_bar_cit_count_by_oa(af: AnalyticsFunction):
     # create plots for all years, groupings, and diversity metrics
     # data = 'all_papers' or 'atleast2cit'; the latter is used below.
     df_ = pd.read_csv('tempdata/summary_stats_by_year_atleast2cit.csv')
+
     print('... start bar_cit_count_by_oa')
     for c_loc in C_LOCS:
         fig = plot_bar_cit_count_by_oa(df=df_, c_loc=c_loc)
@@ -462,18 +469,18 @@ def plot_bar_uniq_cit_count(df, group='Countries', c_loc='mean'):
     # c_loc = 'mean' or 'median'
     # this only applies to papers with at least 2 citations
     fig = go.Figure()
-    fig.add_trace(go.Bar(x=df['year'],
-                         y=df['noa_' + str(group) + '_uniq_' + str(c_loc)],
-                         name='not OA', marker_color='indianred'))
-    fig.add_trace(go.Bar(x=df['year'],
-                         y=df['oa_' + str(group) + '_uniq_' + str(c_loc)],
-                         name='OA', marker_color='royalblue'))
-    fig.add_trace(go.Bar(x=df['year'],
-                         y=df['gold_' + str(group) + '_uniq_' + str(c_loc)],
-                         name='gold OA', marker_color='darkgoldenrod'))
-    fig.add_trace(go.Bar(x=df['year'],
-                         y=df['green_' + str(group) + '_uniq_' + str(c_loc)],
-                         name='green OA', marker_color='darkgreen'))
+    fig.add_trace(go.Scatter(x=df['year'],
+                             y=df['noa_' + str(group) + '_uniq_' + str(c_loc)],
+                             name='CLOSED', line=dict(color='gray')))
+    fig.add_trace(go.Scatter(x=df['year'],
+                             y=df['oa_' + str(group) + '_uniq_' + str(c_loc)],
+                             name='OPEN', line=dict(color='#E7664C')))
+    fig.add_trace(go.Scatter(x=df['year'],
+                             y=df['gold_' + str(group) + '_uniq_' + str(c_loc)],
+                             name='GOLD', line=dict(color='#FFD700')))
+    fig.add_trace(go.Scatter(x=df['year'],
+                             y=df['green_' + str(group) + '_uniq_' + str(c_loc)],
+                             name='GREEN', line=dict(color='#006400')))
     fig.update_layout(title='Figure: The ' + str(c_loc) + ' number of unique citing ' + str(group),
                       xaxis_title="year",
                       yaxis_title=str(c_loc) + " unique citing " + str(group))
@@ -485,7 +492,9 @@ def create_bar_uniq_cit_count(af: AnalyticsFunction):
     # create plots for all years, groupings, and diversity metrics
     # data = 'all_papers' or 'atleast2cit'; the latter is used below.
     df_ = pd.read_csv('tempdata/summary_stats_by_year_atleast2cit.csv')
+
     print('... start bar_uniq_cit_count')
+
     for group in GROUPS:
         for c_loc in C_LOCS:
             fig = plot_bar_uniq_cit_count(df=df_, group=group, c_loc=c_loc)
@@ -1055,6 +1064,41 @@ def create_line_div_by_field(af: AnalyticsFunction):
     print('... completed')
 
 
+def plot_kde_dist_on_cit_div(df, bin1, bin2, method, group, year):
+    # plot kde graphs for selected data range
+    # input variable: data, labels, bin sizes
+    oa_labels = ["CLOSED", "OPEN"]
+    oa_colors = ["gray", "#E7664C"]
+    fig = ff.create_distplot(df, oa_labels, show_hist=True, bin_size=[bin1, bin2], show_rug=False, colors=oa_colors)
+    fig.update_layout(barmode='overlay')
+    fig.update_layout(title='Figure: KDE of ' + method + ' scores on citing ' + group + ' for ' + str(year))
+    return fig
+
+
+def create_kde_dist_on_cit_div(af: AnalyticsFunction):
+    # create kde plots for citation diversity comparing oa categories
+    print('... start kde_dist_on_cit_div')
+
+    for year in YEARS:
+        df = pd.read_csv('tempdata/samples_by_oa_'+str(year)+'.csv')
+        df.fillna(value=False, inplace=True)
+        for group in GROUPS:
+            for metric in METRICS:
+                x1 = df['Citing' + str(group) + '_' + str(metric)].loc[df.s_noa]
+                x1 = x1.astype(float)
+                x2 = df['Citing' + str(group) + '_' + str(metric)].loc[df.s_oa]
+                x2 = x2.astype(float)
+                hist_data = [x1, x2]
+                bin1 = max(x1)/50
+                bin2 = max(x2)/50
+                fig = plot_kde_dist_on_cit_div(df=hist_data, bin1=bin1, bin2=bin2, method=metric, group=group,
+                                               year=year)
+                if not os.path.exists('report_graphs/kde_dist_on_cit_div'):
+                    os.makedirs('report_graphs/kde_dist_on_cit_div')
+                filepath = f'report_graphs/kde_dist_on_cit_div/kde_dist_on_cit_div_{metric}_{group}_{year}.png'
+                fig.write_image(filepath, scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
+                af.add_existing_file(filepath)
+    print('... completed')
 
 
 

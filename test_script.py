@@ -873,6 +873,38 @@ def testing():
     fields = df_['field'].unique()
     print(fields)
 
+
+def plot_kde_dist_on_cit_div(df, labels, bin1, bin2, method, colors):
+    # plot kde graphs for selected data range
+    # input variable: data, labels, bin sizes
+    fig = ff.create_distplot(df, labels, show_hist=True, bin_size=[bin1, bin2], show_rug=False, colors=colors)
+    fig.update_layout(barmode='overlay')
+    fig.update_layout(title='Fig: KDE on ' + method + ' scores based on samples')
+    return fig
+
+
+def create_kde_dist_on_cit_div():
+    # create kde plots for citation diversity comparing oa categories
+    print('... start kde_disy_on_cit_div')
+
+    df = pd.read_csv('tempdata/samples_by_oa_2019.csv')
+    df.fillna(value=False, inplace=True)
+    method = "Shannon"
+    oa_labels = ["CLOSED", "OPEN"]
+    oa_colors = ["gray", "#E7664C"]
+
+    x1 = df['CitingInstitutions' + '_' + str(method)].loc[df.s_noa]
+    x1 = x1.astype(float)
+    x2 = df['CitingInstitutions' + '_' + str(method)].loc[df.s_oa]
+    x2 = x2.astype(float)
+    hist_data = [x1, x2]
+    bin1 = max(x1)/50
+    bin2 = max(x2)/50
+
+    fig = plot_kde_dist_on_cit_div(df=hist_data, labels=oa_labels, bin1=bin1, bin2=bin2, method=method,
+                                   colors=oa_colors)
+    fig.show()
+
 if __name__ == "__main__":
     # generate_boxplot_div_by_cit_group(method='Shannon', group='Subregions', year=2015)
     # generate_boxplot_div_by_oa_group(method='Shannon', group='Countries', year=2019)
@@ -894,5 +926,5 @@ if __name__ == "__main__":
     # generate_subregion_vs_citations_perc_change_over_time(subregion='Micronesia', year_start='2010', year_end='2019')
 
     # generate_line_year_vs_cit_div()
-    testing()
+    create_kde_dist_on_cit_div()
 

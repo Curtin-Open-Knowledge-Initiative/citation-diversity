@@ -23,11 +23,11 @@ observations, etc.
 
 
 <pdf:nextpage>
-# Section A: Tracking overall DOI and citation counts over publication years
+# Section A: Summary statistics for the overall data
 
-The following figures present various summary statistics related to our overall data. The top-left figure shows the 
+The following figures present various summary statistics for our overall data. The top-left figure shows the 
 overall number of paper (with DOIs) that are included in our study. These are grouped into their respective publication 
-year as per Crossref metadata. The top-right figure shows the yearly comparison between the amount of OA versus non-OA 
+year as per Crossref metadata records. The top-right figure shows the yearly comparison between the amount of OA versus non-OA 
 papers. There is a clear increase in the proportion of OA papers over the ten-year period. The bottom two figures 
 depict the comparisons of mean and median, respectively, number of citations received by papers across different OA 
 categories. There is a clear and consistent signal of OA papers receiving more citations when looking at the whole data 
@@ -42,16 +42,16 @@ src={{ create_bar_cit_count_by_oa.files["bar_cit_count_by_oa_median.png"].cache_
 
 
 <pdf:nextpage>
-# Section B: Tracking the mean and median number of unique citing entities over publication years
-
+# Section B: Number of unique citing entities over publication years
 The following figures track the mean and median numbers of unique citing entities over time and compares them across
-different OA groups. For example, to calculate the number of unique citing countries for a particular paper, 
+different OA categories. For example, to calculate the number of unique citing countries for a particular paper, 
 we count the number of (unique) countries for which its citing papers are affiliated to. The main point of interest 
 here is that OA papers garners more unique citing entities almost consistently over time. Furthermore, papers that are 
 Green OA garners the highest number of unique citing entities. We do note however that papers published Gold OA 
 are also likely to be published Green OA. This means these papers potentially gets the benefits of both routes of OA. 
 We also note that flat pattern for the median number of unique regions is the result of low number of possible regions, 
-and a similar pattern is shown for the median number of citing fields due to most citations occurring within-field.
+and a similar pattern is shown for the median number of citing fields due to most citations occurring within-field for 
+a large portion of papers that have low citation counts.
 {% for group in ["Institutions","Countries","Subregions","Fields", "Regions"] %}
 {% set filename = "bar_uniq_cit_count_{}_mean.png" %} <img 
 src={{ create_bar_uniq_cit_count.files[filename.format(group)].cache_filepath }} width="300" /> {% 
@@ -61,7 +61,7 @@ src={{ create_bar_uniq_cit_count.files[filename.format(group)].cache_filepath }}
 
 
 <pdf:nextpage>
-# Section C: Comparing distributions of number of unique citing entities across OA groups
+# Section C: Boxplot of number of unique citing entities across OA groups
 This section extends the comparison of unique citing entities to their respective distributions, as represented by box plots. 
 To ensure robust comparisons, we sample 10,000 papers independently from each OA category as per citing entity grouping and 
 year of publication. The quartiles of number of unique citing entities are shown together with potential outliers in each OA 
@@ -107,7 +107,7 @@ src={{ create_boxplot_uniq_cit_by_oa_group.files[filename.format(year+1)].cache_
 
 
 <pdf:nextpage>
-# Section D: Comparing distributions of number of unique citing entities across citation groups
+# Section D: Boxplot of number of unique citing entities across citation groups
 In this section, we split the papers into groups depending on citation numbers and by OA/non-OA status. The sample of 
 papers includes 2,000 OA papers and 2,000 non-OA papers from each citation group (i.e., 56,000 papers in total), 
 as per citing entity group and publication 
@@ -155,7 +155,7 @@ src={{ create_boxplot_uniq_cit_by_cit_group.files[filename.format(year+1)].cache
 
 
 <pdf:nextpage>
-# Section E: Tracking mean and median diversity scores over publication years
+# Section E: Citation diversity scores over publication years
 In this section, we present the summary results of the diversity scores for papers in the various OA categories. Here, 
 we include all papers in our study. In the following figures, mean and median diversity scores are tracked over ten years. This is plotted for 
 various combinations of diversity measure and citing entity. Throughout the different measures across different 
@@ -181,7 +181,7 @@ src={{ create_bar_div_vs_year.files[filename.format(group)].cache_filepath }} wi
 
 
 <pdf:nextpage>
-# Section F: Comparing distributions of diversity scores across OA groups
+# Section F: Boxplot of citation diversity scores across OA groups
 In the following figures, the distributions of diversity scores of papers (as per citing entity grouping) of different 
 OA categories are compared. Random samples of 10,000 papers from each OA category is used in this comparison. The skewness 
 towards the lower tails in the case of Gini-Simpson index scores is driven by 
@@ -264,7 +264,7 @@ src={{ create_boxplot_div_by_oa_group.files[filename.format(year+1)].cache_filep
 
 
 <pdf:nextpage>
-# Section G: Comparing distributions of diversity scores across citation groups
+# Section G: Boxplot of citation diversity scores across citation groups
 In these figures, papers are split into groups by citation counts. Similar to the earlier section on comparing citation groups, 
 2,000 OA papers and 2,000 non-OA papers are sampled from each citation group. A diversity score is calculated based on 
 citing entities for each paper and boxplot constructed for each OA category within each group. Each figure below represent 
@@ -346,7 +346,7 @@ src={{ create_boxplot_div_by_cit_group.files[filename.format(year+1)].cache_file
 
 
 <pdf:nextpage>
-# Section H: Tracking diversity scores against citation counts
+# Section H: Citation diversity scores over citation counts
 In the following figures, quartiles of diversity scores are tracked against citation counts for the complete data set. Instead 
 of sampling papers by citation groups in the previous section, we include all papers in the study in the following analysis and 
 all citation counts (not groups). This is plotted for various combinations of diversity measure, citing entity and publication year. 
@@ -414,7 +414,7 @@ src={{ create_line_div_vs_cit_count.files[filename.format(year+1)].cache_filepat
 
 
 <pdf:nextpage>
-# Section I: Tracking OA citation advantage for subregions using average citation ratios
+# Section I: OA citation advantage for subregions using average citation ratios
 This section explores the OA citation advantage in terms of how much more citations OA papers garner, on average, 
 over time. The average citation ratio (i.e., percentage ratio in average citation) is calculated as the average number 
 of citations to OA papers, divided by the average number of citations to non-OA papers, and times by one hundred. For 
@@ -476,7 +476,7 @@ src={{ create_line_compare_cit_subregions.files["line_compare_cit_count_subregio
 
 
 <pdf:nextpage>
-# Section J: Tracking OA citation advantage for regions using average citation ratios
+# Section J: OA citation advantage for regions using average citation ratios
 Continuing from the previous section, the corresponding results for regions are presented here. Similar to the previous section,
 there appears to be something peculiar with papers affiliated to Asia and Asian subregions. This is potentially the result 
 of several factors. First, our data's coverage of the Chinese language publications are relatively low as a result of 
@@ -673,7 +673,7 @@ src={{ create_bar_compare_cit_regions.files[filename.format(year+1)].cache_filep
 
 
 <pdf:nextpage>
-# Section M: Citation diversity by field of study
+# Section M: Citation diversity scores across fields of study
 This section explores the OA effect on citation diversity as per field of study. For each field of study (as defined by 
 the MAG Level 0 fields), we track the mean and median Shannon and Gini-Simpson scores for the four OA categories, as 
 per citing actor.
@@ -777,4 +777,88 @@ src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} 
 set filename = "line_div_by_field_{}_Fields_Shannon_median.png" %} <img 
 src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
 {% endfor %}
+
+
+<pdf:nextpage>
+# Section N: Density estimation of citation diversity scores
+We apply kernel density estimation to citation diversity scores for each year, citing actors, and diversity measure. 
+These are paired with the corresponding histograms. Samples used contain 10,000 OA papers and 10,000 non-OA papers for
+each publication year. These graphs provide overviews of the distributions of citation 
+diversity scores. The clusters around zero, and around 0.5 for Gini-Simpson index and around 0.6 for Shannon index, 
+are results of portions of low-citation papers. The most important signal from these graphs is the consistently better 
+performance of the OA papers. This can be seen from the upward shifts of the distributions, decreases of proportions 
+of papers with low scores (including the cluster around zero), and the heavier upper tails.
+
+The first set of these is based on the Gini-Simpson index and institutions as citing entities:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "kde_dist_on_cit_div_GiniSim_Institutions_{}.png" %} <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+The first set of these is based on the Gini-Simpson index and countries as citing entities:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "kde_dist_on_cit_div_GiniSim_Countries_{}.png" %} <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+The first set of these is based on the Gini-Simpson index and subregions as citing entities:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "kde_dist_on_cit_div_GiniSim_Subregions_{}.png" %} <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+The first set of these is based on the Gini-Simpson index and regions as citing entities:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "kde_dist_on_cit_div_GiniSim_Regions_{}.png" %} <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+The first set of these is based on the Gini-Simpson index and fields as citing entities:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "kde_dist_on_cit_div_GiniSim_Fields_{}.png" %} <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+The first set of these is based on the Shannon index and institutions as citing entities:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "kde_dist_on_cit_div_Shannon_Institutions_{}.png" %} <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+The first set of these is based on the Shannon index and countries as citing entities:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "kde_dist_on_cit_div_Shannon_Countries_{}.png" %} <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+The first set of these is based on the Shannon index and subregions as citing entities:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "kde_dist_on_cit_div_Shannon_Subregions_{}.png" %} <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+The first set of these is based on the Shannon index and regions as citing entities:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "kde_dist_on_cit_div_Shannon_Regions_{}.png" %} <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+The first set of these is based on the Shannon index and fields as citing entities:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "kde_dist_on_cit_div_Shannon_Fields_{}.png" %} <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+
+
 

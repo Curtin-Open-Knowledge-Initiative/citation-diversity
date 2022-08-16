@@ -95,6 +95,10 @@
     [
       "create_line_div_by_field",
       {}
+    ],
+    [
+      "create_kde_dist_on_cit_div",
+      {}
     ]
   ],
   "templates": [

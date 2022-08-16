@@ -121,6 +121,7 @@ WITH
             unpaywall.bronze as bronze,
             mag.PaperId AS PaperId,
             mag.CitationCount as CitationCount,
+            mag.fields.level_0 as fields,
             C1.CitingInstitutions_count_all AS CitingInstitutions_count_all,
             C1.CitingInstitutions_count_uniq AS CitingInstitutions_count_uniq,
             C1.CitingInstitutions_name AS CitingInstitutions_name,
