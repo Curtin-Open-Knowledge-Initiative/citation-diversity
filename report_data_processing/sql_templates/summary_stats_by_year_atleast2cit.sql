@@ -1,9 +1,11 @@
 /*
 ## Summary
-
-Creates the main DOI level citation diversity table to be deployed to BigQuery
+Generates summary statistics for the overall data
 
 ## Description
+Creates a table that records overall DOI counts, DOI counts across OA categories, corresponding total citation
+counts, and mean and median diversity scores by the different citing groups, for each publication year. This includes
+only papers with 2 or more citations, for which diversity scores are applicable.
 
 ## Contacts
 karl.huang@curtin.edu.au

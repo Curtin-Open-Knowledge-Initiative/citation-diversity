@@ -1,3 +1,25 @@
+/*
+## Summary
+Generates yearly summary diversity scores for each field of study
+
+## Description
+Creates a table that lists, for each field and each publication year, the median and mean:
+- numbers of unique citing groups;
+- GiniSim scores by citing groups;
+- Shannon scores by citing groups;
+as per OA category.
+
+## Contacts
+karl.huang@curtin.edu.au
+
+## Requires
+table bigquery://{citation_diversity_table}
+
+## Creates
+file cit_div_by_field.csv
+
+*/
+
 WITH
   data_noa AS (
     SELECT
@@ -68,7 +90,7 @@ WITH
         PERCENTILE_CONT(CitingFields_count_uniq,0.5) OVER(PARTITION BY temp_field.DisplayName, year) AS CitingFields_count_uniq_perc50,
         PERCENTILE_CONT(CitingFields_GiniSim,0.5) OVER(PARTITION BY temp_field.DisplayName, year) AS CitingFields_GiniSim_perc50,
         PERCENTILE_CONT(CitingFields_Shannon,0.5) OVER(PARTITION BY temp_field.DisplayName, year) AS CitingFields_Shannon_perc50
-      FROM (SELECT * FROM `coki-scratch-space.citation_diversity_analysis.citation_diversity_global` WHERE (CitationCount >= 2) AND (is_oa IS false)),
+      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount >= 2) AND (is_oa IS false)),
         UNNEST(fields) AS temp_field
     )
     GROUP BY field, year
@@ -142,7 +164,7 @@ WITH
         PERCENTILE_CONT(CitingFields_count_uniq,0.5) OVER(PARTITION BY temp_field.DisplayName, year) AS CitingFields_count_uniq_perc50,
         PERCENTILE_CONT(CitingFields_GiniSim,0.5) OVER(PARTITION BY temp_field.DisplayName, year) AS CitingFields_GiniSim_perc50,
         PERCENTILE_CONT(CitingFields_Shannon,0.5) OVER(PARTITION BY temp_field.DisplayName, year) AS CitingFields_Shannon_perc50
-      FROM (SELECT * FROM `coki-scratch-space.citation_diversity_analysis.citation_diversity_global` WHERE (CitationCount >= 2) AND (is_oa IS true)),
+      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount >= 2) AND (is_oa IS true)),
         UNNEST(fields) AS temp_field
     )
     GROUP BY field, year
@@ -216,7 +238,7 @@ WITH
         PERCENTILE_CONT(CitingFields_count_uniq,0.5) OVER(PARTITION BY temp_field.DisplayName, year) AS CitingFields_count_uniq_perc50,
         PERCENTILE_CONT(CitingFields_GiniSim,0.5) OVER(PARTITION BY temp_field.DisplayName, year) AS CitingFields_GiniSim_perc50,
         PERCENTILE_CONT(CitingFields_Shannon,0.5) OVER(PARTITION BY temp_field.DisplayName, year) AS CitingFields_Shannon_perc50
-      FROM (SELECT * FROM `coki-scratch-space.citation_diversity_analysis.citation_diversity_global` WHERE (CitationCount >= 2) AND (gold IS true)),
+      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount >= 2) AND (gold IS true)),
         UNNEST(fields) AS temp_field
     )
     GROUP BY field, year
@@ -290,7 +312,7 @@ WITH
         PERCENTILE_CONT(CitingFields_count_uniq,0.5) OVER(PARTITION BY temp_field.DisplayName, year) AS CitingFields_count_uniq_perc50,
         PERCENTILE_CONT(CitingFields_GiniSim,0.5) OVER(PARTITION BY temp_field.DisplayName, year) AS CitingFields_GiniSim_perc50,
         PERCENTILE_CONT(CitingFields_Shannon,0.5) OVER(PARTITION BY temp_field.DisplayName, year) AS CitingFields_Shannon_perc50
-      FROM (SELECT * FROM `coki-scratch-space.citation_diversity_analysis.citation_diversity_global` WHERE (CitationCount >= 2) AND (green IS true)),
+      FROM (SELECT * FROM `{citation_diversity_table}` WHERE (CitationCount >= 2) AND (green IS true)),
         UNNEST(fields) AS temp_field
     )
     GROUP BY field, year

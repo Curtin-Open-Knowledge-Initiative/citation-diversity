@@ -1,9 +1,13 @@
 /*
 ## Summary
-
-NEW SUMMARY DESCRIPTION
+Generates samples of outputs across OA and non-OA papers and across citation groups for a given year
 
 ## Description
+Creates a table, for a given publication year, that contains samples of DOIs, with their corresponding:
+- numbers of unique citing groups;
+- GiniSim scores by citing groups;
+- Shannon scores by citing groups.
+The DOIs are randomly sampled for each citation group, with 2000 OA outputs and 2000 non-OA outputs per citation group.
 
 ## Contacts
 karl.huang@curtin.edu.au

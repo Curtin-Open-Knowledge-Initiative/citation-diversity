@@ -905,6 +905,44 @@ def create_kde_dist_on_cit_div():
                                    colors=oa_colors)
     fig.show()
 
+
+def test():
+    # create plots for all regions
+    data = pd.read_csv('tempdata/summary_stats_by_region_atleast2cit.csv')
+    print('... start plot_line_compare_cit_regions')
+    for region in ["Africa"]:
+        df_oa = data[(data["region_cited"] == region) & (data["is_oa"] == True)]
+        df_noa = data[(data["region_cited"] == region) & (data["is_oa"] == False)]
+        df = df_oa.merge(df_noa, on=['region_cited', 'year', 'region_citing'], suffixes=('_oa', '_noa'))
+        #df = df.astype({"region_citing_count_oa": int, "region_citing_count_noa": int, "doi_count_oa": int, "doi_count_noa": int})
+        df['perc_change'] = (df['region_citing_count_oa'] / df['count_doi_oa']) / (df['region_citing_count_noa'] / df['count_doi_noa']) * 100
+        #df = pd.DataFrame(df)
+        print(df)
+        df = df.sort_values(by="year")
+    print('... completed')
+    COLOR_MAP_REGIONS = {
+        "Asia": 'orange',
+        "Europe": 'limegreen',
+        "Americas": 'brown',
+        "Oceania": 'red',
+        "Africa": 'magenta'
+    }
+    ORDER_REGIONS = ["Asia", "Europe", "Americas", "Oceania", "Africa"]
+    fig = px.line(df, x='year', y='perc_change', color='region_citing',
+                  color_discrete_map=COLOR_MAP_REGIONS,
+                  category_orders={"region_citing": ORDER_REGIONS})
+    fig.update_traces(mode='markers+lines')
+    fig.update_layout(legend={"itemsizing": "trace", "itemwidth": 45})
+    fig.update_layout(
+        title='Figure: % ratios in average citations to papers affiliated to '
+              + str(region)
+              + '<br><sup>(% ratios are calculated based on citations to OA over non-OA papers)</sup>',
+        xaxis_title="Year",
+        yaxis_title="% ratios in average citations",
+        legend_title_text='Regions')
+    fig.show()
+
+
 if __name__ == "__main__":
     # generate_boxplot_div_by_cit_group(method='Shannon', group='Subregions', year=2015)
     # generate_boxplot_div_by_oa_group(method='Shannon', group='Countries', year=2019)
@@ -926,5 +964,5 @@ if __name__ == "__main__":
     # generate_subregion_vs_citations_perc_change_over_time(subregion='Micronesia', year_start='2010', year_end='2019')
 
     # generate_line_year_vs_cit_div()
-    create_kde_dist_on_cit_div()
+    test()
 

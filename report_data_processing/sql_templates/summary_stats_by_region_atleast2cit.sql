@@ -1,9 +1,12 @@
 /*
 ## Summary
-
-CHANGE THIS
+Generates annual citation counts between regions
 
 ## Description
+Creates a table that lists for each cited region and publication year:
+- DOI counts for OA and non-OA outputs;
+- Number of citations from all citing region to OA papers affiliated to the cited region;
+- Number of citations from all citing region to non-OA papers affiliated to the cited region.
 
 ## Contacts
 karl.huang@curtin.edu.au
@@ -12,46 +15,33 @@ karl.huang@curtin.edu.au
 table bigquery://{citation_diversity_table}
 
 ## Creates
-file summary_stats_by_region_atleast2cit.json
+file summary_stats_by_region_atleast2cit.csv
 
 */
 
 WITH
   datatemp1 AS (
     SELECT
-      doi,
-      year,
-      is_oa,
-      region.name AS region,
-      CitingRegions_name,
-      CitingRegions_table,
-      CitingRegions_count_uniq,
-      CitingRegions_GiniSim,
-      CitingRegions_Shannon,
-      PERCENTILE_CONT(CitingRegions_count_uniq,0.5) OVER(PARTITION BY region.name, year, is_oa) AS CitingRegions_count_uniq_median,
-      PERCENTILE_CONT(CitingRegions_GiniSim,0.5) OVER(PARTITION BY region.name, year, is_oa) AS CitingRegions_GiniSim_median,
-      PERCENTILE_CONT(CitingRegions_Shannon,0.5) OVER(PARTITION BY region.name, year, is_oa) AS CitingRegions_Shannon_median
-    FROM `{citation_diversity_table}`, UNNEST(regions) AS region
-    WHERE CitationCount >= 2
-  ),
-  datatemp2 AS (
-    SELECT
-      region,
+      region.name AS region_cited,
       year,
       is_oa,
       ARRAY_CONCAT_AGG(CitingRegions_table) AS CitingRegions_table_temp,
-      AVG(CitingRegions_count_uniq) AS count_uniq_mean,
-      ANY_VALUE(CitingRegions_count_uniq_median) AS count_uniq_median,
-      AVG(CitingRegions_GiniSim) AS GiniSim_mean,
-      ANY_VALUE(CitingRegions_GiniSim_median) AS GiniSim_median,
-      AVG(CitingRegions_Shannon) AS Shannon_mean,
-      ANY_VALUE(CitingRegions_Shannon_median) AS Shannon_median,
       COUNT(doi) AS count_doi
-    FROM datatemp1
-    WHERE (region IS NOT NULL) AND (year IS NOT NULL) AND (is_oa IS NOT NULL)
-    GROUP BY region, year, is_oa
+    FROM `{citation_diversity_table}`, UNNEST(regions) AS region
+    WHERE (CitationCount >= 2) AND (region.name IS NOT NULL) AND (year IS NOT NULL) AND (is_oa IS NOT NULL)
+    GROUP BY region.name, year, is_oa
+  ),
+  datatemp2 AS (
+    SELECT
+      * EXCEPT(CitingRegions_table_temp),
+    ARRAY(SELECT AS STRUCT name, SUM(count) AS total FROM UNNEST(CitingRegions_table_temp) AS X GROUP BY name) AS CitingRegions_table_all
+  FROM datatemp1
   )
 SELECT
-  * EXCEPT(CitingRegions_table_temp),
-  ARRAY(SELECT AS STRUCT name, SUM(count) AS total FROM UNNEST(CitingRegions_table_temp) AS X GROUP BY name) AS CitingRegions_table_all
-FROM datatemp2
+  region_cited,
+  year,
+  is_oa,
+  count_doi,
+  X.name AS region_citing,
+  X.total AS region_citing_count
+FROM datatemp2, UNNEST(CitingRegions_table_all) AS X

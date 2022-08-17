@@ -472,9 +472,9 @@ def create_bar_uniq_cit_count(af: AnalyticsFunction):
 def plot_line_compare_cit_regions(df, region='Asia'):
     # input variable: region
     # only papers with at least 2 citations are included
-    fig = px.line(df, x='year', y='perc_change', color='name',
+    fig = px.line(df, x='year', y='perc_change', color='region_citing',
                   color_discrete_map=COLOR_MAP_REGIONS,
-                  category_orders={"name": ORDER_REGIONS})
+                  category_orders={"region_citing": ORDER_REGIONS})
     fig.update_traces(mode='markers+lines')
     fig.update_layout(legend={"itemsizing": "trace", "itemwidth": 45})
     fig.update_layout(
@@ -489,26 +489,16 @@ def plot_line_compare_cit_regions(df, region='Asia'):
 
 def create_line_compare_cit_regions(af: AnalyticsFunction):
     # create plots for all regions
-    data = []
+    data = pd.read_csv('tempdata/summary_stats_by_region_atleast2cit.csv')
     print('... start plot_line_compare_cit_regions')
-    for line in open('tempdata/summary_stats_by_region_atleast2cit.json', 'r'):
-        data.append(json.loads(line))
     for region in ORDER_REGIONS:
-        data_figure = pd.DataFrame(columns=['name', 'total_oa', 'total_noa', 'perc_change', 'year'])
-        for year in YEARS:
-            df_oa = [x for x in data if ((x['region'] == region) & (x['year'] == str(year)) & (x['is_oa'] == 'true'))]
-            df_noa = [x for x in data if ((x['region'] == region) & (x['year'] == str(year)) & (x['is_oa'] == 'false'))]
-            df_oa_doi = int(df_oa[0]['count_doi'])
-            df_noa_doi = int(df_noa[0]['count_doi'])
-            df_oa = pd.json_normalize(df_oa[0]['CitingRegions_table_all'])
-            df_noa = pd.json_normalize(df_noa[0]['CitingRegions_table_all'])
-            df = df_oa.merge(df_noa, on=['name'], suffixes=('_oa', '_noa'))
-            df = df.astype({"total_oa": int, "total_noa": int})
-            df['perc_change'] = (df['total_oa'] / df_oa_doi) / (df['total_noa'] / df_noa_doi) * 100
-            df['year'] = str(year)
-            df = pd.DataFrame(df)
-            data_figure = pd.concat([data_figure, df])
-        fig = plot_line_compare_cit_regions(df=data_figure, region=region)
+        df_oa = data[(data["region_cited"] == region) & (data["is_oa"] == True)]
+        df_noa = data[(data["region_cited"] == region) & (data["is_oa"] == False)]
+        df = df_oa.merge(df_noa, on=['region_cited', 'year', 'region_citing'], suffixes=('_oa', '_noa'))
+        df['perc_change'] = (df['region_citing_count_oa'] / df['count_doi_oa']) / (
+                    df['region_citing_count_noa'] / df['count_doi_noa']) * 100
+        df = df.sort_values(by="year")
+        fig = plot_line_compare_cit_regions(df=df, region=region)
         if not os.path.exists('report_graphs/line_compare_cit_count_regions'):
             os.makedirs('report_graphs/line_compare_cit_count_regions')
         fig.write_image('report_graphs/line_compare_cit_count_regions/line_compare_cit_count_regions_for_'
@@ -521,10 +511,10 @@ def create_line_compare_cit_regions(af: AnalyticsFunction):
 def plot_line_compare_cit_subregions(df, subregion='Sub-Saharan Africa'):
     # input variable: subregion
     # only papers with at least 2 citations are included
-    fig = px.line(df, x='year', y='perc_change', color='name', line_dash='name',
+    fig = px.line(df, x='year', y='perc_change', color='subregion_citing', line_dash='subregion_citing',
                   color_discrete_map=COLOR_MAP_SUBREGIONS,
                   line_dash_map=DASH_MAP_SUBREGIONS,
-                  category_orders={"name": ORDER_SUBREGIONS})
+                  category_orders={"subregion_citing": ORDER_SUBREGIONS})
     fig.update_traces(mode='markers+lines')
     fig.update_layout(legend={"itemsizing": "trace", "itemwidth": 45})
     fig.update_layout(
@@ -539,29 +529,16 @@ def plot_line_compare_cit_subregions(df, subregion='Sub-Saharan Africa'):
 
 def create_line_compare_cit_subregions(af: AnalyticsFunction):
     # create plots for all subregions
-    data = []
-    for line in open('tempdata/summary_stats_by_subregion_atleast2cit.json', 'r'):
-        data.append(json.loads(line))
+    data = pd.read_csv('tempdata/summary_stats_by_subregion_atleast2cit.csv')
     print('... start plot_line_compare_cit_subregions')
     for subregion in ORDER_SUBREGIONS:
-        data_figure = pd.DataFrame(columns=['name', 'total_oa', 'total_noa', 'perc_change', 'year'])
-        for year in YEARS:
-            df_oa = [x for x in data if
-                     ((x['subregion'] == subregion) & (x['year'] == str(year)) & (x['is_oa'] == 'true'))]
-            df_noa = [x for x in data if
-                      ((x['subregion'] == subregion) & (x['year'] == str(year)) & (x['is_oa'] == 'false'))]
-            if (len(df_oa) > 0) & (len(df_noa) > 0):
-                df_oa_doi = int(df_oa[0]['count_doi'])
-                df_noa_doi = int(df_noa[0]['count_doi'])
-                df_oa = pd.json_normalize(df_oa[0]['CitingSubregions_table_all'])
-                df_noa = pd.json_normalize(df_noa[0]['CitingSubregions_table_all'])
-                df = df_oa.merge(df_noa, on=['name'], suffixes=('_oa', '_noa'))
-                df = df.astype({"total_oa": int, "total_noa": int})
-                df['perc_change'] = (df['total_oa'] / df_oa_doi) / (df['total_noa'] / df_noa_doi) * 100
-                df['year'] = str(year)
-                df = pd.DataFrame(df)
-                data_figure = pd.concat([data_figure, df])
-        fig = plot_line_compare_cit_subregions(df=data_figure, subregion=subregion)
+        df_oa = data[(data["subregion_cited"] == subregion) & (data["is_oa"] == True)]
+        df_noa = data[(data["subregion_cited"] == subregion) & (data["is_oa"] == False)]
+        df = df_oa.merge(df_noa, on=['subregion_cited', 'year', 'subregion_citing'], suffixes=('_oa', '_noa'))
+        df['perc_change'] = (df['subregion_citing_count_oa'] / df['count_doi_oa']) / (
+                df['subregion_citing_count_noa'] / df['count_doi_noa']) * 100
+        df = df.sort_values(by="year")
+        fig = plot_line_compare_cit_subregions(df=df, subregion=subregion)
         if not os.path.exists('report_graphs/line_compare_cit_count_subregions'):
             os.makedirs('report_graphs/line_compare_cit_count_subregions')
         fig.write_image('report_graphs/line_compare_cit_count_subregions/line_compare_cit_count_subregions_for_'
@@ -575,10 +552,10 @@ def plot_bar_compare_cit_regions(df, region='Asia', year=2019):
     # input variable: region
     # only papers with at least 2 citations are included
     fig = go.Figure()
-    fig.add_trace(go.Bar(x=df['name'], y=df['perc_change'], marker_color='royalblue'))
+    fig.add_trace(go.Bar(x=df['region_citing'], y=df['perc_change'], marker_color='royalblue'))
     fig.update_layout(title='Figure: % change in total citations to OA/non-OA paper affiliated to ' +
                             str(region) + ' for ' + str(year),
-                      xaxis_title="region",
+                      xaxis_title="citing region",
                       yaxis_title="% change in total citations")
     fig.update_layout(xaxis_type='category')
     fig.update_xaxes(categoryorder='category ascending')
@@ -587,19 +564,15 @@ def plot_bar_compare_cit_regions(df, region='Asia', year=2019):
 
 def create_bar_compare_cit_regions(af: AnalyticsFunction):
     # create plots for all regions
-    data = []
-    for line in open('tempdata/summary_stats_by_region_atleast2cit.json', 'r'):
-        data.append(json.loads(line))
+    data = pd.read_csv('tempdata/summary_stats_by_region_atleast2cit.csv')
     print('... start plot_bar_compare_cit_regions')
     for region in ORDER_REGIONS:
         for year in YEARS:
-            df_oa = [x for x in data if ((x['region'] == region) & (x['year'] == str(year)) & (x['is_oa'] == 'true'))]
-            df_noa = [x for x in data if ((x['region'] == region) & (x['year'] == str(year)) & (x['is_oa'] == 'false'))]
-            df_oa = pd.json_normalize(df_oa[0]['CitingRegions_table_all'])
-            df_noa = pd.json_normalize(df_noa[0]['CitingRegions_table_all'])
-            df = df_oa.merge(df_noa, on=['name'], suffixes=('_oa', '_noa'))
-            df = df.astype({"total_oa": int, "total_noa": int})
-            df['perc_change'] = (df['total_oa'] - df['total_noa']) / df['total_noa'] * 100
+            df_oa = data[(data["region_cited"] == region) & (data["year"] == year) & (data["is_oa"] == True)]
+            df_noa = data[(data["region_cited"] == region) & (data["year"] == year) & (data["is_oa"] == False)]
+            df = df_oa.merge(df_noa, on=['region_cited', 'region_citing'], suffixes=('_oa', '_noa'))
+            df['perc_change'] = (df['region_citing_count_oa'] - df['region_citing_count_noa']) / df[
+                'region_citing_count_noa'] * 100
             fig = plot_bar_compare_cit_regions(df, region=region, year=year)
             if not os.path.exists('report_graphs/bar_compare_cit_regions'):
                 os.makedirs('report_graphs/bar_compare_cit_regions')
@@ -615,10 +588,10 @@ def plot_bar_compare_cit_subregions(df, subregion='Sub-Saharan Africa', year=201
     # input variable: subregion
     # only papers with at least 2 citations are included
     fig = go.Figure()
-    fig.add_trace(go.Bar(x=df['name'], y=df['perc_change'], marker_color='royalblue'))
+    fig.add_trace(go.Bar(x=df['subregion_citing'], y=df['perc_change'], marker_color='royalblue'))
     fig.update_layout(title='Figure: % change in total citations to OA/non-OA paper affiliated to ' +
                             str(subregion) + ' for ' + str(year),
-                      xaxis_title="subregion",
+                      xaxis_title="citing subregion",
                       yaxis_title="% change in total citations")
     fig.update_layout(xaxis_type='category')
     fig.update_xaxes(categoryorder='category ascending')
@@ -627,31 +600,23 @@ def plot_bar_compare_cit_subregions(df, subregion='Sub-Saharan Africa', year=201
 
 def create_bar_compare_cit_subregions(af: AnalyticsFunction):
     # create plots for all regions
-    data = []
-    for line in open('tempdata/summary_stats_by_subregion_atleast2cit.json', 'r'):
-        data.append(json.loads(line))
+    data = pd.read_csv('tempdata/summary_stats_by_subregion_atleast2cit.csv')
     print('... start plot_bar_compare_cit_subregions')
     for subregion in ORDER_SUBREGIONS:
         for year in YEARS:
-            df_oa = [x for x in data if
-                     ((x['subregion'] == subregion) & (x['year'] == str(year)) & (x['is_oa'] == 'true'))]
-            df_noa = [x for x in data if
-                      ((x['subregion'] == subregion) & (x['year'] == str(year)) & (x['is_oa'] == 'false'))]
-            if (len(df_oa) > 0) & (len(df_noa) > 0):
-                df_oa = pd.json_normalize(df_oa[0]['CitingSubregions_table_all'])
-                df_noa = pd.json_normalize(df_noa[0]['CitingSubregions_table_all'])
-                df = df_oa.merge(df_noa, on=['name'], suffixes=('_oa', '_noa'))
-                df = df.astype({"total_oa": int, "total_noa": int})
-                df['perc_change'] = (df['total_oa'] - df['total_noa']) / df['total_noa'] * 100
-                fig = plot_bar_compare_cit_subregions(df, subregion=subregion, year=year)
-                if not os.path.exists('report_graphs/bar_compare_cit_subregions'):
-                    os.makedirs('report_graphs/bar_compare_cit_subregions')
-                fig.write_image('report_graphs/bar_compare_cit_subregions/bar_compare_cit_subregions_for_'
-                                + subregion + '_' + str(year) + '.png', scale=FIG_SCALE, width=FIG_WIDTH,
-                                height=FIG_HEIGHT)
-                af.add_existing_file(
-                    'report_graphs/bar_compare_cit_subregions/bar_compare_cit_subregions_for_'
-                    + subregion + '_' + str(year) + '.png')
+            df_oa = data[(data["subregion_cited"] == subregion) & (data["year"] == year) & (data["is_oa"] == True)]
+            df_noa = data[(data["subregion_cited"] == subregion) & (data["year"] == year) & (data["is_oa"] == False)]
+            df = df_oa.merge(df_noa, on=['subregion_cited', 'subregion_citing'], suffixes=('_oa', '_noa'))
+            df['perc_change'] = (df['subregion_citing_count_oa'] - df['subregion_citing_count_noa']) / df[
+                'subregion_citing_count_noa'] * 100
+            fig = plot_bar_compare_cit_subregions(df, subregion=subregion, year=year)
+            if not os.path.exists('report_graphs/bar_compare_cit_subregions'):
+                os.makedirs('report_graphs/bar_compare_cit_subregions')
+            fig.write_image('report_graphs/bar_compare_cit_subregions/bar_compare_cit_subregions_for_'
+                            + subregion + '_' + str(year) + '.png', scale=FIG_SCALE, width=FIG_WIDTH, height=FIG_HEIGHT)
+            af.add_existing_file(
+                'report_graphs/bar_compare_cit_subregions/bar_compare_cit_subregions_for_'
+                + subregion + '_' + str(year) + '.png')
     print('... completed')
 
 
@@ -797,9 +762,7 @@ def create_figure3a(af: AnalyticsFunction):
     # create plots for selected subregions
     # specify which subregions to show
     subregions_compare = ['Northern Europe', 'Sub-Saharan Africa', 'Eastern Asia']
-    data = []
-    for line in open('tempdata/summary_stats_by_subregion_atleast2cit.json', 'r'):
-        data.append(json.loads(line))
+    data = pd.read_csv('tempdata/summary_stats_by_subregion_atleast2cit.csv')
     print('... start figure3a')
     # create fig space with 3 subplots
     fig = make_subplots(rows=3, cols=1, subplot_titles=["Citations to " + subregions_compare[0],
@@ -807,48 +770,34 @@ def create_figure3a(af: AnalyticsFunction):
                                                         "Citations to " + subregions_compare[2]],
                         vertical_spacing=0.1, y_title="% change in total citations",
                         shared_xaxes=True)
+
     # bar plot for subregion 1
-    df_oa = [x for x in data if
-             ((x['subregion'] == subregions_compare[0]) & (x['year'] == '2019') & (x['is_oa'] == 'true'))]
-    df_noa = [x for x in data if
-              ((x['subregion'] == subregions_compare[0]) & (x['year'] == '2019') & (x['is_oa'] == 'false'))]
-    if (len(df_oa) > 0) & (len(df_noa) > 0):
-        df_oa = pd.json_normalize(df_oa[0]['CitingSubregions_table_all'])
-        df_noa = pd.json_normalize(df_noa[0]['CitingSubregions_table_all'])
-        df = df_oa.merge(df_noa, on=['name'], suffixes=('_oa', '_noa'))
-        df = df.astype({"total_oa": int, "total_noa": int})
-        df['perc_change'] = (df['total_oa'] - df['total_noa']) / df['total_noa'] * 100
-        df = df[df.name.isin(subregions_compare)]
-        fig.add_trace(go.Bar(x=df['name'], y=df['perc_change'], marker_color='royalblue', showlegend=False), row=1,
-                      col=1)
+    df_oa = data[(data["subregion_cited"] == subregions_compare[0]) & (data["year"] == 2019) & (data["is_oa"] == True)]
+    df_noa = data[(data["subregion_cited"] == subregions_compare[0]) & (data["year"] == 2019) & (data["is_oa"] == False)]
+    df = df_oa.merge(df_noa, on=['subregion_cited', 'subregion_citing'], suffixes=('_oa', '_noa'))
+    df['perc_change'] = (df['subregion_citing_count_oa'] - df['subregion_citing_count_noa']) / df[
+        'subregion_citing_count_noa'] * 100
+    df = df[df.subregion_citing.isin(subregions_compare)]
+    fig.add_trace(go.Bar(x=df['subregion_citing'], y=df['perc_change'], marker_color='royalblue', showlegend=False), row=1, col=1)
+
     # bar plot for subregion 2
-    df_oa = [x for x in data if
-             ((x['subregion'] == subregions_compare[1]) & (x['year'] == '2019') & (x['is_oa'] == 'true'))]
-    df_noa = [x for x in data if
-              ((x['subregion'] == subregions_compare[1]) & (x['year'] == '2019') & (x['is_oa'] == 'false'))]
-    if (len(df_oa) > 0) & (len(df_noa) > 0):
-        df_oa = pd.json_normalize(df_oa[0]['CitingSubregions_table_all'])
-        df_noa = pd.json_normalize(df_noa[0]['CitingSubregions_table_all'])
-        df = df_oa.merge(df_noa, on=['name'], suffixes=('_oa', '_noa'))
-        df = df.astype({"total_oa": int, "total_noa": int})
-        df['perc_change'] = (df['total_oa'] - df['total_noa']) / df['total_noa'] * 100
-        df = df[df.name.isin(subregions_compare)]
-        fig.add_trace(go.Bar(x=df['name'], y=df['perc_change'], marker_color='royalblue', showlegend=False), row=2,
-                      col=1)
+    df_oa = data[(data["subregion_cited"] == subregions_compare[1]) & (data["year"] == 2019) & (data["is_oa"] == True)]
+    df_noa = data[(data["subregion_cited"] == subregions_compare[1]) & (data["year"] == 2019) & (data["is_oa"] == False)]
+    df = df_oa.merge(df_noa, on=['subregion_cited', 'subregion_citing'], suffixes=('_oa', '_noa'))
+    df['perc_change'] = (df['subregion_citing_count_oa'] - df['subregion_citing_count_noa']) / df[
+        'subregion_citing_count_noa'] * 100
+    df = df[df.subregion_citing.isin(subregions_compare)]
+    fig.add_trace(go.Bar(x=df['subregion_citing'], y=df['perc_change'], marker_color='royalblue', showlegend=False), row=2, col=1)
+
     # bar plot for subregion 3
-    df_oa = [x for x in data if
-             ((x['subregion'] == subregions_compare[2]) & (x['year'] == '2019') & (x['is_oa'] == 'true'))]
-    df_noa = [x for x in data if
-              ((x['subregion'] == subregions_compare[2]) & (x['year'] == '2019') & (x['is_oa'] == 'false'))]
-    if (len(df_oa) > 0) & (len(df_noa) > 0):
-        df_oa = pd.json_normalize(df_oa[0]['CitingSubregions_table_all'])
-        df_noa = pd.json_normalize(df_noa[0]['CitingSubregions_table_all'])
-        df = df_oa.merge(df_noa, on=['name'], suffixes=('_oa', '_noa'))
-        df = df.astype({"total_oa": int, "total_noa": int})
-        df['perc_change'] = (df['total_oa'] - df['total_noa']) / df['total_noa'] * 100
-        df = df[df.name.isin(subregions_compare)]
-        fig.add_trace(go.Bar(x=df['name'], y=df['perc_change'], marker_color='royalblue', showlegend=False), row=3,
-                      col=1)
+    df_oa = data[(data["subregion_cited"] == subregions_compare[2]) & (data["year"] == 2019) & (data["is_oa"] == True)]
+    df_noa = data[(data["subregion_cited"] == subregions_compare[2]) & (data["year"] == 2019) & (data["is_oa"] == False)]
+    df = df_oa.merge(df_noa, on=['subregion_cited', 'subregion_citing'], suffixes=('_oa', '_noa'))
+    df['perc_change'] = (df['subregion_citing_count_oa'] - df['subregion_citing_count_noa']) / df[
+        'subregion_citing_count_noa'] * 100
+    df = df[df.subregion_citing.isin(subregions_compare)]
+    fig.add_trace(go.Bar(x=df['subregion_citing'], y=df['perc_change'], marker_color='royalblue', showlegend=False), row=3, col=1)
+
     fig.update_layout(xaxis_type='category')
     fig.update_xaxes(categoryorder='category ascending')
     fig.update_layout(title='Fig. 3A: % change in citations for 2019')
@@ -863,109 +812,76 @@ def create_figure3b(af: AnalyticsFunction):
     # create plots for selected subregions
     # specify subregions to show
     subregions_compare = ['Northern Europe', 'Sub-Saharan Africa', 'Eastern Asia']
-    data = []
-    for line in open('tempdata/summary_stats_by_subregion_atleast2cit.json', 'r'):
-        data.append(json.loads(line))
+    data = pd.read_csv('tempdata/summary_stats_by_subregion_atleast2cit.csv')
     print('... start figure3b')
+
     fig = make_subplots(rows=3, cols=1, subplot_titles=subregions_compare,
                         vertical_spacing=0.08, y_title="% ratios in average citations")
+
     # data and plot for subregion 1
-    data_figure = pd.DataFrame(columns=['name', 'total_oa', 'total_noa', 'perc_change', 'year'])
-    for year in YEARS:
-        df_oa = [x for x in data if
-                 ((x['subregion'] == subregions_compare[0]) & (x['year'] == str(year)) & (x['is_oa'] == 'true'))]
-        df_noa = [x for x in data if
-                  ((x['subregion'] == subregions_compare[0]) & (x['year'] == str(year)) & (x['is_oa'] == 'false'))]
-        if (len(df_oa) > 0) & (len(df_noa) > 0):
-            df_oa_doi = int(df_oa[0]['count_doi'])
-            df_noa_doi = int(df_noa[0]['count_doi'])
-            df_oa = pd.json_normalize(df_oa[0]['CitingSubregions_table_all'])
-            df_noa = pd.json_normalize(df_noa[0]['CitingSubregions_table_all'])
-            df = df_oa.merge(df_noa, on=['name'], suffixes=('_oa', '_noa'))
-            df = df.astype({"total_oa": int, "total_noa": int})
-            df['perc_change'] = (df['total_oa'] / df_oa_doi) / (df['total_noa'] / df_noa_doi) * 100
-            df['year'] = str(year)
-            df = pd.DataFrame(df)
-            data_figure = pd.concat([data_figure, df])
-    data_figure1 = data_figure[data_figure.name == subregions_compare[0]]
-    fig.add_trace(go.Scatter(x=data_figure1['year'], y=data_figure1['perc_change'],
+    df_oa = data[(data["subregion_cited"] == subregions_compare[0]) & (data["is_oa"] == True)]
+    df_noa = data[(data["subregion_cited"] == subregions_compare[0]) & (data["is_oa"] == False)]
+    df = df_oa.merge(df_noa, on=['subregion_cited', 'year', 'subregion_citing'], suffixes=('_oa', '_noa'))
+    df['perc_change'] = (df['subregion_citing_count_oa'] / df['count_doi_oa']) / (
+                df['subregion_citing_count_noa'] / df['count_doi_noa']) * 100
+    df = df.sort_values(by="year")
+    data_figure = df[df["subregion_citing"] == subregions_compare[0]]
+    fig.add_trace(go.Scatter(x=data_figure['year'], y=data_figure['perc_change'],
                              name=subregions_compare[0], marker_color=COLOR_MAP_SUBREGIONS[subregions_compare[0]]),
                   row=1, col=1)
-    data_figure1 = data_figure[data_figure.name == subregions_compare[1]]
-    fig.add_trace(go.Scatter(x=data_figure1['year'], y=data_figure1['perc_change'],
+    data_figure = df[df["subregion_citing"] == subregions_compare[1]]
+    fig.add_trace(go.Scatter(x=data_figure['year'], y=data_figure['perc_change'],
                              name=subregions_compare[1], marker_color=COLOR_MAP_SUBREGIONS[subregions_compare[1]]),
                   row=1, col=1)
-    data_figure1 = data_figure[data_figure.name == subregions_compare[2]]
-    fig.add_trace(go.Scatter(x=data_figure1['year'], y=data_figure1['perc_change'],
+    data_figure = df[df["subregion_citing"] == subregions_compare[2]]
+    fig.add_trace(go.Scatter(x=data_figure['year'], y=data_figure['perc_change'],
                              name=subregions_compare[2], marker_color=COLOR_MAP_SUBREGIONS[subregions_compare[2]]),
                   row=1, col=1)
-    # data and plot for subregion 2
-    data_figure = pd.DataFrame(columns=['name', 'total_oa', 'total_noa', 'perc_change', 'year'])
-    for year in YEARS:
-        df_oa = [x for x in data if
-                 ((x['subregion'] == subregions_compare[1]) & (x['year'] == str(year)) & (x['is_oa'] == 'true'))]
-        df_noa = [x for x in data if
-                  ((x['subregion'] == subregions_compare[1]) & (x['year'] == str(year)) & (x['is_oa'] == 'false'))]
-        if (len(df_oa) > 0) & (len(df_noa) > 0):
-            df_oa_doi = int(df_oa[0]['count_doi'])
-            df_noa_doi = int(df_noa[0]['count_doi'])
-            df_oa = pd.json_normalize(df_oa[0]['CitingSubregions_table_all'])
-            df_noa = pd.json_normalize(df_noa[0]['CitingSubregions_table_all'])
-            df = df_oa.merge(df_noa, on=['name'], suffixes=('_oa', '_noa'))
-            df = df.astype({"total_oa": int, "total_noa": int})
-            df['perc_change'] = (df['total_oa'] / df_oa_doi) / (df['total_noa'] / df_noa_doi) * 100
-            df['year'] = str(year)
-            df = pd.DataFrame(df)
-            data_figure = pd.concat([data_figure, df])
-    data_figure1 = data_figure[data_figure.name == subregions_compare[0]]
-    fig.add_trace(go.Scatter(x=data_figure1['year'], y=data_figure1['perc_change'],
-                             name=subregions_compare[0], marker_color=COLOR_MAP_SUBREGIONS[subregions_compare[0]],
-                             showlegend=False),
-                  row=2, col=1)
-    data_figure1 = data_figure[data_figure.name == subregions_compare[1]]
-    fig.add_trace(go.Scatter(x=data_figure1['year'], y=data_figure1['perc_change'],
-                             name=subregions_compare[1], marker_color=COLOR_MAP_SUBREGIONS[subregions_compare[1]],
-                             showlegend=False),
-                  row=2, col=1)
-    data_figure1 = data_figure[data_figure.name == subregions_compare[2]]
-    fig.add_trace(go.Scatter(x=data_figure1['year'], y=data_figure1['perc_change'],
-                             name=subregions_compare[2], marker_color=COLOR_MAP_SUBREGIONS[subregions_compare[2]],
-                             showlegend=False),
-                  row=2, col=1)
-    # data and plot for subregion 3
-    data_figure = pd.DataFrame(columns=['name', 'total_oa', 'total_noa', 'perc_change', 'year'])
-    for year in YEARS:
-        df_oa = [x for x in data if
-                 ((x['subregion'] == subregions_compare[2]) & (x['year'] == str(year)) & (x['is_oa'] == 'true'))]
-        df_noa = [x for x in data if
-                  ((x['subregion'] == subregions_compare[2]) & (x['year'] == str(year)) & (x['is_oa'] == 'false'))]
-        if (len(df_oa) > 0) & (len(df_noa) > 0):
-            df_oa_doi = int(df_oa[0]['count_doi'])
-            df_noa_doi = int(df_noa[0]['count_doi'])
-            df_oa = pd.json_normalize(df_oa[0]['CitingSubregions_table_all'])
-            df_noa = pd.json_normalize(df_noa[0]['CitingSubregions_table_all'])
-            df = df_oa.merge(df_noa, on=['name'], suffixes=('_oa', '_noa'))
-            df = df.astype({"total_oa": int, "total_noa": int})
-            df['perc_change'] = (df['total_oa'] / df_oa_doi) / (df['total_noa'] / df_noa_doi) * 100
-            df['year'] = str(year)
-            df = pd.DataFrame(df)
-            data_figure = pd.concat([data_figure, df])
-    data_figure1 = data_figure[data_figure.name == subregions_compare[0]]
-    fig.add_trace(go.Scatter(x=data_figure1['year'], y=data_figure1['perc_change'],
-                             name=subregions_compare[0], marker_color=COLOR_MAP_SUBREGIONS[subregions_compare[0]],
-                             showlegend=False),
-                  row=3, col=1)
-    data_figure1 = data_figure[data_figure.name == subregions_compare[1]]
-    fig.add_trace(go.Scatter(x=data_figure1['year'], y=data_figure1['perc_change'],
-                             name=subregions_compare[1], marker_color=COLOR_MAP_SUBREGIONS[subregions_compare[1]],
-                             showlegend=False),
-                  row=3, col=1)
-    data_figure1 = data_figure[data_figure.name == subregions_compare[2]]
-    fig.add_trace(go.Scatter(x=data_figure1['year'], y=data_figure1['perc_change'],
-                             name=subregions_compare[2], marker_color=COLOR_MAP_SUBREGIONS[subregions_compare[2]],
-                             showlegend=False),
-                  row=3, col=1)
 
+    # data and plot for subregion 2
+    df_oa = data[(data["subregion_cited"] == subregions_compare[1]) & (data["is_oa"] == True)]
+    df_noa = data[(data["subregion_cited"] == subregions_compare[1]) & (data["is_oa"] == False)]
+    df = df_oa.merge(df_noa, on=['subregion_cited', 'year', 'subregion_citing'], suffixes=('_oa', '_noa'))
+    df['perc_change'] = (df['subregion_citing_count_oa'] / df['count_doi_oa']) / (
+            df['subregion_citing_count_noa'] / df['count_doi_noa']) * 100
+    df = df.sort_values(by="year")
+    data_figure = df[df["subregion_citing"] == subregions_compare[0]]
+    fig.add_trace(go.Scatter(x=data_figure['year'], y=data_figure['perc_change'],
+                             name=subregions_compare[0], marker_color=COLOR_MAP_SUBREGIONS[subregions_compare[0]],
+                             showlegend=False), row=2, col=1)
+    data_figure = df[df["subregion_citing"] == subregions_compare[1]]
+    fig.add_trace(go.Scatter(x=data_figure['year'], y=data_figure['perc_change'],
+                             name=subregions_compare[1], marker_color=COLOR_MAP_SUBREGIONS[subregions_compare[1]],
+                             showlegend=False), row=2, col=1)
+    data_figure = df[df["subregion_citing"] == subregions_compare[2]]
+    fig.add_trace(go.Scatter(x=data_figure['year'], y=data_figure['perc_change'],
+                             name=subregions_compare[2], marker_color=COLOR_MAP_SUBREGIONS[subregions_compare[2]],
+                             showlegend=False), row=2, col=1)
+
+    # data and plot for subregion 3
+    df_oa = data[(data["subregion_cited"] == subregions_compare[2]) & (data["is_oa"] == True)]
+    df_noa = data[(data["subregion_cited"] == subregions_compare[2]) & (data["is_oa"] == False)]
+    df = df_oa.merge(df_noa, on=['subregion_cited', 'year', 'subregion_citing'], suffixes=('_oa', '_noa'))
+    df['perc_change'] = (df['subregion_citing_count_oa'] / df['count_doi_oa']) / (
+            df['subregion_citing_count_noa'] / df['count_doi_noa']) * 100
+    df = df.sort_values(by="year")
+    data_figure = df[df["subregion_citing"] == subregions_compare[0]]
+    fig.add_trace(go.Scatter(x=data_figure['year'], y=data_figure['perc_change'],
+                             name=subregions_compare[0], marker_color=COLOR_MAP_SUBREGIONS[subregions_compare[0]],
+                             showlegend=False), row=3, col=1)
+    data_figure = df[df["subregion_citing"] == subregions_compare[1]]
+    fig.add_trace(go.Scatter(x=data_figure['year'], y=data_figure['perc_change'],
+                             name=subregions_compare[1], marker_color=COLOR_MAP_SUBREGIONS[subregions_compare[1]],
+                             showlegend=False), row=3, col=1)
+    data_figure = df[df["subregion_citing"] == subregions_compare[2]]
+    fig.add_trace(go.Scatter(x=data_figure['year'], y=data_figure['perc_change'],
+                             name=subregions_compare[2], marker_color=COLOR_MAP_SUBREGIONS[subregions_compare[2]],
+                             showlegend=False), row=3, col=1)
+
+    fig.update_layout(xaxis=dict(tickvals=YEARS),
+                      xaxis2=dict(tickvals=YEARS),
+                      xaxis3=dict(tickvals=YEARS),
+                      )
     fig.update_traces(mode='markers+lines')
     fig.update_layout(legend={"itemsizing": "trace", "itemwidth": 45})
     fig.update_layout(legend=dict(

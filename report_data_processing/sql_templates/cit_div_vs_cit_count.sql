@@ -1,9 +1,11 @@
 /*
 ## Summary
-
-NEEDS A SUMMARY HERE
+Generates annually the quartile diversity scores as per citation count
 
 ## Description
+Creates a table that lists, for each publication year and each citation count, the quartiles in:
+- GiniSim scores by citing groups;
+- Shannon scores by citing groups.
 
 ## Contacts
 karl.huang@curtin.edu.au

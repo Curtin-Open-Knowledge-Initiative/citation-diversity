@@ -1,9 +1,10 @@
 /*
 ## Summary
-
 Creates the main DOI level citation diversity table to be deployed to BigQuery
 
 ## Description
+Using the DOI table in Academic Observatory and MAG reference table to link all citing papers to each DOI.
+Then calculate various diversity statistics/summaries for each DOI.
 
 ## Contacts
 karl.huang@curtin.edu.au
