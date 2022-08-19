@@ -33,7 +33,7 @@ YEARS = list(range(2010, 2020))
 C_LOCS = ['mean', 'median']
 
 # Table Locations
-RERUN = False
+RERUN = True
 VERBOSE = True
 PROJECT_ID = 'coki-citation-diversity'
 DOI_TABLE = 'academic-observatory.observatory.doi20220730'

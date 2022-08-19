@@ -10,102 +10,148 @@
   },
   "analytics": [
     [
+      "process_sql_templates_to_queries",
+      {}
+    ],
+    [
+      "provenance_n_documentation",
+      {
+        "depends": ["process_sql_templates_to_queries"]
+      }
+    ],
+    [
+      "run_all_queries",
+      {
+        "depends": ["provenance_n_documentation"]
+      }
+    ],
+    [
       "create_boxplot_div_by_cit_group",
       {
+        "depends": ["run_all_queries"]
       }
     ],
     [
       "create_boxplot_div_by_oa_group",
       {
+        "depends": ["run_all_queries"]
       }
     ],
     [
       "create_boxplot_uniq_cit_by_cit_group",
       {
+        "depends": ["run_all_queries"]
       }
     ],
     [
       "create_boxplot_uniq_cit_by_oa_group",
       {
+        "depends": ["run_all_queries"]
       }
     ],
     [
       "create_line_div_vs_cit_count",
       {
+        "depends": ["run_all_queries"]
       }
     ],
     [
       "create_bar_div_vs_year",
       {
+        "depends": ["run_all_queries"]
       }
     ],
     [
       "create_bar_doi_count_combined",
       {
+        "depends": ["run_all_queries"]
       }
     ],
     [
       "create_bar_doi_count_by_oa",
-      {}
+      {
+        "depends": ["run_all_queries"]
+      }
     ],
     [
       "create_bar_cit_count_by_oa",
-      {}
+      {
+        "depends": ["run_all_queries"]
+      }
     ],
     [
       "create_bar_uniq_cit_count",
-      {}
+      {
+        "depends": ["run_all_queries"]
+      }
     ],
     [
       "create_line_compare_cit_regions",
-      {}
+      {
+        "depends": ["run_all_queries"]
+      }
     ],
     [
       "create_line_compare_cit_subregions",
-      {}
+      {
+        "depends": ["run_all_queries"]
+      }
     ],
     [
       "create_bar_compare_cit_regions",
-      {}
+      {
+        "depends": ["run_all_queries"]
+      }
     ],
     [
       "create_bar_compare_cit_subregions",
-      {}
+      {
+        "depends": ["run_all_queries"]
+      }
     ],
     [
       "create_figure2a",
-      {}
+      {
+        "depends": ["run_all_queries"]
+      }
     ],
     [
       "create_figure2b",
-      {}
+      {
+        "depends": ["run_all_queries"]
+      }
     ],
     [
       "create_figure2c",
-      {}
+      {
+        "depends": ["run_all_queries"]
+      }
     ],
     [
       "create_figure3a",
-      {}
+      {
+        "depends": ["run_all_queries"]
+      }
     ],
     [
       "create_figure3b",
-      {}
-    ],
-    [
-      "create_line_div_by_field",
-      {}
-    ],
-    [
-      "create_kde_dist_on_cit_div",
-      {}
+      {
+        "depends": ["run_all_queries"]
+      }
     ]
   ],
   "templates": [
-    "report_template.md", "supplementary.md"
+    "report_template.md",
+    "supplementary.md"
   ],
   "filters": [
-    ["markdown", "html"],
-    ["xhtml2pdf", "pdf"]
+    [
+      "markdown",
+      "html"
+    ],
+    [
+      "xhtml2pdf",
+      "pdf"
+    ]
   ]
 }
