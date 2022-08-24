@@ -1,15 +1,18 @@
 /*
 ## Summary
-
-CHANGE THIS
+Generates annual citation counts between regions
 
 ## Description
+Creates a table that lists for each cited region and publication year:
+- DOI counts for OA and non-OA outputs;
+- Number of citations from all citing region to OA papers affiliated to the cited region;
+- Number of citations from all citing region to non-OA papers affiliated to the cited region.
 
 ## Contacts
 karl.huang@curtin.edu.au
 
 ## Requires
-table bigquery://coki-scratch-space.karl.citation_diversity_global
+table bigquery://coki-scratch-space.citation_diversity_analysis.citation_diversity_global
 
 ## Creates
 file summary_stats_by_region_atleast2cit.csv

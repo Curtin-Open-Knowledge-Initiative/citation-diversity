@@ -60,19 +60,21 @@ def provenance_n_documentation(af: AnalyticsFunction,
                                rerun: bool = RERUN):
 
     dag = provndoc_utils.build_sql_dag(SQL_PROCESSED_DIRECTORY)
-    dag.to_json(DAG_FILEPATH)
+    dag.to_pickle(DAG_FILEPATH)
 
 
 def run_all_queries(af: AnalyticsFunction,
-                    rerun: bool = RERUN,
+                    rerun: bool = False,
                     verbose: bool = VERBOSE):
 
     sql_files = sorted(Path(SQL_PROCESSED_DIRECTORY).glob('*.sql'))
-    dag = provndoc_utils.dag_from_json(DAG_FILEPATH)
+    provdag = provndoc_utils.dag_from_pickle(DAG_FILEPATH)
+    sorted_nodes = ['_'.join(nodename.split('_')[1:]) for nodename in provdag.topologicalSort()]
+    filelist =[Path(node) for node in sorted_nodes if node in [str(f) for f in sql_files]]
 
-    for sql_file in sql_files:
+    for sql_file in filelist:
         query = load_sql_to_string(sql_file)
-        edges = dag.edges_by_from_node(f'file_{sql_file}')
+        edges = provdag.edges_by_from_node(f'file_{sql_file}')
         assert len(edges) == 1
         edge = edges[0]
         if edge.to_node.startswith('table_'):
@@ -84,7 +86,8 @@ def run_all_queries(af: AnalyticsFunction,
                                   )
 
         elif edge.to_node.startswith('file_'):
-            df = pd.read_gbq(query)
+            df = pd.read_gbq(query,
+                             project_id=PROJECT_ID)
             df.to_csv(DATA_FOLDER / f'{sql_file.stem}.csv')
 
 

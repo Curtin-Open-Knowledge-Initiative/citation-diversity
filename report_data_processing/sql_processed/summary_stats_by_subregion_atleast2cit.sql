@@ -1,15 +1,18 @@
 /*
 ## Summary
-
-Creates the main DOI level citation diversity table to be deployed to BigQuery
+Generates annual citation counts between subregions
 
 ## Description
+Creates a table that lists for each cited subregion and publication year:
+- DOI counts for OA and non-OA outputs;
+- Number of citations from all citing subregion to OA papers affiliated to the cited subregion;
+- Number of citations from all citing subregion to non-OA papers affiliated to the cited subregion.
 
 ## Contacts
 karl.huang@curtin.edu.au
 
 ## Requires
-table bigquery://coki-scratch-space.karl.citation_diversity_global
+table bigquery://coki-scratch-space.citation_diversity_analysis.citation_diversity_global
 
 ## Creates
 file summary_stats_by_subregion_atleast2cit.csv

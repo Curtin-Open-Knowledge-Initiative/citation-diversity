@@ -1,15 +1,17 @@
 /*
 ## Summary
-
-NEEDS A SUMMARY HERE
+Generates annually the quartile diversity scores as per citation count
 
 ## Description
+Creates a table that lists, for each publication year and each citation count, the quartiles in:
+- GiniSim scores by citing groups;
+- Shannon scores by citing groups.
 
 ## Contacts
 karl.huang@curtin.edu.au
 
 ## Requires
-table bigquery://coki-scratch-space.karl.citation_diversity_global
+table bigquery://coki-scratch-space.citation_diversity_analysis.citation_diversity_global
 
 ## Creates
 file cit_div_vs_cit_count.csv
@@ -70,7 +72,7 @@ WITH
         PERCENTILE_CONT(CitingRegions_Shannon,0.75) OVER(PARTITION BY CitationCount, year) AS CitingRegions_Shannon_perc75,
         PERCENTILE_CONT(CitingRegions_Shannon,1) OVER(PARTITION BY CitationCount, year) AS CitingRegions_Shannon_perc100
       FROM
-        `coki-scratch-space.karl.citation_diversity_global`
+        `coki-scratch-space.citation_diversity_analysis.citation_diversity_global`
       WHERE
         (CitationCount >= 2) AND (is_oa IS NOT NULL)
   )

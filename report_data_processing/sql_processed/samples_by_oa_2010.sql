@@ -1,15 +1,19 @@
 /*
 ## Summary
-
-NEW SUMMARY DESCRIPTION
+Generates samples of outputs across OA categories for a given year
 
 ## Description
+Creates a table, for a given publication year, that contains samples of DOIs, with their corresponding:
+- numbers of unique citing groups;
+- GiniSim scores by citing groups;
+- Shannon scores by citing groups.
+The DOIs are randomly sampled for each OA category, with 10,000 outputs per category.
 
 ## Contacts
 karl.huang@curtin.edu.au
 
 ## Requires
-table bigquery://coki-scratch-space.karl.citation_diversity_global
+table bigquery://coki-scratch-space.citation_diversity_analysis.citation_diversity_global
 
 ## Creates
 file samples_by_oa_2010.csv
@@ -21,7 +25,7 @@ WITH
       (SELECT
         doi,
         TRUE AS s_oa
-      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE CitationCount>=2 AND year=2010 AND is_oa=TRUE )
+      FROM (SELECT * FROM `coki-scratch-space.citation_diversity_analysis.citation_diversity_global` WHERE CitationCount>=2 AND year=2010 AND is_oa=TRUE )
       ORDER BY FARM_FINGERPRINT(CONCAT(doi,'1'))
       LIMIT 10000)
   ),
@@ -29,7 +33,7 @@ WITH
       (SELECT
         doi,
         TRUE AS s_noa,
-      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE CitationCount>=2 AND year=2010 AND is_oa=FALSE )
+      FROM (SELECT * FROM `coki-scratch-space.citation_diversity_analysis.citation_diversity_global` WHERE CitationCount>=2 AND year=2010 AND is_oa=FALSE )
       ORDER BY FARM_FINGERPRINT(CONCAT(doi,'2'))
       LIMIT 10000)
   ),
@@ -37,7 +41,7 @@ WITH
       (SELECT
         doi,
         TRUE AS s_gold,
-      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE CitationCount>=2 AND year=2010 AND gold=TRUE )
+      FROM (SELECT * FROM `coki-scratch-space.citation_diversity_analysis.citation_diversity_global` WHERE CitationCount>=2 AND year=2010 AND gold=TRUE )
       ORDER BY FARM_FINGERPRINT(CONCAT(doi,'3'))
       LIMIT 10000)
   ),
@@ -45,7 +49,7 @@ WITH
       (SELECT
         doi,
         TRUE AS s_green,
-      FROM (SELECT * FROM `coki-scratch-space.karl.citation_diversity_global` WHERE CitationCount>=2 AND year=2010 AND green=TRUE )
+      FROM (SELECT * FROM `coki-scratch-space.citation_diversity_analysis.citation_diversity_global` WHERE CitationCount>=2 AND year=2010 AND green=TRUE )
       ORDER BY FARM_FINGERPRINT(CONCAT(doi,'4'))
       LIMIT 10000)
   )
@@ -75,5 +79,5 @@ SELECT
 FROM (sample_oa FULL JOIN sample_noa USING(doi)
                 FULL JOIN sample_gold USING (doi)
                 FULL JOIN sample_green USING(doi))
-  LEFT JOIN `coki-scratch-space.karl.citation_diversity_global` USING(doi)
+  LEFT JOIN `coki-scratch-space.citation_diversity_analysis.citation_diversity_global` USING(doi)
 

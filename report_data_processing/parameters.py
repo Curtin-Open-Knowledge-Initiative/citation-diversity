@@ -35,7 +35,7 @@ C_LOCS = ['mean', 'median']
 # Table Locations
 RERUN = True
 VERBOSE = True
-PROJECT_ID = 'coki-citation-diversity'
+PROJECT_ID = 'coki-scratch-space'
 DOI_TABLE = 'academic-observatory.observatory.doi20220730'
 MAG_REFERENCES_TABLE = 'academic-observatory.mag.PaperReferences20211206'
 CITATION_DIVERSITY_TABLE = 'coki-scratch-space.citation_diversity_analysis.citation_diversity_global'
@@ -55,7 +55,7 @@ SQL_TEMPLATE_PARAMETERS = dict(
 
 # File Locations
 DATA_FOLDER = Path('tempdata')
-DAG_FILENAME = 'dag.json'
+DAG_FILENAME = 'dag.pkl'
 DAG_FILEPATH = DATA_FOLDER / DAG_FILENAME
 
 # color mapping when comparing regions

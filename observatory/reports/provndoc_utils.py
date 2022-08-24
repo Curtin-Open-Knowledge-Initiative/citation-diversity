@@ -1,5 +1,6 @@
 import pyparsing as pp
 import json
+import pickle
 
 from typing import Union, List, Dict, NamedTuple, AnyStr
 from pathlib import Path
@@ -49,6 +50,9 @@ class Node(NamedTuple):
     n_out: int = 0
     n_in: int = 0
 
+    def __repr__(self):
+        return self.name
+
 
 class Edge(NamedTuple):
     from_node: str
@@ -64,15 +68,23 @@ class Dag(object):
 
     def to_dict(self):
         return dict(
-            nodes=self.nodes,
-            edges=self.edges
+            nodes=[f'{node}' for node in self.nodes],
+            edges=[[f'{edge.from_node}', f'{edge.to_node}'] for edge in self.edges]
         )
 
+    def to_pickle(self,
+                  filepath: Union[Path, str]):
+
+        with open(filepath, 'wb') as f:
+            pickle.dump(self, f)
+        return True
+
     def to_json(self,
-                filepath: Union[Path, str, None]=None):
+                filepath: Union[Path, str, None] = None):
         if filepath:
             with open(filepath, 'w') as f:
-                json.dump(f, self.to_dict())
+                dump = self.to_dict()
+                json.dump(dump, f)
         else:
             return json.dumps(self.to_dict())
 
@@ -90,7 +102,7 @@ class Dag(object):
         self.edges.extend(j.get('edges'))
 
     def edges_by_from_node(self,
-                          from_node: Union[str, Node]):
+                           from_node: Union[str, Node]):
 
         if type(from_node) == Node:
             from_node = from_node.name
@@ -130,9 +142,34 @@ graph LR
         node_type, body = nd.split('_')[0], '_'.join(nd.split('_')[1:])
         return f'{body}{puncmap.get(node_type)[0]}{body}{puncmap.get(node_type)[1]}:::{node_type}'
 
+    def topologicalSortUtil(self, node, visited, stack):
 
-def build_sql_dag(sql_processed_dir: Union[Path, str])->Dag:
+        visited[node] = True
 
+        # Recur for all the vertices adjacent to this vertex
+        for to_node in [e.to_node for e in self.edges if e.from_node == node]:
+            if visited[to_node] == False:
+                self.topologicalSortUtil(to_node, visited, stack)
+
+        # Push current vertex to stack which stores result
+        stack.insert(0, node)
+
+    # The function to do Topological Sort. It uses recursive
+    # topologicalSortUtil()
+    def topologicalSort(self):
+        # Mark all the vertices as not visited
+        visited = {node: False for node in self.nodes}
+        stack = []
+
+        # Call the recursive helper function to store Topological
+        # Sort starting from all vertices one by one
+        for node in self.nodes:
+            if visited[node] == False:
+                self.topologicalSortUtil(node, visited, stack)
+        return stack
+
+
+def build_sql_dag(sql_processed_dir: Union[Path, str]) -> Dag:
     dag = Dag()
     processed_sql = sorted(Path(sql_processed_dir).glob('*.sql'))
 
@@ -143,7 +180,7 @@ def build_sql_dag(sql_processed_dir: Union[Path, str])->Dag:
     requires_head = heading_marker + pp.Literal('Requires') + pp.White()
     creates_head = heading_marker + pp.Literal('Creates') + pp.White()
 
-    info_body = pp.ZeroOrMore(pp.Word(pp.alphas + pp.nums + '.@://{}_-'))
+    info_body = pp.ZeroOrMore(pp.Word(pp.alphas + pp.nums + '.@://{}_-;,()'))
     summary = summary_head.suppress() + pp.Combine(info_body, adjacent=False, join_string=" ").set_results_name(
         'summary')
     description = description_head + info_body.set_results_name('description')
@@ -177,7 +214,7 @@ def build_sql_dag(sql_processed_dir: Union[Path, str])->Dag:
                 {f'{node_type}_{name}': Node(name) for node_type, name in parsed.info.creates}
             )
             dag.nodes.update(
-                {f'{node_type}_{name}': Node(name) for ndoe_type, name in parsed.info.requires}
+                {f'{node_type}_{name}': Node(name) for node_type, name in parsed.info.requires}
             )
 
             dag.edges.extend(
@@ -194,10 +231,19 @@ def build_sql_dag(sql_processed_dir: Union[Path, str])->Dag:
 
     return dag
 
+
 def dag_from_json(filepath):
     dag = Dag()
     dag.from_json(filepath)
 
+
+def dag_from_pickle(filepath):
+    with open(filepath, 'rb') as f:
+        dag = pickle.load(f)
+    return dag
+
+
 if __name__ == '__main__':
     dag = build_sql_dag(Path('../../report_data_processing/sql_processed'))
     print(dag.mermaid())
+    print(dag.topologicalSort())
