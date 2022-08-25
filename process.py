@@ -78,12 +78,13 @@ def run_all_queries(af: AnalyticsFunction,
         assert len(edges) == 1
         edge = edges[0]
         if edge.to_node.startswith('table_'):
-            run_query_to_bq_table(query=query,
-                                  query_name=sql_file.name,
-                                  destination_table=DESTINATION_TABLES.get(sql_file.name),
-                                  rerun=rerun,
-                                  verbose=verbose
-                                  )
+            continue
+            # run_query_to_bq_table(query=query,
+            #                       query_name=sql_file.name,
+            #                       destination_table=DESTINATION_TABLES.get(sql_file.name),
+            #                       rerun=rerun,
+            #                       verbose=verbose
+            #                       )
 
         elif edge.to_node.startswith('file_'):
             df = pd.read_gbq(query,

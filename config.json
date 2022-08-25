@@ -3,9 +3,6 @@
   "output_bucket_name": "output_files",
   "logfile": "logs/precipy.log",
   "loglevel": "DEBUG",
-  "constants": {
-    "PROJECT_ID": "citation_diversity"
-  },
   "ranges": {
   },
   "analytics": [
@@ -51,6 +48,18 @@
     ],
     [
       "create_line_div_vs_cit_count",
+      {
+        "depends": ["run_all_queries"]
+      }
+    ],
+    [
+      "create_line_div_by_field",
+      {
+        "depends": ["run_all_queries"]
+      }
+    ],
+    [
+      "create_kde_dist_on_cit_div",
       {
         "depends": ["run_all_queries"]
       }
