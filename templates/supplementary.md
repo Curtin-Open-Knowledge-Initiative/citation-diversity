@@ -12,14 +12,15 @@
 
 <pdf:nextpage>
 # Data and variables
-The graphical outputs presented in this supplementary include only papers with two or more citations. Two 
+The graphical outputs presented in this supplementary document include only papers with two or more citations. Two 
 different diversity measures are used to
-represent the level of diversity in citing entities, i.e., the Gini-Simpson index and the Shannon index. Data from 2010
+represent the level of diversity in citing groups, i.e., the Gini-Simpson index and the Shannon index. Data from 2010
 to 2019 (both inclusive) as publication years are presented. Diversity measures are calculated based on grouping 
-all possible links between the cited paper and institutional affiliations of citing papers into bins as defined by the citing 
-entities, i.e., Institutions, Countries, Subregions, Regions and Fields. We present various findings in terms of both 
+all possible links between the cited paper and institutional affiliations of citing papers into bins as defined by the type of citing 
+groups, i.e., institutions, countries, subregions, and regions, and also the citing papers by fields of research. 
+We present various findings in terms of both 
 means and medians, as both have their advantages and disadvantages in dealing with outliers, high number of repeat 
-observations, etc.
+observations, etc., together along with other distributional analyses, to compare the performance of OA papers and closed papers in citation diversity.
 
 
 <pdf:nextpage>
@@ -42,15 +43,15 @@ src={{ create_bar_cit_count_by_oa.files["bar_cit_count_by_oa_median.png"].cache_
 
 
 <pdf:nextpage>
-# Section B: Number of unique citing entities over publication years
-The following figures track the mean and median numbers of unique citing entities over time and compares them across
-different OA categories. For example, to calculate the number of unique citing countries for a particular paper, 
-we count the number of (unique) countries for which its citing papers are affiliated to. The main point of interest 
-here is that OA papers garners more unique citing entities almost consistently over time. Furthermore, papers that are 
-Green OA garners the highest number of unique citing entities. We do note however that papers published Gold OA 
+# Section B: Number of unique citing groups - mean and median
+The following figures track the mean and median numbers of unique citing groups over time and compares them across
+different OA categories and for closed papers. For example, to calculate the number of unique citing countries for a particular paper, 
+we count the number of (unique) countries for which its citing papers are affiliated to. The main finding 
+here is that OA papers garners more unique citing groups almost consistently over time. Furthermore, papers that are 
+Green OA garners the highest number of unique citing groups. We do note however that papers published Gold OA 
 are also likely to be published Green OA. This means these papers potentially gets the benefits of both routes of OA. 
-We also note that flat pattern for the median number of unique regions is the result of low number of possible regions, 
-and a similar pattern is shown for the median number of citing fields due to most citations occurring within-field for 
+We also note that flat pattern for the median number of unique citing regions is the result of low number of possible regions, 
+and a similar pattern is shown for the median number of unique citing fields due to most citations occurring within-field for 
 a large portion of papers that have low citation counts.
 {% for group in ["Institutions","Countries","Subregions","Fields", "Regions"] %}
 {% set filename = "bar_uniq_cit_count_{}_mean.png" %} <img 
@@ -61,44 +62,44 @@ src={{ create_bar_uniq_cit_count.files[filename.format(group)].cache_filepath }}
 
 
 <pdf:nextpage>
-# Section C: Boxplot of number of unique citing entities across OA groups
-This section extends the comparison of unique citing entities to their respective distributions, as represented by box plots. 
-To ensure robust comparisons, we sample 10,000 papers independently from each OA category as per citing entity grouping and 
-year of publication. The quartiles of number of unique citing entities are shown together with potential outliers in each OA 
-category. The general pattern observed is that OA papers attract higher number of unique citing entities, which is 
+# Section C: Number of unique citing groups - box plots
+This section extends the comparison of unique citing groups to their respective distributions, as represented by box plots. 
+To ensure robust comparisons, we sample 10,000 papers independently from each OA category and closed papers, for each 
+year of publication. The quartiles of numbers of unique citing groups are shown together with potential outliers in each 
+category. The general pattern observed is that OA papers attract higher number of unique citing groups, which is 
 signalled both by the distributional differences and many more outliers in the upper tail. Again, it is noted that this 
 general pattern can be diluted by the low number of regions in the regional comparisons. For the cases of institutional 
-entities, the very high numbers of upper outliers skew the figures but the general pattern applies.
+groupings, the very high numbers of upper outliers skew the figures but the general pattern applies.
 
-The first set of these is based on Institutions as citing entities:
+The first set of these is based on Institutions as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_uniq_cit_by_oa_group_Institutions_{}.png" %} <img 
 src={{ create_boxplot_uniq_cit_by_oa_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_boxplot_uniq_cit_by_oa_group.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on Countries as citing entities:
+The next set is based on Countries as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_uniq_cit_by_oa_group_Countries_{}.png" %} <img 
 src={{ create_boxplot_uniq_cit_by_oa_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_boxplot_uniq_cit_by_oa_group.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on Subregions as citing entities:
+The next set is based on Subregions as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_uniq_cit_by_oa_group_Subregions_{}.png" %} <img 
 src={{ create_boxplot_uniq_cit_by_oa_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_boxplot_uniq_cit_by_oa_group.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on Regions as citing entities:
+The next set is based on Regions as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_uniq_cit_by_oa_group_Regions_{}.png" %} <img 
 src={{ create_boxplot_uniq_cit_by_oa_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_boxplot_uniq_cit_by_oa_group.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Fields as citing entities:
+The next set is based on the Fields as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_uniq_cit_by_oa_group_Fields_{}.png" %} <img 
 src={{ create_boxplot_uniq_cit_by_oa_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
@@ -107,61 +108,13 @@ src={{ create_boxplot_uniq_cit_by_oa_group.files[filename.format(year+1)].cache_
 
 
 <pdf:nextpage>
-# Section D: Boxplot of number of unique citing entities across citation groups
-In this section, we split the papers into groups depending on citation numbers and by OA/non-OA status. The sample of 
-papers includes 2,000 OA papers and 2,000 non-OA papers from each citation group (i.e., 56,000 papers in total), 
-as per citing entity group and publication 
-year. The number of unique citing entities is counted for each paper and compared across citation groups. This is to check whether the 
-OA advantage observed in the previous sections remain consistent across the levels of citation. As expected, the number 
-of unique citing entities may increase with the number of citations. However, the OA advantage also seems to 
-remain in place irrespective of the level of citation. Again, we note that the level of effect of the OA advantage can 
-be less obvious when the total numbers of potential counts are low. The performance of OA papers appears to be at least 
-as good, or better, than the non-OA papers.
-
-The first set of these is based on Institutions as citing entities:
-{% for year in [2010,2012,2014,2016,2018] %}
-{% set filename = "box_uniq_cit_by_cit_group_Institutions_{}.png" %} <img 
-src={{ create_boxplot_uniq_cit_by_cit_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
-src={{ create_boxplot_uniq_cit_by_cit_group.files[filename.format(year+1)].cache_filepath }} width="300" />
-{% endfor %}
-
-The next set is based on Countries as citing entities:
-{% for year in [2010,2012,2014,2016,2018] %}
-{% set filename = "box_uniq_cit_by_cit_group_Countries_{}.png" %} <img 
-src={{ create_boxplot_uniq_cit_by_cit_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
-src={{ create_boxplot_uniq_cit_by_cit_group.files[filename.format(year+1)].cache_filepath }} width="300" />
-{% endfor %}
-
-The next set is based on Subregions as citing entities:
-{% for year in [2010,2012,2014,2016,2018] %}
-{% set filename = "box_uniq_cit_by_cit_group_Subregions_{}.png" %} <img 
-src={{ create_boxplot_uniq_cit_by_cit_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
-src={{ create_boxplot_uniq_cit_by_cit_group.files[filename.format(year+1)].cache_filepath }} width="300" />
-{% endfor %}
-
-The next set is based on Regions as citing entities:
-{% for year in [2010,2012,2014,2016,2018] %}
-{% set filename = "box_uniq_cit_by_cit_group_Regions_{}.png" %} <img 
-src={{ create_boxplot_uniq_cit_by_cit_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
-src={{ create_boxplot_uniq_cit_by_cit_group.files[filename.format(year+1)].cache_filepath }} width="300" />
-{% endfor %}
-
-The next set is based on the Fields as citing entities:
-{% for year in [2010,2012,2014,2016,2018] %}
-{% set filename = "box_uniq_cit_by_cit_group_Fields_{}.png" %} <img 
-src={{ create_boxplot_uniq_cit_by_cit_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
-src={{ create_boxplot_uniq_cit_by_cit_group.files[filename.format(year+1)].cache_filepath }} width="300" />
-{% endfor %}
-
-
-<pdf:nextpage>
-# Section E: Citation diversity scores over publication years
+# Section D: Citation diversity scores - mean and median
 In this section, we present the summary results of the diversity scores for papers in the various OA categories. Here, 
 we include all papers in our study. In the following figures, mean and median diversity scores are tracked over ten years. This is plotted for 
-various combinations of diversity measure and citing entity. Throughout the different measures across different 
-citing entity grouping, we find OA papers to score higher in diversity. This is also consistently observed for all years 
+various combinations of diversity measure and citing group. Throughout the different measures across different 
+citing groups, we find OA papers to score higher in diversity. This is also consistently observed for all years 
 included in the analysis. Green OA seems to lead in the diversity scores, which is also consistent with earlier 
-comparisons on numbers of unique citing entities.
+comparisons on numbers of unique citing groups.
 
 The first set of these is based on the Gini-Simpson index:
 {% for group in ['Institutions','Countries','Subregions','Regions','Fields'] %}
@@ -181,9 +134,10 @@ src={{ create_bar_div_vs_year.files[filename.format(group)].cache_filepath }} wi
 
 
 <pdf:nextpage>
-# Section F: Boxplot of citation diversity scores across OA groups
-In the following figures, the distributions of diversity scores of papers (as per citing entity grouping) of different 
-OA categories are compared. Random samples of 10,000 papers from each OA category is used in this comparison. The skewness 
+# Section E: Citation diversity scores - box plots
+In the following figures, the distributions of diversity scores of papers (as per citing group) of different 
+OA categories are compared. Random samples of 10,000 papers from each OA category and 10,000 closed papers are used in 
+this comparison. The skewness 
 towards the lower tails in the case of Gini-Simpson index scores is driven by 
 the high number of papers that receives 
 low number of citations (hence low diversity scores). In line with earlier findings, OA papers produce higher diversity 
@@ -192,70 +146,70 @@ category consistently have a longer lower tail in the Gini-Simpson scores, while
 lower tail. For the Shannon index, a parallel observation can be made with non-OA papers producing 
 shorter upper tails. We note again the small number effect on some figures.
 
-The first set of these is based on the Gini-Simpson index and institutions as citing entities:
+The first set of these is based on the Gini-Simpson index and institutions as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_div_by_oa_group_GiniSim_Institutions_{}.png" %} <img 
 src={{ create_boxplot_div_by_oa_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_boxplot_div_by_oa_group.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Gini-Simpson index and countries as citing entities:
+The next set is based on the Gini-Simpson index and countries as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_div_by_oa_group_GiniSim_Countries_{}.png" %} <img 
 src={{ create_boxplot_div_by_oa_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_boxplot_div_by_oa_group.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Gini-Simpson index and Subregions as citing entities:
+The next set is based on the Gini-Simpson index and Subregions as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_div_by_oa_group_GiniSim_Subregions_{}.png" %} <img 
 src={{ create_boxplot_div_by_oa_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_boxplot_div_by_oa_group.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Gini-Simpson index and Regions as citing entities:
+The next set is based on the Gini-Simpson index and Regions as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_div_by_oa_group_GiniSim_Regions_{}.png" %} <img 
 src={{ create_boxplot_div_by_oa_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_boxplot_div_by_oa_group.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Gini-Simpson index and Fields as citing entities:
+The next set is based on the Gini-Simpson index and Fields as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_div_by_oa_group_GiniSim_Fields_{}.png" %} <img 
 src={{ create_boxplot_div_by_oa_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_boxplot_div_by_oa_group.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Shannon index and institutions as citing entities:
+The next set is based on the Shannon index and institutions as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_div_by_oa_group_Shannon_Institutions_{}.png" %} <img 
 src={{ create_boxplot_div_by_oa_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_boxplot_div_by_oa_group.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Shannon index and countries as citing entities:
+The next set is based on the Shannon index and countries as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_div_by_oa_group_Shannon_Countries_{}.png" %} <img 
 src={{ create_boxplot_div_by_oa_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_boxplot_div_by_oa_group.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Shannon index and Subregions as citing entities:
+The next set is based on the Shannon index and Subregions as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_div_by_oa_group_Shannon_Subregions_{}.png" %} <img 
 src={{ create_boxplot_div_by_oa_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_boxplot_div_by_oa_group.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Shannon index and Regions as citing entities:
+The next set is based on the Shannon index and Regions as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_div_by_oa_group_Shannon_Regions_{}.png" %} <img 
 src={{ create_boxplot_div_by_oa_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_boxplot_div_by_oa_group.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Shannon index and Fields as citing entities:
+The next set is based on the Shannon index and Fields as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_div_by_oa_group_Shannon_Fields_{}.png" %} <img 
 src={{ create_boxplot_div_by_oa_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
@@ -264,80 +218,316 @@ src={{ create_boxplot_div_by_oa_group.files[filename.format(year+1)].cache_filep
 
 
 <pdf:nextpage>
-# Section G: Boxplot of citation diversity scores across citation groups
-In these figures, papers are split into groups by citation counts. Similar to the earlier section on comparing citation groups, 
+# Section F: Citation diversity scores - density estimation
+We apply kernel density estimation (KDE) to citation diversity scores for each year, type of citing group, and diversity measure. 
+These are paired with the corresponding histograms. Samples used contain 10,000 OA papers and 10,000 non-OA papers for
+each publication year. These graphs provide overviews of the distributions of citation 
+diversity scores. The clusters around zero, and around 0.5 for Gini-Simpson index and around 0.6 for Shannon index, 
+are results of large portions of low-citation papers. The most important signal from these graphs is the consistently better 
+performance of the OA papers. This can be seen from the upward shifts of the distributions, decreases of proportions 
+of papers with low scores (including the cluster around zero), and the heavier upper tails, for the OA papers.
+
+The first set of these is based on the Gini-Simpson index and institutions as citing groups:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "kde_dist_on_cit_div_GiniSim_Institutions_{}.png" %} <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+The first set of these is based on the Gini-Simpson index and countries as citing groups:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "kde_dist_on_cit_div_GiniSim_Countries_{}.png" %} <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+The first set of these is based on the Gini-Simpson index and subregions as citing groups:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "kde_dist_on_cit_div_GiniSim_Subregions_{}.png" %} <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+The first set of these is based on the Gini-Simpson index and regions as citing groups:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "kde_dist_on_cit_div_GiniSim_Regions_{}.png" %} <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+The first set of these is based on the Gini-Simpson index and fields as citing groups:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "kde_dist_on_cit_div_GiniSim_Fields_{}.png" %} <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+The first set of these is based on the Shannon index and institutions as citing groups:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "kde_dist_on_cit_div_Shannon_Institutions_{}.png" %} <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+The first set of these is based on the Shannon index and countries as citing groups:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "kde_dist_on_cit_div_Shannon_Countries_{}.png" %} <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+The first set of these is based on the Shannon index and subregions as citing groups:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "kde_dist_on_cit_div_Shannon_Subregions_{}.png" %} <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+The first set of these is based on the Shannon index and regions as citing groups:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "kde_dist_on_cit_div_Shannon_Regions_{}.png" %} <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+The first set of these is based on the Shannon index and fields as citing groups:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "kde_dist_on_cit_div_Shannon_Fields_{}.png" %} <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+
+<pdf:nextpage>
+# Section G: Citation diversity scores - comparing fields of research
+This section explores the OA effect on citation diversity as per field of research. For each field of research (as defined by 
+the MAG Level 0 fields), we track the mean and median Shannon and Gini-Simpson scores for the OA categories and for closed papers, as 
+per type of citing group. For most fields of research, we find Green OA as the standout performer. Performance of overall OA 
+and Gold OA varies widely for selected fields.
+
+For Gini-Simpson scores on citing institutions:
+{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
+"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
+"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
+{% set filename = "line_div_by_field_{}_Institutions_GiniSim_mean.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
+set filename = "line_div_by_field_{}_Institutions_GiniSim_median.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
+{% endfor %}
+
+For Shannon scores on citing institutions:
+{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
+"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
+"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
+{% set filename = "line_div_by_field_{}_Institutions_Shannon_mean.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
+set filename = "line_div_by_field_{}_Institutions_Shannon_median.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
+{% endfor %}
+
+For Gini-Simpson scores on citing countries:
+{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
+"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
+"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
+{% set filename = "line_div_by_field_{}_Countries_GiniSim_mean.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
+set filename = "line_div_by_field_{}_Countries_GiniSim_median.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
+{% endfor %}
+
+For Shannon scores on citing countries:
+{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
+"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
+"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
+{% set filename = "line_div_by_field_{}_Countries_Shannon_mean.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
+set filename = "line_div_by_field_{}_Countries_Shannon_median.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
+{% endfor %}
+
+For Gini-Simpson scores on citing subregions:
+{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
+"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
+"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
+{% set filename = "line_div_by_field_{}_Subregions_GiniSim_mean.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
+set filename = "line_div_by_field_{}_Subregions_GiniSim_median.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
+{% endfor %}
+
+For Shannon scores on citing subregions:
+{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
+"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
+"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
+{% set filename = "line_div_by_field_{}_Subregions_Shannon_mean.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
+set filename = "line_div_by_field_{}_Subregions_Shannon_median.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
+{% endfor %}
+
+For Gini-Simpson scores on citing regions:
+{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
+"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
+"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
+{% set filename = "line_div_by_field_{}_Regions_GiniSim_mean.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
+set filename = "line_div_by_field_{}_Regions_GiniSim_median.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
+{% endfor %}
+
+For Shannon scores on citing regions:
+{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
+"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
+"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
+{% set filename = "line_div_by_field_{}_Regions_Shannon_mean.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
+set filename = "line_div_by_field_{}_Regions_Shannon_median.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
+{% endfor %}
+
+For Gini-Simpson scores on citing fields:
+{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
+"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
+"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
+{% set filename = "line_div_by_field_{}_Fields_GiniSim_mean.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
+set filename = "line_div_by_field_{}_Fields_GiniSim_median.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
+{% endfor %}
+
+For Shannon scores on citing fields:
+{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
+"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
+"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
+{% set filename = "line_div_by_field_{}_Fields_Shannon_mean.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
+set filename = "line_div_by_field_{}_Fields_Shannon_median.png" %} <img 
+src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
+{% endfor %}
+
+
+<pdf:nextpage>
+# Section H: Citation groups vs number of unique citing groups
+In this section, we split the papers into groups depending on citation numbers and by OA/non-OA status. The sample of 
+papers includes 2,000 OA papers and 2,000 non-OA papers from each citation group (i.e., 56,000 papers in total), 
+as per publication 
+year. The number of unique citing groups is counted for each paper and compared across citation groups. This is to check whether the 
+OA advantage observed in the previous sections remain consistent across the levels of citation. As expected, the number 
+of unique citing groups may increase with the number of citations. However, the OA advantage also seems to 
+remain in place irrespective of the level of citation. Again, we note that the level of effect of the OA advantage can 
+be less obvious when the total numbers of potential counts are low. The performance of OA papers appears to be at least 
+as good, or better, than the non-OA papers.
+
+The first set of these is based on Institutions as citing groups:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "box_uniq_cit_by_cit_group_Institutions_{}.png" %} <img 
+src={{ create_boxplot_uniq_cit_by_cit_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_boxplot_uniq_cit_by_cit_group.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+The next set is based on Countries as citing groups:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "box_uniq_cit_by_cit_group_Countries_{}.png" %} <img 
+src={{ create_boxplot_uniq_cit_by_cit_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_boxplot_uniq_cit_by_cit_group.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+The next set is based on Subregions as citing groups:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "box_uniq_cit_by_cit_group_Subregions_{}.png" %} <img 
+src={{ create_boxplot_uniq_cit_by_cit_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_boxplot_uniq_cit_by_cit_group.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+The next set is based on Regions as citing groups:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "box_uniq_cit_by_cit_group_Regions_{}.png" %} <img 
+src={{ create_boxplot_uniq_cit_by_cit_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_boxplot_uniq_cit_by_cit_group.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+The next set is based on the Fields as citing groups:
+{% for year in [2010,2012,2014,2016,2018] %}
+{% set filename = "box_uniq_cit_by_cit_group_Fields_{}.png" %} <img 
+src={{ create_boxplot_uniq_cit_by_cit_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
+src={{ create_boxplot_uniq_cit_by_cit_group.files[filename.format(year+1)].cache_filepath }} width="300" />
+{% endfor %}
+
+
+<pdf:nextpage>
+# Section I: Citation groups vs citation diversity scores
+Similar to the previous section, papers are split into groups by citation counts -  
 2,000 OA papers and 2,000 non-OA papers are sampled from each citation group. A diversity score is calculated based on 
-citing entities for each paper and boxplot constructed for each OA category within each group. Each figure below represent 
-the findings for each citing entity group and each publication year. Not unexpectedly the increase in citation count may 
+citing groups for each paper and boxplot constructed for OA and non-OA papers. Each figure below represent 
+the findings for each type of citing group and each publication year. Not unexpectedly the increase in citation count may 
 correlate with slightly higher diversity scores for both diversity measures (i.e., higher likelihood of different sighting entities). The 
-general pattern that OA papers scoring higher in diversity remains consistent through citation groups, citing entity groups, 
+general pattern that OA papers scoring higher in diversity remains consistent through citation groups, types of citing groups, 
 publication years, and across diversity measures.
 
-The first set of these is based on the Gini-Simpson index and institutions as citing entities:
+The first set of these is based on the Gini-Simpson index and institutions as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_div_by_cit_group_GiniSim_Institutions_{}.png" %} <img 
 src={{ create_boxplot_div_by_cit_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_boxplot_div_by_cit_group.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Gini-Simpson index and countries as citing entities:
+The next set is based on the Gini-Simpson index and countries as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_div_by_cit_group_GiniSim_Countries_{}.png" %} <img 
 src={{ create_boxplot_div_by_cit_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_boxplot_div_by_cit_group.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Gini-Simpson index and Subregions as citing entities:
+The next set is based on the Gini-Simpson index and Subregions as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_div_by_cit_group_GiniSim_Subregions_{}.png" %} <img 
 src={{ create_boxplot_div_by_cit_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_boxplot_div_by_cit_group.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Gini-Simpson index and Regions as citing entities:
+The next set is based on the Gini-Simpson index and Regions as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_div_by_cit_group_GiniSim_Regions_{}.png" %} <img 
 src={{ create_boxplot_div_by_cit_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_boxplot_div_by_cit_group.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Gini-Simpson index and Fields as citing entities:
+The next set is based on the Gini-Simpson index and Fields as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_div_by_cit_group_GiniSim_Fields_{}.png" %} <img 
 src={{ create_boxplot_div_by_cit_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_boxplot_div_by_cit_group.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-
-The next set is based on the Shannon index and institutions as citing entities:
+The next set is based on the Shannon index and institutions as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_div_by_cit_group_Shannon_Institutions_{}.png" %} <img 
 src={{ create_boxplot_div_by_cit_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_boxplot_div_by_cit_group.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Shannon index and countries as citing entities:
+The next set is based on the Shannon index and countries as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_div_by_cit_group_Shannon_Countries_{}.png" %} <img 
 src={{ create_boxplot_div_by_cit_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_boxplot_div_by_cit_group.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Shannon index and Subregions as citing entities:
+The next set is based on the Shannon index and Subregions as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_div_by_cit_group_Shannon_Subregions_{}.png" %} <img 
 src={{ create_boxplot_div_by_cit_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_boxplot_div_by_cit_group.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Shannon index and Regions as citing entities:
+The next set is based on the Shannon index and Regions as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_div_by_cit_group_Shannon_Regions_{}.png" %} <img 
 src={{ create_boxplot_div_by_cit_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_boxplot_div_by_cit_group.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Shannon index and Fields as citing entities:
+The next set is based on the Shannon index and Fields as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "box_div_by_cit_group_Shannon_Fields_{}.png" %} <img 
 src={{ create_boxplot_div_by_cit_group.files[filename.format(year)].cache_filepath }} width="300" /> <img 
@@ -346,66 +536,67 @@ src={{ create_boxplot_div_by_cit_group.files[filename.format(year+1)].cache_file
 
 
 <pdf:nextpage>
-# Section H: Citation diversity scores over citation counts
+# Section J: Citation counts vs citation diversity scores
 In the following figures, quartiles of diversity scores are tracked against citation counts for the complete data set. Instead 
 of sampling papers by citation groups in the previous section, we include all papers in the study in the following analysis and 
-all citation counts (not groups). This is plotted for various combinations of diversity measure, citing entity and publication year. 
-Results with Fields as citing entity are excluded, as no meaningful results are produced due to very small numbers. 
+all citation counts (not groups). This is plotted for various combinations of diversity measure, type of citing groups and publication year. 
+Results with fields of research as citing groups are excluded, as no meaningful results are produced due to very small numbers 
+(i.e., most papers are cited within very few fields). 
 The aim is to further explore potential relationships between diversity scores and citation counts. Interestingly, the mild 
 positive relationship between diversity scores and citation counts observed in the lower end of the spectrum (which is consistent with 
 the previous section) seems to fade away as we move towards papers with very high citations. Hence, in most cases, 
 diversity scores are not completely driven by citation counts.
 
-The first set of these is based on the Gini-Simpson index and institutions as citing entities:
+The first set of these is based on the Gini-Simpson index and institutions as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "line_div_vs_cit_count_GiniSim_Institutions_{}.png" %} <img 
 src={{ create_line_div_vs_cit_count.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_line_div_vs_cit_count.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Gini-Simpson index and countries as citing entities:
+The next set is based on the Gini-Simpson index and countries as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "line_div_vs_cit_count_GiniSim_Countries_{}.png" %} <img 
 src={{ create_line_div_vs_cit_count.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_line_div_vs_cit_count.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Gini-Simpson index and Subregions as citing entities:
+The next set is based on the Gini-Simpson index and Subregions as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "line_div_vs_cit_count_GiniSim_Subregions_{}.png" %} <img 
 src={{ create_line_div_vs_cit_count.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_line_div_vs_cit_count.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Gini-Simpson index and Regions as citing entities:
+The next set is based on the Gini-Simpson index and Regions as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "line_div_vs_cit_count_GiniSim_Regions_{}.png" %} <img 
 src={{ create_line_div_vs_cit_count.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_line_div_vs_cit_count.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Shannon index and institutions as citing entities:
+The next set is based on the Shannon index and institutions as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "line_div_vs_cit_count_Shannon_Institutions_{}.png" %} <img 
 src={{ create_line_div_vs_cit_count.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_line_div_vs_cit_count.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Shannon index and countries as citing entities:
+The next set is based on the Shannon index and countries as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "line_div_vs_cit_count_Shannon_Countries_{}.png" %} <img 
 src={{ create_line_div_vs_cit_count.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_line_div_vs_cit_count.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Shannon index and Subregions as citing entities:
+The next set is based on the Shannon index and Subregions as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "line_div_vs_cit_count_Shannon_Subregions_{}.png" %} <img 
 src={{ create_line_div_vs_cit_count.files[filename.format(year)].cache_filepath }} width="300" /> <img 
 src={{ create_line_div_vs_cit_count.files[filename.format(year+1)].cache_filepath }} width="300" />
 {% endfor %}
 
-The next set is based on the Shannon index and Regions as citing entities:
+The next set is based on the Shannon index and Regions as citing groups:
 {% for year in [2010,2012,2014,2016,2018] %}
 {% set filename = "line_div_vs_cit_count_Shannon_Regions_{}.png" %} <img 
 src={{ create_line_div_vs_cit_count.files[filename.format(year)].cache_filepath }} width="300" /> <img 
@@ -414,7 +605,7 @@ src={{ create_line_div_vs_cit_count.files[filename.format(year+1)].cache_filepat
 
 
 <pdf:nextpage>
-# Section I: OA citation advantage for subregions using average citation ratios
+# Section K: OA citation advantage for subregions using average citation ratios
 This section explores the OA citation advantage in terms of how much more citations OA papers garner, on average, 
 over time. The average citation ratio (i.e., percentage ratio in average citation) is calculated as the average number 
 of citations to OA papers, divided by the average number of citations to non-OA papers, and times by one hundred. For 
@@ -476,7 +667,7 @@ src={{ create_line_compare_cit_subregions.files["line_compare_cit_count_subregio
 
 
 <pdf:nextpage>
-# Section J: OA citation advantage for regions using average citation ratios
+# Section L: OA citation advantage for regions using average citation ratios
 Continuing from the previous section, the corresponding results for regions are presented here. Similar to the previous section,
 there appears to be something peculiar with papers affiliated to Asia and Asian subregions. This is potentially the result 
 of several factors. First, our data's coverage of the Chinese language publications are relatively low as a result of 
@@ -500,7 +691,7 @@ src={{ create_line_compare_cit_regions.files["line_compare_cit_count_regions_for
 
 
 <pdf:nextpage>
-# Section K: Percentage change in total citations to subregions
+# Section M: OA citation advantage for subregions using percentage change in total citations
 In this section we take an alternative look at where citations are coming from. Total citation numbers are used to 
 calculate the percentage changes, i.e., total citations to OA papers minus total citations to non-OA papers, then divided 
 by total citations to non-OA papers, and multiplied by one hundred. We note that the levels of OA 
@@ -633,7 +824,7 @@ src={{ create_bar_compare_cit_subregions.files[filename.format(year+1)].cache_fi
 
 
 <pdf:nextpage>
-# Section L: Percentage change in total citations to regions
+# Section N: OA citation advantage for regions using percentage change in total citations
 Continuing from the previous section, we present parallel results for regions below.
 
 For papers affiliated to Asia:
@@ -672,192 +863,10 @@ src={{ create_bar_compare_cit_regions.files[filename.format(year+1)].cache_filep
 {% endfor %}
 
 
-<pdf:nextpage>
-# Section M: Citation diversity scores across fields of study
-This section explores the OA effect on citation diversity as per field of study. For each field of study (as defined by 
-the MAG Level 0 fields), we track the mean and median Shannon and Gini-Simpson scores for the four OA categories, as 
-per citing actor.
-
-For Gini-Simpson scores on citing institutions:
-{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
-"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
-"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
-{% set filename = "line_div_by_field_{}_Institutions_GiniSim_mean.png" %} <img 
-src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
-set filename = "line_div_by_field_{}_Institutions_GiniSim_median.png" %} <img 
-src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
-{% endfor %}
-
-For Shannon scores on citing institutions:
-{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
-"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
-"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
-{% set filename = "line_div_by_field_{}_Institutions_Shannon_mean.png" %} <img 
-src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
-set filename = "line_div_by_field_{}_Institutions_Shannon_median.png" %} <img 
-src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
-{% endfor %}
-
-For Gini-Simpson scores on citing countries:
-{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
-"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
-"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
-{% set filename = "line_div_by_field_{}_Countries_GiniSim_mean.png" %} <img 
-src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
-set filename = "line_div_by_field_{}_Countries_GiniSim_median.png" %} <img 
-src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
-{% endfor %}
-
-For Shannon scores on citing countries:
-{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
-"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
-"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
-{% set filename = "line_div_by_field_{}_Countries_Shannon_mean.png" %} <img 
-src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
-set filename = "line_div_by_field_{}_Countries_Shannon_median.png" %} <img 
-src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
-{% endfor %}
-
-For Gini-Simpson scores on citing subregions:
-{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
-"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
-"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
-{% set filename = "line_div_by_field_{}_Subregions_GiniSim_mean.png" %} <img 
-src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
-set filename = "line_div_by_field_{}_Subregions_GiniSim_median.png" %} <img 
-src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
-{% endfor %}
-
-For Shannon scores on citing subregions:
-{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
-"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
-"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
-{% set filename = "line_div_by_field_{}_Subregions_Shannon_mean.png" %} <img 
-src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
-set filename = "line_div_by_field_{}_Subregions_Shannon_median.png" %} <img 
-src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
-{% endfor %}
-
-For Gini-Simpson scores on citing regions:
-{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
-"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
-"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
-{% set filename = "line_div_by_field_{}_Regions_GiniSim_mean.png" %} <img 
-src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
-set filename = "line_div_by_field_{}_Regions_GiniSim_median.png" %} <img 
-src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
-{% endfor %}
-
-For Shannon scores on citing regions:
-{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
-"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
-"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
-{% set filename = "line_div_by_field_{}_Regions_Shannon_mean.png" %} <img 
-src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
-set filename = "line_div_by_field_{}_Regions_Shannon_median.png" %} <img 
-src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
-{% endfor %}
-
-For Gini-Simpson scores on citing fields:
-{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
-"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
-"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
-{% set filename = "line_div_by_field_{}_Fields_GiniSim_mean.png" %} <img 
-src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
-set filename = "line_div_by_field_{}_Fields_GiniSim_median.png" %} <img 
-src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
-{% endfor %}
-
-For Shannon scores on citing fields:
-{% for field in ["Art", "Biology", "Business", "Chemistry", "Computer science", "Economics", "Engineering", 
-"Environmental science", "Geography", "Geology", "History", "Materials science", "Mathematics", "Medicine", 
-"Philosophy", "Physics", "Political science", "Psychology", "Sociology"] %}
-{% set filename = "line_div_by_field_{}_Fields_Shannon_mean.png" %} <img 
-src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" /> {%
-set filename = "line_div_by_field_{}_Fields_Shannon_median.png" %} <img 
-src={{ create_line_div_by_field.files[filename.format(field)].cache_filepath }} width="300" />
-{% endfor %}
 
 
-<pdf:nextpage>
-# Section N: Density estimation of citation diversity scores
-We apply kernel density estimation to citation diversity scores for each year, citing actors, and diversity measure. 
-These are paired with the corresponding histograms. Samples used contain 10,000 OA papers and 10,000 non-OA papers for
-each publication year. These graphs provide overviews of the distributions of citation 
-diversity scores. The clusters around zero, and around 0.5 for Gini-Simpson index and around 0.6 for Shannon index, 
-are results of portions of low-citation papers. The most important signal from these graphs is the consistently better 
-performance of the OA papers. This can be seen from the upward shifts of the distributions, decreases of proportions 
-of papers with low scores (including the cluster around zero), and the heavier upper tails.
 
-The first set of these is based on the Gini-Simpson index and institutions as citing entities:
-{% for year in [2010,2012,2014,2016,2018] %}
-{% set filename = "kde_dist_on_cit_div_GiniSim_Institutions_{}.png" %} <img 
-src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
-src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
-{% endfor %}
 
-The first set of these is based on the Gini-Simpson index and countries as citing entities:
-{% for year in [2010,2012,2014,2016,2018] %}
-{% set filename = "kde_dist_on_cit_div_GiniSim_Countries_{}.png" %} <img 
-src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
-src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
-{% endfor %}
-
-The first set of these is based on the Gini-Simpson index and subregions as citing entities:
-{% for year in [2010,2012,2014,2016,2018] %}
-{% set filename = "kde_dist_on_cit_div_GiniSim_Subregions_{}.png" %} <img 
-src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
-src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
-{% endfor %}
-
-The first set of these is based on the Gini-Simpson index and regions as citing entities:
-{% for year in [2010,2012,2014,2016,2018] %}
-{% set filename = "kde_dist_on_cit_div_GiniSim_Regions_{}.png" %} <img 
-src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
-src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
-{% endfor %}
-
-The first set of these is based on the Gini-Simpson index and fields as citing entities:
-{% for year in [2010,2012,2014,2016,2018] %}
-{% set filename = "kde_dist_on_cit_div_GiniSim_Fields_{}.png" %} <img 
-src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
-src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
-{% endfor %}
-
-The first set of these is based on the Shannon index and institutions as citing entities:
-{% for year in [2010,2012,2014,2016,2018] %}
-{% set filename = "kde_dist_on_cit_div_Shannon_Institutions_{}.png" %} <img 
-src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
-src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
-{% endfor %}
-
-The first set of these is based on the Shannon index and countries as citing entities:
-{% for year in [2010,2012,2014,2016,2018] %}
-{% set filename = "kde_dist_on_cit_div_Shannon_Countries_{}.png" %} <img 
-src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
-src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
-{% endfor %}
-
-The first set of these is based on the Shannon index and subregions as citing entities:
-{% for year in [2010,2012,2014,2016,2018] %}
-{% set filename = "kde_dist_on_cit_div_Shannon_Subregions_{}.png" %} <img 
-src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
-src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
-{% endfor %}
-
-The first set of these is based on the Shannon index and regions as citing entities:
-{% for year in [2010,2012,2014,2016,2018] %}
-{% set filename = "kde_dist_on_cit_div_Shannon_Regions_{}.png" %} <img 
-src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
-src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
-{% endfor %}
-
-The first set of these is based on the Shannon index and fields as citing entities:
-{% for year in [2010,2012,2014,2016,2018] %}
-{% set filename = "kde_dist_on_cit_div_Shannon_Fields_{}.png" %} <img 
-src={{ create_kde_dist_on_cit_div.files[filename.format(year)].cache_filepath }} width="300" /> <img 
-src={{ create_kde_dist_on_cit_div.files[filename.format(year+1)].cache_filepath }} width="300" />
-{% endfor %}
 
 
 

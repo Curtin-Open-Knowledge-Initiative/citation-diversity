@@ -636,7 +636,7 @@ def create_figure2a(af: AnalyticsFunction):
     fig.add_trace(go.Scatter(x=df['year'], y=df['oa_Institutions_Shannon_median'],
                              name='OPEN', marker_color='#E7664C'), row=1, col=1)
     fig.update_xaxes(tickangle=270)
-    fig.update_layout(title='Fig. 2A: Median Shannon scores (Institutions)')
+    fig.update_layout(title=r"$\bf{a}$")
     fig.update_layout(xaxis_type='category')
     fig.update_layout(legend=dict(
         orientation="h",
@@ -696,7 +696,7 @@ def create_figure2b(af: AnalyticsFunction):
                              name='GREEN', marker_color='#006400'), row=4, col=1)
 
     fig.update_xaxes(tickangle=270)
-    fig.update_layout(title='Fig. 2B: Mean Shannon scores')
+    fig.update_layout(title=r"$\bf{b}$")
     fig.update_layout(xaxis_type='category')
     fig.update_layout(xaxis4=dict(tickvals=YEARS))
     fig.update_layout(legend=dict(
@@ -749,7 +749,7 @@ def create_figure2c(af: AnalyticsFunction):
                       row=subplot_count+1, col=1)
 
     fig.update_layout(barmode='overlay')
-    fig.update_layout(title='Fig. 2C: KDE on ' + method + ' scores based on samples')
+    fig.update_layout(title=r"$\bf{c}$")
     fig.update_layout(legend=dict(
         orientation="h",
         yanchor="bottom",
@@ -775,7 +775,8 @@ def create_figure3a(af: AnalyticsFunction):
                                                         "Citations to " + subregions_compare[1],
                                                         "Citations to " + subregions_compare[2]],
                         vertical_spacing=0.1, y_title="% change in total citations",
-                        shared_xaxes=True)
+                        shared_xaxes=True,
+                        shared_yaxes='all')
 
     # bar plot for subregion 1
     df_oa = data[(data["subregion_cited"] == subregions_compare[0]) & (data["year"] == 2019) & (data["is_oa"] == True)]
@@ -806,7 +807,7 @@ def create_figure3a(af: AnalyticsFunction):
 
     fig.update_layout(xaxis_type='category')
     fig.update_xaxes(categoryorder='category ascending')
-    fig.update_layout(title='Fig. 3A: % change in citations for 2019')
+    fig.update_layout(title=r"$\bf{a}$")
     if not os.path.exists('report_graphs/figure3'):
         os.makedirs('report_graphs/figure3')
     fig.write_image('report_graphs/figure3/figure3a.png', scale=FIG_SCALE, width=370, height=700)
@@ -822,7 +823,7 @@ def create_figure3b(af: AnalyticsFunction):
     print('... start figure3b')
 
     fig = make_subplots(rows=3, cols=1, subplot_titles=subregions_compare,
-                        vertical_spacing=0.08, y_title="% ratios in average citations")
+                        vertical_spacing=0.08, y_title="% ratios in average citations", shared_yaxes='all')
 
     # data and plot for subregion 1
     df_oa = data[(data["subregion_cited"] == subregions_compare[0]) & (data["is_oa"] == True)]
@@ -898,7 +899,7 @@ def create_figure3b(af: AnalyticsFunction):
         x=1
     ))
     fig.update_layout(
-        title='Fig. 3B: % ratios in average citations for all years ')
+        title=r"$\bf{b}$")
     if not os.path.exists('report_graphs/figure3'):
         os.makedirs('report_graphs/figure3')
     fig.write_image('report_graphs/figure3/figure3b.png', scale=FIG_SCALE, width=630, height=700)
