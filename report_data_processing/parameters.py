@@ -33,7 +33,7 @@ YEARS = list(range(2010, 2020))
 C_LOCS = ['mean', 'median']
 
 # Table Locations
-RERUN = True
+RERUN = False
 VERBOSE = True
 PROJECT_ID = 'coki-scratch-space'
 DOI_TABLE = 'academic-observatory.observatory.doi20220730'

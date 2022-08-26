@@ -74,17 +74,19 @@ def run_all_queries(af: AnalyticsFunction,
 
     for sql_file in filelist:
         query = load_sql_to_string(sql_file)
+        if not report_utils.bigquery_rerun(sql_file.name, rerun, verbose):
+            print(query)
+            continue
         edges = provdag.edges_by_from_node(f'file_{sql_file}')
         assert len(edges) == 1
         edge = edges[0]
         if edge.to_node.startswith('table_'):
-            continue
-            # run_query_to_bq_table(query=query,
-            #                       query_name=sql_file.name,
-            #                       destination_table=DESTINATION_TABLES.get(sql_file.name),
-            #                       rerun=rerun,
-            #                       verbose=verbose
-            #                       )
+            run_query_to_bq_table(query=query,
+                                  query_name=sql_file.name,
+                                  destination_table=DESTINATION_TABLES.get(sql_file.name),
+                                  rerun=rerun,
+                                  verbose=verbose
+                                  )
 
         elif edge.to_node.startswith('file_'):
             df = pd.read_gbq(query,
