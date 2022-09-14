@@ -64,7 +64,7 @@ def provenance_n_documentation(af: AnalyticsFunction,
 
 
 def run_all_queries(af: AnalyticsFunction,
-                    rerun: bool = False,
+                    rerun: bool = RERUN,
                     verbose: bool = VERBOSE):
 
     sql_files = sorted(Path(SQL_PROCESSED_DIRECTORY).glob('*.sql'))

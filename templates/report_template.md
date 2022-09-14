@@ -2,9 +2,7 @@
 
 <!-- Title Page -->
 <pdf:nexttemplate name="titlepage">
-<pdf:nextpage>
-
-<p class="subtitle">TITLE</p>
+<p class="subtitle">Open Access Research Outputs Receive More Diverse Citations</p>
 <p class="titlemeta"><br>DATE: {{ helper.created_at()|upper }}</p>
 
 
@@ -13,115 +11,120 @@
 
 <pdf:nextpage>
 
-# Summary and Abstract
+# Abstract
 
-The goal of open access is to allow more people to read and use research outputs. An observed association of more highly
-cited articles with open access has been claimed as evidence of increased usage but this remains controversial. In
-addition, analysis of citation counts is evidence of increased usage, not a wider diversity of usage. We address this
-gap by examining the association of open access with the diversity of citations. We show a robust association 
-between open access and increased
- diversity of citation sources by institution, country, region and field for publications from 2010-2020, and that
-the effect is seen for both high and medium-low citation counts. Open Access through repositories shows a stronger
-effect than open access publishing. Our study provides the crucial evidence at a global scale that open access is
-achieving its goals of research outputs being available to, and used by, wider audiences.
+The goal of open access is to allow more people to read and use research outputs. An observed association between 
+highly cited research outputs and open access has been claimed as evidence of increased usage of the research, but 
+this remains controversial<sup>1,2</sup>. A higher citation count also does not necessarily imply a wider usage such as 
+citations by authors from more places<sup>3,4,5</sup>. A knowledge gap exists in our understanding of who gets to use 
+these research outputs and where users are located. Here we address this gap by examining the association between an 
+output’s open access status and the diversity of research outputs that cite it. By analysing large-scale 
+bibliographic data from 2010 to 2019, we found a robust association between open access and increased diversity of 
+citation sources by institutions, countries, subregions, regions, and fields of research, across outputs with both 
+high and medium-low citation counts. Open access through disciplinary or institutional repositories showed a 
+stronger effect than open access via publisher platforms. This study represents a new perspective to our 
+understanding of citations and provides crucial evidence at a global scale that open access is achieving its goals 
+of research outputs being available to, and used by, wider audiences than closed research.
 
-# Article Text
+# Main
 
-The purpose of research is for it be used, either applied to solve problems and address issues, or more narrowly to
-provide insight, capacity and inspiration for further research. The Open Access movement is founded on the goals of
-putting research in the hands of more people and making it more usable. A seismic shift in access models has occurred
-over the past decade with accessible outputs rising from around 10% of globally indexed outputs published in 2010 to
-over 50% of all outputs published in 2020 being accessible in some form.
+The purpose of research is for it to be used, either applied to solve problems and address issues, or more narrowly 
+to provide insight, capacity and inspiration for further research. The open access (OA) movement is founded on the 
+goals of putting research in the hands of more people and making it more usable (e.g., the Budapest OA 
+Initiative<sup>6</sup>). A seismic shift in access models for scholarly outputs (i.e., from subscription-based 
+models to OA models) has occurred over the past decade with accessible outputs (i.e. can be read or downloaded 
+without payment) rising from approximately 27% of global outputs published in 2011 to over 49% of all outputs 
+published in 2020 being accessible in some form<sup>7</sup>.
 
-It has remained challenging to conclusively demonstrate the benefits of this shift. Collection of case studies and
-narratives has been important, and a range of studies have sought quantitative evidence of enhanced usage in various
-ways. An observed association of increased citation counts with open access to articles has provided the most global
-evidence of enhanced usage. However, there are several confounding factors that make claims of a causal link less than
-definitive. Specifically, a set of narrowly defined randomised control trials find no effect, and there is an argument
-that access to resources and prestige may well be associated both the choice to make an output open access and the
-likelihood of higher citations.
+It remains challenging to conclusively demonstrate the benefits of this shift in access models for scholarly outputs.
+The collection of case studies and narratives has been important in understanding the issue, and studies have sought 
+quantitative evidence of enhanced usage via a variety of methods. Some studies observed associations between 
+increased citation counts with OA have provided the most global evidence of enhanced article usage<sup>8,9,10</sup>. 
+However, there are several confounding factors that weaken claims of a causal link<sup>2,11</sup>. Specifically, a 
+set of narrowly defined randomised control trials find no effect in other studies, and there is an argument that 
+access to academic resources and prestige may well be associated with both the choice to make an output OA and the 
+likelihood of higher citations<sup>1,12,13,14,15</sup>.
 
-In addition we felt that the focus on citation counts fails to address the core goals of open
-access, specifically that a wider range of research users have more access. Quantitative assessment of citation
-source diversity is feasible at scale, and because standard measures of diversity are less sensitive to counts, 
-helps us to address the issues of access to resources and prestige that are potential confounders in
-analysis based simply on citation counts or velocity [ref the NIH and Janne-Tommas' paper using velocity measures].
+In addition, we felt that the focus on citation counts fails to address the core goals of OA, specifically that a 
+wider range of research users has more access. We need a different approach to quantify the impact of OA focusing on 
+widening the diversity of users who are able to access scholarly content. Recent advances in data availability and 
+processing has meant that we are now able to identify the affiliations of citing authors at scale and hence 
+quantitatively assess the institutional and geographic diversity of citing authors globally. Similarly, we are able 
+to analyse the fields of research across citing outputs. We refer to these measures under one umbrella term: 
+*citation diversity*. We quantify citation diversity using two different standard measures of diversity that are less 
+sensitive to citation counts. This helps us to address the issues of access to resources and prestige that are 
+potential confounders<sup>1,12,13,14,15</sup> in analyses based simply on citation counts which remain with more 
+sophisticated measures such as citation velocity, as shown in previous research<sup>16,17</sup>.
 
-To analyse citation diversity we used the data system developed the Curtin Open Knowledge Initiative for analysis of
-open knowledge performance. For the current analysis we used integrated data from Crossref, Microsoft Academic (MAG) and
-the Research Organizations Register (ROR) to provide data on affiliations and location, field of research and
-publication dates. We used Unpaywall data to define open access status.
+To analyse citation diversity we used the data workflows and datasets developed by the Curtin Open Knowledge 
+Initiative for analysis of open knowledge performance<sup>18</sup>. For the current analysis we used an integrated 
+dataset that combines data from Crossref, Microsoft Academic Graph (MAG) and the Research Organization Registry (ROR)
+to provide information on affiliations and geographical locations, fields of research, and publication dates. We 
+used data from Unpaywall to define OA status of individual outputs.
 
-For each of the 60 million publications in the dataset, with a publication year from 2010 - 202? that had received at 
-least one recorded citation we defined the
-set of citing institutions, countries, regions and fields (using the MAG Level 0 fields). A single citing article may
-represent citations from multiple sites (eg institutions) and each of these citation-sites is counted as contributing to
-the diversity measures. For each of the 60 million articles we then calculate total citations, and the Shannon
-Information Entropy and Gini ## Index as measures of diversity. Higher numbers are indicators of more diversity for both
-measures.
+For our analysis we extracted all relevant research outputs with publication years from 2010 to 2019  (see Methods 
+for details). For each of the 19 million outputs, we extracted citation counts (from the total of 420 million 
+citation links), metadata of their citing outputs and citing author affiliations, and calculated the Shannon Entropy 
+(or Shannon Index) and the Gini-Simpson Index (or Gini’s Diversity Index) as measures of citation diversity. Higher 
+scores for these indices are indicators of more citation diversity. We consider citation diversity based on five 
+different ways of grouping citation links - by institutions, countries, subregions, regions, and fields of research 
+(i.e., citing groups). Fig. 1 demonstrates how citation diversity assessed using these indices is different from 
+traditional citation counts. Two outputs having equal citation counts does not imply they have the same level of 
+diversity in citing groups such as citations from a number of different institutions. 
 
-We first replicate the observed association of open access with higher citations at this global scale, consistent with
-previous literature but with the known caveats. Nonetheless, we see that this association is robust across fields, years
-of publication, and countries of publication (with some interesting exceptions) which offers avenues for further
-analysis of the causal effects underlying the citation count advantage for open access.
+<img src="../report_graphs/figure1/fig1.png">
 
-We show an enhanced diversity of citing institutions, countries and regions for open access research outputs (as defined
-by the Unpaywall is_oa data element) with this effect being consistent for all publication years after 2010, across all
-the fields examined here. There are differences over time, between fields and between author’s countries in the scale of
-the effect, as well as the underlying diversity measures. These are interesting areas for future study. What is striking
-is how consistent the observed effect is across all of these potential groupings (see supplementary data for a 
-comprehensive analysis).
+# Methods
 
-Significance measures are not appropriate to this analysis, as we examine an entire dataset and are therefore not 
-sampling.
-To evaluate confidence intervals we apply a subsampling procedure. We also analyse the dependence of the effect on citation counts and show that the effect is
-robust across the range of citation counts, with some limitations on the ability to analyse very low counts. ###CAN WE
-SAY ANYTHING ABOUT WHAT THE EFFECT SIZE CORRESPONDS TO IN THE REAL WORLD###.
 
-Comparing mechanisms of open access we see a larger effect in diversity of citing regions, countries, institutions and 
-??disciplines?? across all years and disciplines for access provided through repositories ("green") than for open
-access provided via publisher websites. This effect shows interesting discipline and author-country effects which
-merit further investigation.
-
-As an observational cohort study, our analysis is not able to define a causal link between open access and enhanced
-diversity of citation sources. However, as a global analysis we can definitively say that within the full cohort in our
-dataset of over 100 million outputs that open access outputs have a greater diversity of citation. The lack of overall correlation between citation counts and
-citation diversity provides evidence that these differing measures track different aspects of usage and that there is
-limited common confounding at the global scale.
-
-The debate over the citation count advantage is dominated by questions of confounding effects, specifically whether
-open access is more accessible to wealthier and more prestigous researchers and/or whether researchers selectively
-make their best work open access. To address this we show that the citation diversity advantage is present independent
-of citation counts. 
-
-We also examine the geographical distribution of the citation diversity advantage. Analysing the countries from which
-citations come, we see an increase in citations for open access from traditionally under-represented and less prestigious 
-countries consistent with greater access being linked to more use from these regions, at least as measured by citations.
-The diversity advantage accrues preferentially to traditionally prestigious centres of research. For Latin America and
-Sub-Saharan Africa the advantage effect increases from low or negative levels over time. 
-
-The Budapest Open Access Initiative, now 20 years old, notes that open access makes possible “...the world-wide 
-electronic
-distribution of the peer-reviewed journal literature and completely free and unrestricted access to it by all
-scientists, scholars, teachers, students, and other curious minds” providing a public good which will “accelerate
-research, enrich education, share the learning of the rich with the poor and the poor with the rich, make this
-literature as useful as it can be, and lay the foundation for uniting humanity in a common intellectual conversation and
-quest for knowledge”.
-
-Efforts to demonstrate the success of this endeavour remain as controversial as the choice of paths towards achieving
-open access. The use of citations to capture the use and value of research will always be limited. But data on other 
-forms of usage
-remain challenging and incomplete. By shifting attention from counting citations to assessing the diversity of citing
-actors we have demonstrated that existing data can be repurposed to analyse different goals. In doing so we have
-demonstrated that even for the narrow form of usage that citation from research outputs represents, open access outputs
-are being used by a wider diversity of actors, whether we analyse those actors by institution, country, region or field.
-
-More broadly diversity measures in general offer a new view over existing data providing potential insights that are not
-offered by simple counts. As a potential insight into where the benefits of open access are being seen and a guide to
-improving our policy implementation for wider access this offers many opportunities in addressing “…the task of removing
-the barriers to open access and building a future in which research and education in every part of the world are that
-much more free to flourish”.
 
 # References
 
+1. Lewis, C. L. The open access citation advantage: Does it exist and what does it mean for libraries? Information 
+   Technology and Libraries 37(3), 50-65 (2018). https://doi.org/10.6017/ital.v37i3.10604
+2. Basson, I., Blanckenberg, J. P., & Prozesky, H. Do open access journal articles experience a citation advantage? 
+   Results and methodological reflections of an application of multiple measures to an analysis by WoS subject areas.
+   Scientometrics 126, 459-484 (2021). https://doi.org/10.1007/s11192-020-03734-9
+3. Dahler-Larsen, P. Making citations of publications in languages other than English visible: On the feasibility of 
+   a PLOTE-index. Research Evaluation 27(3), 212-221 (2018) https://doi.org/10.1093/reseval/rvy010
+4. Linkov, V., O’Doherty, K., Choi, E., & Han, G. Linguistic Diversity Index: A Scientometric Measure to Enhance the 
+   Relevance of Small and Minority Group Languages. SAGE Open 11(2), 1-9 (2021). https://doi.org/10.
+   1177/21582440211009191
+5. Neylon, C., Ozaygen, A., Montgomery, L., Huang, C-K., Pyne, R., Lucraft, M., & Emery, C. More Readers in More 
+   Places: The Benefits of Open Access for Scholarly Books. Insights 34 (1): 27 (2021). http://doi.org/10.1629/uksg.558
+6. Chan, L., et al. Read the Declaration - Budapest Open Access Initiative (2002). Retrieved September, 6, 2022 from 
+   https://www.budapestopenaccessinitiative.org/read/
+7. Neylon, C., & Huang, C-K. The Global State of Open Access 2021. Zenodo (2022). https://doi.org/10.5281/zenodo.7059176
+8. Piwowar, H., Priem, J., Larivière, V., Alperin, J. P., Matthias, L., Norlander, B., Farley, A., West, J., & 
+   Haustein, S. The state of OA: a large-scale analysis of the prevalence and impact of Open Access articles. PeerJ 
+   6, e4375 (2018). https://doi.org/10.7717/peerj.4375
+9. Archambault, E., Amyot, D., Deschamps, P., Nicol, A., Provencher, F., Rebout, L., & Roberge, G. Proportion of 
+   open access papers published in peer-reviewed journals at the European and world level—1996–2013. 
+   RTD-B6-PP-2011-2: Study to develop a set of indicators to measure open access. Report. Science-Metrix (2014). 
+   Retrieved August 19, 2022 from https://science-metrix.com/sites/default/files/science-metrix/publications/d_1.
+   8_sm_ec_dg-rtd_proportion_oa_1996-2013_v11p.pdf. 
+10. Bautista-Puig, N., Lopez-Illescas, C., de Moya-Anegon, F., Guerrero-Bote, V., & Moed, H. F.. Do journals 
+    flipping to gold open access show an OA citation or publication advantage?. Scientometrics 124, 2551–2575 (2020).
+    https://doi.org/10.1007/s11192-020-03546-x
+11. Dorta-González, P., González-Betancor, S.M. & Dorta-González, M.I. Reconsidering the gold open access citation 
+    advantage postulate in a multidisciplinary context: an analysis of the subject categories in the Web of Science 
+    database 2009–2014. Scientometrics 112, 877–901 (2017). https://doi.org/10.1007/s11192-017-2422-y
+12. Sotudeh, H. Does open access citation advantage depend on paper topics? Journal of Information Science 46(5), 
+    696-709. (2020). https://doi.org/10.1177/0165551519865489
+13. Hua, F., Sun, H., Walsh, T., Worthington, H., & Glenny, A. Open access to journal articles in dentistry: 
+    Prevalence and citation impact. Journal of Dentistry 47, 41-48 (2016). https://doi.org/10.1016/j.jdent.2016.02.005
+14. Davis, P. M. Open access, readership, citations: a randomized controlled trial of scientific journal publishing. 
+    The FASEB Journal 25(7), 2129-2134 (2011). https://doi.org/10.1096/fj.11-183988
+15. Zhang, L., & Watson, E. M. Measuring the Impact of Gold and Green Open Access. The Journal of Academic 
+    Librarianship 43(4), 337-345. (2017). https://doi.org/10.1016/j.acalib.2017.06.004
+16. Hutchins, B. I., Yuan, X., Anderson, J. M., & Santangelo, G. M. Relative Citation Ratio (RCR): A New Metric That 
+    Uses Citation Rates to Measure Influence at the Article Level. PLoS Biology 14(9), e1002541 (2016). https://doi.
+    org/10.1371/journal.pbio.1002541
+17. Seppänen, J-T., Värri, H, & Ylönen, I. Co-citation Percentile Rank and JYUcite: a new network-standardized 
+    output-level citation influence metric and its implementation using Dimensions API. Scientometrics 127, 
+    3523-3541. (2022). https://doi.org/10.1007/s11192-022-04393-8
+18. Hosking, R., Diprose, J. P., Roelofs, A., Chien, T-Y., Handcock, R. N., Kramer, B., Napier, K., Montgomery, L., 
+    & Neylon, C. Academic Observatory Workflows [Software]. Zenodo (2022). https://doi.org/10.5281/zenodo.6366694
+19. The World Bank. Research and development expenditure (% of GDP). World Bank Group (2022). Retrieved September 6, 
+    2022 from https://data.worldbank.org/indicator/GB.XPD.RSDV.GD.ZS
 
