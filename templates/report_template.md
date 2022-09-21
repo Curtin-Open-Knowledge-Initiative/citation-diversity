@@ -3,8 +3,10 @@
 <!-- Title Page -->
 <pdf:nexttemplate name="titlepage">
 <p class="subtitle">Open Access Research Outputs Receive More Diverse Citations</p>
+<p class="titlemeta"><br>CURTIN OPEN KNOWLEDGE INITIATIVE</p>
 <p class="titlemeta"><br>DATE: {{ helper.created_at()|upper }}</p>
-<p class="titlemeta"><br>AUTHORS: Curtin Open Knowledge Initiative</p>
+<p class="titlemeta"><br>AUTHORS: Chun-Kai (Karl) Huang, Cameron Neylon, Lucy Montgomery, Richard Hosking, James P. 
+Diprose, Rebecca N. Handcock, Katie Wilson</p>
 
 
 <!-- switch page templates -->
@@ -76,7 +78,7 @@ diversity in citing groups such as citations from a number of different institut
 
 ---
 ###Fig. 1: Illustrations of citation diversity compared to citation count.
-<img src="C:\Users\275390c\PycharmProjects\citation-diversity\report_graphs\figure1\fig1.png"/>  
+<img src={{ create_final_figs_1_2_3.files["fig1.png"].cache_filepath }} width="650" />  
 <figcaption><font size="2">Illustrative examples to demonstrate differences between citation counts, number of 
 citing actors, and diversity measures. Outputs with equal citation counts do not necessarily have the same level of 
 diversity in citing actors. Citing outputs are affiliated to institutions and these institutional-links can be 
@@ -108,7 +110,7 @@ further analysis of the causal effects underlying the *citation diversity advant
 
 ---
 ###Fig. 2: Comparing citation diversity between OA categories.
-<img src="C:\Users\275390c\PycharmProjects\citation-diversity\report_graphs\figure2\fig2.png"/>  
+<img src={{ create_final_figs_1_2_3.files["fig2.png"].cache_filepath }} width="650" />  
 <font size="2"> <strong>a.</strong> The median Shannon scores by citing institutions are compared between OA and 
 closed outputs over a ten year period. Earlier outputs receive higher scores as a result of having had more time to 
 garner citations (hence more possibility of wider citing affiliations). However, it is consistently observed that OA 
@@ -171,7 +173,7 @@ from low or negative levels (see Methods).
 
 ---
 ###Fig. 3: Changes in citations to and from selected subregions.
-<img src="C:\Users\275390c\PycharmProjects\citation-diversity\report_graphs\figure3\fig3.png"/>  
+<img src={{ create_final_figs_1_2_3.files["fig3.png"].cache_filepath }} width="650" />  
 <font size="2"> <strong>a.</strong> The three graphs resemble selected citation links to outputs by the 
 subregions: Northern Europe, Sub-Saharan Africa, and Eastern Asia, respectively. Within each graph, the percentage 
 change in total citations (see Methods) from the three selected subregions (for 2019) are shown. A value above zero 
@@ -478,27 +480,58 @@ to Material Science and Computer Science in more recent years).
     & Neylon, C. Academic Observatory Workflows [Software]. Zenodo (2022). https://doi.org/10.5281/zenodo.6366694
 19. The World Bank. Research and development expenditure (% of GDP). World Bank Group (2022). Retrieved September 6, 
     2022 from https://data.worldbank.org/indicator/GB.XPD.RSDV.GD.ZS
-20. Huang, C-K., & Neylon, C.  Curtin-Open-Knowledge-Initiative/citation-diversity. GitHub Repository (2022). 
-    https://github.com/Curtin-Open-Knowledge-Initiative/citation-diversity
+20. Huang, C-K., & Neylon, C.  Curtin-Open-Knowledge-Initiative/citation-diversity: Codes and Data for Open Access 
+    Research Outputs Receive More Diverse Citations [Software]. Zenodo (2022). https://doi.org/10.5281/zenodo.7081118
 
 <br/>
 
 #Data availability
 
-To be added.
+The processed data (as CSV files) used for the analysis and for generating figures are shared on Zenodo (https://doi.
+org/10.5281/zenodo.7081118) and GitHub (https://github.com/Curtin-Open-Knowledge-Initiative/citation-diversity).
 
 #Code availability
 
-To be added.
+The SQL queries used to generate all data, together with codes used to produce figures, to perform the analysis, 
+and to generate the final text documents are shared via Zenodo (https://doi.org/10.5281/zenodo.7081118) and GitHub 
+(https://github.com/Curtin-Open-Knowledge-Initiative/citation-diversity).
 
 #Acknowledgements
 
-To be added.
+This work was funded by the Research Office of Curtin through a strategic grant, the Curtin University Faculty of 
+Humanities, and the School of Media, Creative Arts and Social Inquiry. The Curtin Open Knowledge Initiative is also 
+recipient of a grant from Arcadia a Charitable Fund of Lisbet Rausing & Peter Baldwin. 
 
 #Author Information
 
-To be added.
+Chun-Kai (Karl) Huang (Centre for Culture and Technology, Curtin University, Bentley, WA 6102, Australia)
+
+Cameron Neylon (Centre for Culture and Technology, Curtin University, Bentley, WA 6102, Australia)
+
+Lucy Montgomery (Centre for Culture and Technology, Curtin University, Bentley, WA 6102, Australia)
+
+Richard Hosking (Centre for Culture and Technology, Curtin University, Bentley, WA 6102, Australia)
+
+James P. Diprose (Centre for Culture and Technology, Curtin University, Bentley, WA 6102, Australia)
+
+Rebecca N. Handcock (Curtin Institute for Computation, Curtin University, Bentley, WA 6102, Australia)
+
+Katie Wilson (Faculty of Education, Te Herenga Waka - Victoria University of Wellington, Wellington 6012, New Zealand)
+
+###Contributions
+
+C.K.H., C.N., and L.M. were involved with the conceptualization and project administration. C.K.H., C.N., and R.H. 
+were responsible for data curation. C.K.H. and C.N. were responsible for formal analysis, investigation, 
+methodology, validation, visualisation and writing the original draft of the article. C.N. and L.M. were responsible 
+for funding acquisition and supervision. C.K.H. and C.N. were responsible for the software that produced the 
+processed data, analysis, figures, and the final text documents. R.H. and J.P.D. were responsible for the software that 
+collected and created data tables used as input for the project. C.K.H., C.N., L.M., R.H., J.P.D., R.N.H. and K.W. 
+contributed to the final review, editing and approval of the manuscript.
+
+###Corresponding author
+
+Correspondence to Chun-Kai (Karl) Huang at karl.huang@curtin.edu.au.
 
 #Ethics declaration
 
-To be added.
+The authors declare that they have no competing interests.

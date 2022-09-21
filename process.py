@@ -987,8 +987,13 @@ def create_kde_dist_on_cit_div(af: AnalyticsFunction):
     print('... completed')
 
 
-
-
+def create_final_figs_1_2_3(af: AnalyticsFunction):
+    # load/save combined figs 1, 2, and 3 to af
+    print('... start create_final_figs_1_2_3')
+    af.add_existing_file(f'report_graphs/figure1/fig1.png')
+    af.add_existing_file(f'report_graphs/figure2/fig2.png')
+    af.add_existing_file(f'report_graphs/figure3/fig3.png')
+    print('... completed')
 
 
 if __name__ == '__main__':

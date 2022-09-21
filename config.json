@@ -147,6 +147,10 @@
       {
         "depends": ["run_all_queries"]
       }
+    ],
+    [
+      "create_final_figs_1_2_3",
+      {}
     ]
   ],
   "templates": [
